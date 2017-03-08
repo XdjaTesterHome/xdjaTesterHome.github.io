@@ -1,0 +1,782 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="gradle简介，gradle," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+大家对Ant和Maven一定不陌生，Ant是2000年发布，它基于程序编程思想的发展，但它主要缺点是使用XML作为一种格式来写构建脚本，XML是分层的，不利于程序的编程，而且当XML文件变大之后维护变的困难。
+Maven在2004年推出，比Ant有很大的改进，它改变了结构并且继续使用XML编写生成规范，它的依赖约定能通过网络下载依赖关系（这是特点）。但它的缺点是它不会处理同一库版本之间的冲突">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识gradle（gradle系列一）">
+<meta property="og:url" content="http://yoursite.com/2017/03/07/初识gradle/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+大家对Ant和Maven一定不陌生，Ant是2000年发布，它基于程序编程思想的发展，但它主要缺点是使用XML作为一种格式来写构建脚本，XML是分层的，不利于程序的编程，而且当XML文件变大之后维护变的困难。
+Maven在2004年推出，比Ant有很大的改进，它改变了结构并且继续使用XML编写生成规范，它的依赖约定能通过网络下载依赖关系（这是特点）。但它的缺点是它不会处理同一库版本之间的冲突">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/gradleV.PNG">
+<meta property="og:updated_time" content="2017-03-08T02:38:14.650Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初识gradle（gradle系列一）">
+<meta name="twitter:description" content="背景
+大家对Ant和Maven一定不陌生，Ant是2000年发布，它基于程序编程思想的发展，但它主要缺点是使用XML作为一种格式来写构建脚本，XML是分层的，不利于程序的编程，而且当XML文件变大之后维护变的困难。
+Maven在2004年推出，比Ant有很大的改进，它改变了结构并且继续使用XML编写生成规范，它的依赖约定能通过网络下载依赖关系（这是特点）。但它的缺点是它不会处理同一库版本之间的冲突">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/gradleV.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/07/初识gradle/"/>
+
+
+  <title> 初识gradle（gradle系列一） | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                初识gradle（gradle系列一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-07T18:20:18+08:00" content="2017-03-07">
+              2017-03-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/07/初识gradle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/07/初识gradle/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>大家对Ant和Maven一定不陌生，Ant是2000年发布，它基于程序编程思想的发展，但它主要缺点是使用XML作为一种格式来写构建脚本，XML是分层的，不利于程序的编程，而且当XML文件变大之后维护变的困难。</li>
+<li>Maven在2004年推出，比Ant有很大的改进，它改变了结构并且继续使用XML编写生成规范，它的依赖约定能通过网络下载依赖关系（这是特点）。但它的缺点是它不会处理同一库版本之间的冲突，另外复杂的定制构建脚本实际上比Ant更加难写。</li>
+<li>Gradle于2012年发布，是一个基于Ant和Maven概念的项目自动化构建工具，它使用一种基于Groovy的特定领域语言（DSL）来声明项目配置，抛弃了繁琐的XML配置。它面向java应用为主，当前支持的语言：java、Groovy、Scala，未来可能会支持更多的语言。</li>
+<li>Groovy语言是一种基于JVM的动态语言。</li>
+</ul>
+<h3 id="gradle的功能特点"><a href="#gradle的功能特点" class="headerlink" title="gradle的功能特点"></a>gradle的功能特点</h3><ul>
+<li><p>声明式构建和合约构建</p>
+<blockquote>
+<ol>
+<li>Gradle通过提供随意集成的声明式语言将声明语言推到一个新高度，这些元素也为java、Groovy、OSGI、Web和Scala等项目提供基于合约构建的支持，扩展性很好。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>基于依赖的编程语言</p>
+</li>
+<li>让构建结构化</li>
+<li>API深化</li>
+<li>gradle扩展</li>
+<li>多项目构建</li>
+<li><p>多种方式来管理依赖</p>
+<blockquote>
+<ol>
+<li>从远程的maven和ivy库的依赖管理到本地文件系统的jars或者dirs都支持。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>Gradle是第一个构建整合工具</p>
+<blockquote>
+<ol>
+<li>它整合了Ant和Maven的一些特点和概念。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>易于迁移</p>
+</li>
+<li>基于Groovy编写。</li>
+<li><p>Gradle包装器</p>
+<blockquote>
+<ol>
+<li>gradle包装器允许你在没有安装Gradle的机器上运行Gradle构建。这非常方便，可以降低使用项目的门槛。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>免费和开源</p>
+</li>
+</ul>
+<h2 id="安装Gradle"><a href="#安装Gradle" class="headerlink" title="安装Gradle"></a>安装Gradle</h2><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><ul>
+<li>gradle运行在一个java环境里。因此需要安装java环境，且版本需要在6以上。</li>
+</ul>
+<h3 id="下载与安装"><a href="#下载与安装" class="headerlink" title="下载与安装"></a>下载与安装</h3><ul>
+<li>从<a href="https://gradle.org/install" target="_blank" rel="external">gradle网站</a>下载gradle zip文件。注意gradle的版本，最新的应该是3.x了。</li>
+<li>解压缩之后，将gradle配置到环境变量中（GRADLE_HOME=解压根目录，GRADLE_HOME\bin配置到PATH路径中）</li>
+<li>配置完成后，打开cmd命令行，输入gradle -v验证配置是否成功。<br><img src="/upload/image/zlw/gradleV.PNG" alt="gradle配置"></li>
+</ul>
+<h3 id="JVM选项"><a href="#JVM选项" class="headerlink" title="JVM选项"></a>JVM选项</h3><ul>
+<li>JAVA_OPTS是一个用于JAVA应用的环境变量，一个典型的用例是在JAVA_OPTS里设置HTTP代理服务器（proxy）</li>
+<li>GRADLE_OPTS是内存选项，这些变量可以在gradle开始设置或者通过Gradlew脚本来设置。</li>
+</ul>
+<h2 id="gradle概念"><a href="#gradle概念" class="headerlink" title="gradle概念"></a>gradle概念</h2><h3 id="Project-amp-amp-tasks"><a href="#Project-amp-amp-tasks" class="headerlink" title="Project &amp;&amp; tasks"></a>Project &amp;&amp; tasks</h3><ul>
+<li>在gradle中有两个重要的概念，分别是project和tasks。每一次构建都是有至少一个project来完成，所以AndroidStudio中的project和Gradle中的project不是一个概念。每个project有至少一个tasks，每一个build.gradle文件代表一个gradle，tasks在build.gradle中定义，当初始化构建进程，gradle会基于build文件，集合所有的project和tasks，一个task包含了一系列动作，然后他们将会按照顺序执行，一个动作就是一段被执行的代码，很像java中的方法。</li>
+</ul>
+<h3 id="构建的生命周期"><a href="#构建的生命周期" class="headerlink" title="构建的生命周期"></a>构建的生命周期</h3><p>一旦一个task被执行，那么它不会再次执行了，不包含依赖的tasks总是优先执行，一次构建会经历下面三个阶段：</p>
+<ul>
+<li>初始化阶段：project实例在这儿创建，如果有多个模块，即有多个build.gradle文件，多个project将会被创建。</li>
+<li>配置阶段：在该阶段，build.gradle脚本将会执行，为每个project创建和配置所有的tasks。</li>
+<li>执行阶段：这一阶段，gradle会决定哪一个tasks会被执行，哪一个tasks会被完全依赖开始构建时传入的参数和当前所在的文件夹位置有关。</li>
+</ul>
+<h3 id="build-gradle的配置文件"><a href="#build-gradle的配置文件" class="headerlink" title="build.gradle的配置文件"></a>build.gradle的配置文件</h3><ul>
+<li><p>我们来看看Android的build.gradle</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">   repositories &#123;</div><div class="line">        jcenter()</div><div class="line">   &#125;</div><div class="line">   dependencies &#123;</div><div class="line">       classpath <span class="string">'com.android.tools.build:gradle:1.2.3'</span></div><div class="line"> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>这个是构建实际开始的地方，在仓库地址中使用了jcenter , jcenter 类似于Maven库，不需要任何额外的配置，gradle还支持其他几个仓库，不论是远程还是本地仓库。</p>
+</li>
+</ul>
+<h3 id="Gradle-Wrapper"><a href="#Gradle-Wrapper" class="headerlink" title="Gradle Wrapper"></a>Gradle Wrapper</h3><ul>
+<li><p>gradle只是一个构建工具，而新版本总是在更迭，所以使用Gradle Wrapper将会是一个好的选择去避免由于gradle版本更新导致的问题，Gradle Wrapper提供了一个windows的batch文件和其他系统的shell文件，当你使用这些脚本的时候，当前gradle版本将会被下载，并且会自动运行到项目构建。windows上运行gradlew.bat, mac上运行gradlew。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">myapp/</div><div class="line">  ├── gradlew</div><div class="line">  ├── gradlew.bat</div><div class="line">  └── gradle/wrapper/</div><div class="line">      ├── gradle-wrapper.jar</div><div class="line">      └── gradle-wrapper.properties</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件的内容如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#Sat May 30 17:41:49 CEST 2015</div><div class="line">   distributionBase=GRADLE_USER_HOME</div><div class="line">   distributionPath=wrapper/dists</div><div class="line">   zipStoreBase=GRADLE_USER_HOME</div><div class="line">   zipStorePath=wrapper/dists</div><div class="line">   distributionUrl=https\://services.gradle.org/distributions/</div><div class="line">   gradle-2.4-all.zip</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="使用基本的构建命令"><a href="#使用基本的构建命令" class="headerlink" title="使用基本的构建命令"></a>使用基本的构建命令</h3><ul>
+<li><p>查看可以运行的tasks</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ gradlew tasks （--all）    加上-all参数来查看所有的task</div></pre></td></tr></table></figure>
+</li>
+<li><p>构建项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ gradlew assembleDebug   构建一个debug版本的app</div><div class="line">除了assemble，还有三个基本命令：</div><div class="line">1. check运行所有的checks，换句话说是运行所有的tests在已连接的设备或者模拟器上。</div><div class="line">2. build 是check和assemble的集合体。</div><div class="line">3. clean 是清除项目的outputs文件。</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gradle简介，gradle/" rel="tag">#gradle简介，gradle</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/02/java代码优化建议（持续更新）/" rel="next" title="java代码优化建议（持续更新）">
+                <i class="fa fa-chevron-left"></i> java代码优化建议（持续更新）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/08/初始build-gradle-gradle系列二/" rel="prev" title="初始build.gradle(gradle系列二)">
+                初始build.gradle(gradle系列二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/07/初识gradle/"
+           data-title="初识gradle（gradle系列一）" data-url="http://yoursite.com/2017/03/07/初识gradle/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle的功能特点"><span class="nav-text">gradle的功能特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Gradle"><span class="nav-text">安装Gradle</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境准备"><span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载与安装"><span class="nav-text">下载与安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM选项"><span class="nav-text">JVM选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gradle概念"><span class="nav-text">gradle概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Project-amp-amp-tasks"><span class="nav-text">Project && tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建的生命周期"><span class="nav-text">构建的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-gradle的配置文件"><span class="nav-text">build.gradle的配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gradle-Wrapper"><span class="nav-text">Gradle Wrapper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用基本的构建命令"><span class="nav-text">使用基本的构建命令</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

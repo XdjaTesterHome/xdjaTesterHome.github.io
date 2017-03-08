@@ -1,0 +1,752 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="adb通信原理 adbserver," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="引言
+Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个工具来协助开发人员在开发android应用的过程中更快更好的调试apk，因此adb具有安装卸载apk、拷贝推送文件、查看设备硬件信息、查看应用程序占用资源、在设备执行shell命令等功能。
+对于和Android打交道的同学，对Adb一定不陌生，每天的工作基本都离不开它，最近有时会碰到Adb的问题，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adb工作原理">
+<meta property="og:url" content="http://yoursite.com/2017/02/08/Adb工作原理/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="引言
+Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个工具来协助开发人员在开发android应用的过程中更快更好的调试apk，因此adb具有安装卸载apk、拷贝推送文件、查看设备硬件信息、查看应用程序占用资源、在设备执行shell命令等功能。
+对于和Android打交道的同学，对Adb一定不陌生，每天的工作基本都离不开它，最近有时会碰到Adb的问题，">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/adb_tasklist.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/adbd_sbin.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/Adb_logic.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/adb_logic2.png">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.832Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Adb工作原理">
+<meta name="twitter:description" content="引言
+Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个工具来协助开发人员在开发android应用的过程中更快更好的调试apk，因此adb具有安装卸载apk、拷贝推送文件、查看设备硬件信息、查看应用程序占用资源、在设备执行shell命令等功能。
+对于和Android打交道的同学，对Adb一定不陌生，每天的工作基本都离不开它，最近有时会碰到Adb的问题，">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/adb_tasklist.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/08/Adb工作原理/"/>
+
+
+  <title> Adb工作原理 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Adb工作原理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-08T19:32:09+08:00" content="2017-02-08">
+              2017-02-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android技术/" itemprop="url" rel="index">
+                    <span itemprop="name">Android技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/08/Adb工作原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/08/Adb工作原理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ul>
+<li>Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个工具来协助开发人员在开发android应用的过程中更快更好的调试apk，因此adb具有安装卸载apk、拷贝推送文件、查看设备硬件信息、查看应用程序占用资源、在设备执行shell命令等功能。</li>
+<li>对于和Android打交道的同学，对Adb一定不陌生，每天的工作基本都离不开它，最近有时会碰到Adb的问题，比如adb server没有响应之类的，因此就想弄清楚Adb的工作原理到底是怎么样的？这样再碰到问题就能知道大概该怎么样去解决。</li>
+<li>其实之前看过adb的源码，但是时间久远，看过的东西都忘记了，只能从头来了解。这次写下来，便于自己查看，更为了能跟感兴趣的同学交流。</li>
+<li>我这里就不再去扣源码（源码在system/core/adb）了，主要是以介绍原理为主。</li>
+</ul>
+<h2 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h2><h3 id="Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："><a href="#Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：" class="headerlink" title="Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："></a>Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：</h3><ul>
+<li>adb server</li>
+<li>adb client</li>
+<li>adb deamon<h3 id="接下来就分开介绍下他们的原理"><a href="#接下来就分开介绍下他们的原理" class="headerlink" title="接下来就分开介绍下他们的原理"></a>接下来就分开介绍下他们的原理</h3><h4 id="adb-server"><a href="#adb-server" class="headerlink" title="adb server"></a>adb server</h4></li>
+<li>ADB Server是运行在主机上的一个后台进程。它有两个作用：1）检测USB端口感知设备的连接和拔除，以及模拟器实例的启动或停止；2）将adb client的请求通过usb或者tcp的方式发送到对应的adbd上。</li>
+<li>ADB server默认监听5037端口，我们可以通过在cmd命令行输入netstat -nao | findStr 5037 来查看哪个pid的进程在监听5037，我电脑上的pid = 13740，然后再通过tasklist来查看13740对应的应用程序是啥？如下图可以看到是adb.exe（就是adb server）。<br><img src="/upload/image/zlw/adb_tasklist.png" alt="Adb server的进程"></li>
+</ul>
+<h4 id="adb-client"><a href="#adb-client" class="headerlink" title="adb client"></a>adb client</h4><ul>
+<li>adb client 可以是命令行，也可能是DDMS等工具。它运行在开发用的电脑上。</li>
+<li>它主要的工作是：解析像：push、shell、install等命令的参数，做必要预处理，然后转移为指令或数据，发送给adb Server。</li>
+<li>我们在命令行执行命令时，会创建一个adb.exe的client，命令执行完后就被销毁掉。（可以在PC的任务管理器中查看）</li>
+<li>当启动adb客户端时，客户端首先检测adb服务端进程是否运行，如果没有运行，则启动服务端。当服务端启动时，它会绑定到本地的5037端口，并且监听从adb client发来的命令——所有的adb客户端都使用5037端口与adb服务端通信。</li>
+</ul>
+<h4 id="adb-deamon-adbd"><a href="#adb-deamon-adbd" class="headerlink" title="adb deamon(adbd)"></a>adb deamon(adbd)</h4><ul>
+<li>adbd 是运行在Android设备（真机/模拟器）后台的一个进程，它是由init进程启动的，并且系统一开机就已经启动。</li>
+<li>adbd存在于设备/sbin(我的目录是sbin，也可能是xbin)目录下。如下图所示：<br><img src="/upload/image/zlw/adbd_sbin.png" alt="adbd进程"></li>
+<li>它的主要作用是处理来自 adb server的命令行请求，然后获取对应Android设备的信息，再将结果返回给adb server。</li>
+</ul>
+<h2 id="通信原理"><a href="#通信原理" class="headerlink" title="通信原理"></a>通信原理</h2><h3 id="清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。"><a href="#清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。" class="headerlink" title="清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。"></a>清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。</h3><h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h4><p><img src="/upload/image/zlw/Adb_logic.png" alt="概要流程图"><br><img src="/upload/image/zlw/adb_logic2.png" alt="具体流程图"></p>
+<ul>
+<li>第一张图是个概要的流程图，大致介绍了他们之间的通信流程。</li>
+<li>第二张图更详细的介绍了通信流程，包括有哪些线程及adbd位于Android系统的内核中、在DDMS中经常看到的JDWP线程等等。</li>
+<li>第二张图提到了TCP/Ip 和USb 两种通信方式，其中前者用于模拟器的通信（真机wifi连接），后者用于与真机的通信。</li>
+</ul>
+<h4 id="流程用文字描述"><a href="#流程用文字描述" class="headerlink" title="流程用文字描述"></a>流程用文字描述</h4><ul>
+<li>client调用某个adb命令，比如adb push。</li>
+<li>adb进程fork出一个子进程作为server（PC端的常驻进程）</li>
+<li>server查找当前连接的emulator/device（查找客户端，为通信做准备）</li>
+<li>server接收到来自client请求。（用户在命令行或者通过工具执行命令）</li>
+<li>server处理请求，将本地处理不了的请求发给emulator/device（本地能处理的请求比如：adb devices 等）</li>
+<li>位于emulator/device的adbd拿到请求后交给对应的java虚拟机进程（adbd收到请求会搞一个读和一个写进程用于收和回信息）。</li>
+<li>adbd将结果发回给server</li>
+<li>server讲结果发回给client（在工具中或者命令行界面展示结果）</li>
+</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
+<li><p>The connection to adb is down, and a severe error has occured.You must restart adb and Eclipse.Please ensure that adb is correctly located at ‘adb.exe’ and can be executed</p>
+<blockquote>
+<ul>
+<li>重启下adb server   （adb kill-server adb start-server）</li>
+</ul>
+</blockquote>
+</li>
+<li><p>ADB server didn’t ACK <em> failed to start daemon </em></p>
+<blockquote>
+<ul>
+<li>在任务管理器中查找5037端口被谁占用了，然后结束掉。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>待不断补充……………………</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/adb通信原理-adbserver/" rel="tag">#adb通信原理 adbserver</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/16/Android进程保活/" rel="next" title="Android进程保活">
+                <i class="fa fa-chevron-left"></i> Android进程保活
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/13/Android7-0新特性/" rel="prev" title="Android7.0新特性">
+                Android7.0新特性 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/08/Adb工作原理/"
+           data-title="Adb工作原理" data-url="http://yoursite.com/2017/02/08/Adb工作原理/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念介绍"><span class="nav-text">概念介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："><span class="nav-text">Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接下来就分开介绍下他们的原理"><span class="nav-text">接下来就分开介绍下他们的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-server"><span class="nav-text">adb server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-client"><span class="nav-text">adb client</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-deamon-adbd"><span class="nav-text">adb deamon(adbd)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信原理"><span class="nav-text">通信原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。"><span class="nav-text">清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流程图"><span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程用文字描述"><span class="nav-text">流程用文字描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-text">常见问题</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

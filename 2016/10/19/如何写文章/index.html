@@ -1,0 +1,740 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="写博客," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="搭建环境
+因为博客平台是用Hexo + github的方式搭建的，并且以后写文章会频繁的使用到hexo，所以首先需要安装Hexo的环境。
+Hexo的环境需要以下工具：git、nodejs（hexo是基于nodejs的）、hexo，我们逐一来解释下各个工具安装的要点。
+
+git的安装
+首先去下载git
+然后一步步的安装即可，碰见问题可以Google。
+安装完成后记得配置git到PATH（1.%GIT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何写文章">
+<meta property="og:url" content="http://yoursite.com/2016/10/19/如何写文章/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="搭建环境
+因为博客平台是用Hexo + github的方式搭建的，并且以后写文章会频繁的使用到hexo，所以首先需要安装Hexo的环境。
+Hexo的环境需要以下工具：git、nodejs（hexo是基于nodejs的）、hexo，我们逐一来解释下各个工具安装的要点。
+
+git的安装
+首先去下载git
+然后一步步的安装即可，碰见问题可以Google。
+安装完成后记得配置git到PATH（1.%GIT">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.838Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何写文章">
+<meta name="twitter:description" content="搭建环境
+因为博客平台是用Hexo + github的方式搭建的，并且以后写文章会频繁的使用到hexo，所以首先需要安装Hexo的环境。
+Hexo的环境需要以下工具：git、nodejs（hexo是基于nodejs的）、hexo，我们逐一来解释下各个工具安装的要点。
+
+git的安装
+首先去下载git
+然后一步步的安装即可，碰见问题可以Google。
+安装完成后记得配置git到PATH（1.%GIT">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/19/如何写文章/"/>
+
+
+  <title> 如何写文章 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何写文章
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-19T12:03:15+08:00" content="2016-10-19">
+              2016-10-19
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/19/如何写文章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/19/如何写文章/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><ul>
+<li>因为博客平台是用Hexo + github的方式搭建的，并且以后写文章会频繁的使用到hexo，所以首先需要安装Hexo的环境。</li>
+<li>Hexo的环境需要以下工具：git、nodejs（hexo是基于nodejs的）、hexo，我们逐一来解释下各个工具安装的要点。</li>
+</ul>
+<h4 id="git的安装"><a href="#git的安装" class="headerlink" title="git的安装"></a>git的安装</h4><ul>
+<li>首先去下载<a href="https://git-scm.com/downloads" target="_blank" rel="external">git</a></li>
+<li>然后一步步的安装即可，碰见问题可以Google。</li>
+<li>安装完成后记得配置git到PATH（1.%GIT_HOME%\cmd\  2. %GIT_HOME%\usr\bin 这两个路径都配置下，有用到的命令）</li>
+<li>git -v 能打印出版本号表示安装成功</li>
+</ul>
+<h4 id="nodejs的安装"><a href="#nodejs的安装" class="headerlink" title="nodejs的安装"></a>nodejs的安装</h4><ul>
+<li>首先下载<a href="https://nodejs.org/en/" target="_blank" rel="external">nodejs</a></li>
+<li>然后一步步的安装即可。</li>
+<li>将nodejs的根目录配置到PATH</li>
+<li>node -v 能打印出版本号表示安装成功</li>
+</ul>
+<h4 id="认识npm"><a href="#认识npm" class="headerlink" title="认识npm"></a>认识npm</h4><ul>
+<li>npm是Nodejs的包管理工具（package manager）。需要它是因为我们在使用Hexo时会需要用到其他人写的包JavaScript代码，这个时候可以通过npm install XX来进行安装。</li>
+<li>nodejs安装好后默认npm也安装好了。</li>
+</ul>
+<h4 id="配置和使用GitHub"><a href="#配置和使用GitHub" class="headerlink" title="配置和使用GitHub"></a>配置和使用GitHub</h4><ul>
+<li>首先去<a href="http://www.github.com/" target="_blank" rel="external">GitHub</a>注册账号。</li>
+<li>配置SSH keys</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -C <span class="string">"邮件地址@youremail.com"</span></div><div class="line">  然后一直回车就行</div><div class="line">$ clip &lt; C:\Users\xxxx\.ssh\id_rsa.pub</div><div class="line">  将id_rsa.pub文件copy到剪贴板</div><div class="line">$ 登录github，点击右上角 Account Setting -----&gt; SSH Public Keys ---&gt; add another public keys   </div><div class="line">  将剪贴板上的key添加进去  add  key   就ok。</div><div class="line">$ ssh -T git@github.com</div><div class="line">  通过这个命令去测试SSH keys 是否配置成功</div><div class="line">$ git config --global user.name <span class="string">"cnfeat"</span>//用户名</div><div class="line">$ git config --global user.email  <span class="string">"cnfeat@gmail.com"</span>//填写自己的邮箱</div><div class="line">  设置用户名和邮箱为了不用每次提交代码都得输入</div></pre></td></tr></table></figure>
+<h4 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h4><ul>
+<li>通过npm工具安装即可</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install -g hexo</div></pre></td></tr></table></figure>
+<p>####　使用Hexo<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ hexo g</div><div class="line">  用于生成对应的静态html文本</div><div class="line">$ hexo s</div><div class="line">  可以用来在本地测试生成的静态html文本是否是正确的</div><div class="line">$ hexo d</div><div class="line">  用来将本地html部署到远程服务端</div></pre></td></tr></table></figure></p>
+<h2 id="开始写博客"><a href="#开始写博客" class="headerlink" title="开始写博客"></a>开始写博客</h2><h4 id="git-clone博客源文件"><a href="#git-clone博客源文件" class="headerlink" title="git clone博客源文件"></a>git clone博客源文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">clone</span> git@github.com:XdjaTesterHome/xdjablogSource.git dir目录</div><div class="line">  dir目录是自己定义存放博客源码的目录（下面称为工作目录）</div></pre></td></tr></table></figure>
+<h4 id="用hexo本地验证环境是否正确"><a href="#用hexo本地验证环境是否正确" class="headerlink" title="用hexo本地验证环境是否正确"></a>用hexo本地验证环境是否正确</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ <span class="built_in">cd</span> 工作目录</div><div class="line">$ hexo g</div><div class="line">  用于生成静态html文件，然后在本地会创建一个public目录</div><div class="line">$ hexo s --Debug</div><div class="line">  可以在本地开一个server，便于本地调试。 --debug是为了打印日志，监控错误信息</div><div class="line">  如果没有错误，可以访问http://localhost:4000 本地查看博客内容</div></pre></td></tr></table></figure>
+<h4 id="创建新的文章（重点）"><a href="#创建新的文章（重点）" class="headerlink" title="创建新的文章（重点）"></a>创建新的文章（重点）</h4>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">  前面的工作都是为了写文章服务的，在工作目录执行</div><div class="line">$ hexo n file_name</div><div class="line">  在<span class="built_in">source</span>/_posts/下面生成 file_name.md</div></pre></td></tr></table></figure>
+<ul>
+<li>如果文章中用到图片，可以将图片放到 工作目录/source/upload/image/下面，最好新建一个以自己名字命名的目录存放自己的图片，比如我的图片放在工作目录/source/upload/image/zlw/下面。  </li>
+<li>在文章中引用图片用想对路径：/upload/image/xxx/xxx.png</li>
+</ul>
+<h4 id="编辑md文件"><a href="#编辑md文件" class="headerlink" title="编辑md文件"></a>编辑md文件</h4><ul>
+<li>可以写自己想写的任何东西了。</li>
+<li>markdown语法可以自行Google</li>
+<li>markdown工具 windows可以体验下Actom，Mac可以用Macdown</li>
+<li>这里需要规范下文章标签和分类（新创建文章会在最上面自动生成模板，填值就可以了）：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">title: 如何写文章</div><div class="line">date: <span class="number">2016</span>-<span class="number">10</span>-<span class="number">19</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">15</span></div><div class="line">tags: xxx,xxx,xxx</div><div class="line">categoriess: 工具使用</div><div class="line">categoriess 目前分类有：工具使用、实例分析、Android技术、Android性能测试、经验分享</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h4><ul>
+<li>在发布文章之前，需要有权限，可以联系我 @周利伟 帮你添加下组织权限。github上非得邀请才能加入组织，没办法自己主动申请。</li>
+<li><p>在发布文章之前要更新下源码，避免覆盖别人的文章</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">在工作目录中执行</div><div class="line">$ git pull</div></pre></td></tr></table></figure>
+</li>
+<li><p>我写了个bat批处理文件，可以直接在目录下执行publish.bat 。如果正常执行完成，没有打印错误信息，那么就不用看下面的步骤了。如果出现了错误，还可以按照下面的步骤进行操作，保证能正确发布文章。</p>
+</li>
+<li><p>如果上面这一步没有成功，那么就继续下面的操作，在dir目录（上面定义的博客源码目录）执行命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ hexo g</div><div class="line">$ hexo d</div><div class="line">  注意：hexo d会用到git，所以这里可能会提示你：找不到 git组件之类的（这里的git不等同于我们前面安装的git，是hexo的git组件）</div><div class="line">  解决方法是：执行npm install hexo-deployer-git --save，   之后再执行hexo d即可。</div></pre></td></tr></table></figure>
+</li>
+<li><p>没有提示错误的话，应该就成功了。过10s访问博客地址，就能看到你写的文章了。</p>
+</li>
+<li>最后最重要的一点，一定要提交你写文章的md文件<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ git add .</div><div class="line">$ git commit -m <span class="string">"新增了一篇文章"</span></div><div class="line">$ git push -u origin master</div><div class="line">  这样就将md提交到源码中了。</div><div class="line">  切记一定要提交哦！否则自己的文章可能会被其他同学冲掉</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/写博客/" rel="tag">#写博客</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/19/TraceView工具的使用/" rel="prev" title="TraceView工具的使用">
+                TraceView工具的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/19/如何写文章/"
+           data-title="如何写文章" data-url="http://yoursite.com/2016/10/19/如何写文章/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建环境"><span class="nav-text">搭建环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#git的安装"><span class="nav-text">git的安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nodejs的安装"><span class="nav-text">nodejs的安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#认识npm"><span class="nav-text">认识npm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置和使用GitHub"><span class="nav-text">配置和使用GitHub</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-text">安装Hexo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始写博客"><span class="nav-text">开始写博客</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#git-clone博客源文件"><span class="nav-text">git clone博客源文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用hexo本地验证环境是否正确"><span class="nav-text">用hexo本地验证环境是否正确</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建新的文章（重点）"><span class="nav-text">创建新的文章（重点）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编辑md文件"><span class="nav-text">编辑md文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#发布文章"><span class="nav-text">发布文章</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

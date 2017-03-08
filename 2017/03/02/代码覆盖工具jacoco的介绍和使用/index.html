@@ -1,0 +1,764 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javacoco, 代码覆盖率," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+我们平时写自动化，或者功能测试，最理想的状态是测完之后能自信的告诉开发，我们测试没问题了，可以发布了。
+代码覆盖率就是这样一个工具，可以帮助我们了解我们的测试现状，对源代码的覆盖程度。
+但是需要明确代码覆盖率本身对 产品质量 是没有意义的。并不能说覆盖率高，产品质量就高。
+
+基本概念代码覆盖率
+代码覆盖率我的理解是一种度量方式，用来度量测试代码对源码逻辑的覆盖程度。作为对测试用例的一个补充、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈代码覆盖率">
+<meta property="og:url" content="http://yoursite.com/2017/03/02/代码覆盖工具jacoco的介绍和使用/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+我们平时写自动化，或者功能测试，最理想的状态是测完之后能自信的告诉开发，我们测试没问题了，可以发布了。
+代码覆盖率就是这样一个工具，可以帮助我们了解我们的测试现状，对源代码的覆盖程度。
+但是需要明确代码覆盖率本身对 产品质量 是没有意义的。并不能说覆盖率高，产品质量就高。
+
+基本概念代码覆盖率
+代码覆盖率我的理解是一种度量方式，用来度量测试代码对源码逻辑的覆盖程度。作为对测试用例的一个补充、">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/代码覆盖率.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/codeConvery.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/覆盖率工具工作流程.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/插桩原理.jpg">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈代码覆盖率">
+<meta name="twitter:description" content="背景
+我们平时写自动化，或者功能测试，最理想的状态是测完之后能自信的告诉开发，我们测试没问题了，可以发布了。
+代码覆盖率就是这样一个工具，可以帮助我们了解我们的测试现状，对源代码的覆盖程度。
+但是需要明确代码覆盖率本身对 产品质量 是没有意义的。并不能说覆盖率高，产品质量就高。
+
+基本概念代码覆盖率
+代码覆盖率我的理解是一种度量方式，用来度量测试代码对源码逻辑的覆盖程度。作为对测试用例的一个补充、">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/代码覆盖率.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/02/代码覆盖工具jacoco的介绍和使用/"/>
+
+
+  <title> 浅谈代码覆盖率 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                浅谈代码覆盖率
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T11:22:25+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/工具使用/" itemprop="url" rel="index">
+                    <span itemprop="name">工具使用</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/02/代码覆盖工具jacoco的介绍和使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/02/代码覆盖工具jacoco的介绍和使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>我们平时写自动化，或者功能测试，最理想的状态是测完之后能自信的告诉开发，我们测试没问题了，可以发布了。</li>
+<li>代码覆盖率就是这样一个工具，可以帮助我们了解我们的测试现状，对源代码的覆盖程度。</li>
+<li>但是需要明确代码覆盖率本身对 产品质量 是没有意义的。并不能说覆盖率高，产品质量就高。<br><img src="/upload/image/zlw/代码覆盖率.png" alt="代码覆盖率"></li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h3><ul>
+<li>代码覆盖率我的理解是一种度量方式，用来度量测试代码对源码逻辑的覆盖程度。作为对测试用例的一个补充、衡量和完善。</li>
+</ul>
+<h3 id="代码覆盖率统计方式"><a href="#代码覆盖率统计方式" class="headerlink" title="代码覆盖率统计方式"></a>代码覆盖率统计方式</h3><ul>
+<li>行覆盖率：度量被测程序的每行代码是否被执行，判断标准行中是否至少有一个指令被执行。</li>
+<li>类覆盖率：度量计算class类文件是否被执行。</li>
+<li>分支覆盖率：度量if和switch语句的分支覆盖情况，计算一个方法里面的总分支数，确定执行和不执行的 分支数量。</li>
+<li>方法覆盖率：度量被测程序的方法执行情况，是否执行取决于方法中是否有至少一个指令被执行。</li>
+<li>圈复杂度：又称断言覆盖(PredicateCoverage)。它度量了是否函数的每一个分支都被执行了。 这句话也非常好理解，就是所有可能的分支都执行一遍，有多个分支嵌套时，需要对多个分支进行排列组合，可想而知，测试路径随着分支的数量指数级别增加。</li>
+<li>关于这几种代码覆盖率方式详细介绍<a href="http://www.cnblogs.com/coderzh/archive/2009/03/29/1424344.html" target="_blank" rel="external">请点我</a>，这篇文章中介绍了代码覆盖率的概念、策略使用优先级以及对使用代码覆盖率的建议，可以认真看看。</li>
+</ul>
+<h3 id="代码覆盖率意义"><a href="#代码覆盖率意义" class="headerlink" title="代码覆盖率意义"></a>代码覆盖率意义</h3><ul>
+<li>分析未覆盖部分的代码，从而反推在前期测试设计是否充分，没有覆盖到的代码是否是测试设计的盲点，为什么没有考虑到？需求/设计不够清晰，测试设计的理解有误，工程方法应用后的造成的策略性放弃等等，之后进行补充测试用例设计。</li>
+<li>检测出程序中的废代码，可以逆向反推在代码设计中思维混乱点，提醒设计/开发人员理清代码逻辑关系，提升代码质量。</li>
+<li>代码覆盖率高不能说明代码质量高，但是反过来看，代码覆盖率低，代码质量不会高到哪里去，可以作为测试自我审视的重要工具之一。</li>
+</ul>
+<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><ul>
+<li>主流的测试工具有Jacoco、Emma，这俩工具是同一个团队做的，不过Emma已经不再维护了。下图是常用工具的一些对比：<br><img src="/upload/image/zlw/codeConvery.png" alt="代码覆盖率"></li>
+<li>由于jacoco的优点，推荐使用jacoco做代码覆盖率检查。下面我们花点时间介绍下Jacoco。</li>
+</ul>
+<h3 id="Jacoco简介"><a href="#Jacoco简介" class="headerlink" title="Jacoco简介"></a>Jacoco简介</h3><ul>
+<li>JaCoCo是一个开源的覆盖率工具(官网地址：<a href="http://www.eclemma.org/JaCoCo/)，它针对的开发语言是java，其使用方法很灵活，可以嵌入到Ant、Maven中；可以作为Eclipse插件，可以使用其JavaAgent技术监控Java程序等等。" target="_blank" rel="external">http://www.eclemma.org/JaCoCo/)，它针对的开发语言是java，其使用方法很灵活，可以嵌入到Ant、Maven中；可以作为Eclipse插件，可以使用其JavaAgent技术监控Java程序等等。</a></li>
+<li>此外JaCoCo还可以集成到Jenkins中做持续集成。</li>
+</ul>
+<h3 id="Jacoco等工具的工作原理"><a href="#Jacoco等工具的工作原理" class="headerlink" title="Jacoco等工具的工作原理"></a>Jacoco等工具的工作原理</h3><p><img src="/upload/image/zlw/覆盖率工具工作流程.png" alt="工作原理"></p>
+<ol>
+<li>对Java字节码进行插桩（插入用于统计信息的标志），On-The-Fly（需要使用agent代理）和Offine（需要源码，测试之前插桩）两种方式。</li>
+<li>执行测试用例，收集程序执行轨迹信息，将其dump到内存。</li>
+<li>数据处理器结合程序执行轨迹信息和代码结构信息分析生成代码覆盖率报告。</li>
+<li>将代码覆盖率报告图形化展示出来，如html、xml等文件格式。</li>
+</ol>
+<h3 id="JaCoCo插桩原理"><a href="#JaCoCo插桩原理" class="headerlink" title="JaCoCo插桩原理"></a>JaCoCo插桩原理</h3><p><img src="/upload/image/zlw/插桩原理.jpg" alt="插桩原理"></p>
+<ul>
+<li>这个图包含了几种不同的收集覆盖率信息的方法，每种方法的实现方法都不一样，带颜色的部分是JaCoCo比较有特色的地方。</li>
+<li>主流代码覆盖率工具都采用字节码插桩模式，通过钩子的方式来记录代码执行轨迹信息。其中字节码插桩又分为两种模式On-The-Fly和Offine。On-The-Fly模式优点在于无需修改源代码，通过代理或者ClassLoader装载类的时候，判断是否已经插入了用于计数的探针，没有则插入，因此它可以实时获取覆盖率。Offline对应的优点是不需要开启对应的代理程序或者自定义ClassLoader，它需要程序运行完成之后</li>
+</ul>
+<h4 id="On-The-Fly"><a href="#On-The-Fly" class="headerlink" title="On-The-Fly"></a>On-The-Fly</h4><ul>
+<li>On-the-Fly模式优点在于无需修改源代码，通过代理或者ClassLoader装载类的时候，判断是否已经插入了用于计数的探针，没有则插入，因此它可以实时获取覆盖率。</li>
+</ul>
+<h4 id="Offline"><a href="#Offline" class="headerlink" title="Offline"></a>Offline</h4><ul>
+<li>Offline模式的优点是无需再额外的搞个代理程序或者自定义ClassLoader。</li>
+<li>它需要在测试之前先对文件进行插桩，生成插过桩的class文件或者jar包，执行插过桩的class文件或者jar包之后，会生成覆盖率信息到文件，最后统一对覆盖率信息进行处理，并生成报告。</li>
+<li><p>offline模式插桩又分为两种：</p>
+<blockquote>
+<ol>
+<li>Replace:修改字节码生成新的class。</li>
+<li>InJect: 在原有的class上面修改。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>更详细的可以参考腾讯tmq写的系列文章(JAVA代码覆盖率工具JaCoCo-原理篇)[<a href="http://tmq.qq.com/2016/08/java-code-coverage-tools-jacoco-principle/],它里面详细介绍了根据代码逻辑type，怎么埋标记探针。当然也可以找源码看看，不过我也没看源码呢。" target="_blank" rel="external">http://tmq.qq.com/2016/08/java-code-coverage-tools-jacoco-principle/],它里面详细介绍了根据代码逻辑type，怎么埋标记探针。当然也可以找源码看看，不过我也没看源码呢。</a></p>
+</li>
+</ul>
+<h3 id="JaCoCo使用"><a href="#JaCoCo使用" class="headerlink" title="JaCoCo使用"></a>JaCoCo使用</h3><h4 id="Apache-Ant方式"><a href="#Apache-Ant方式" class="headerlink" title="Apache Ant方式"></a>Apache Ant方式</h4><h4 id="命令行方式"><a href="#命令行方式" class="headerlink" title="命令行方式"></a>命令行方式</h4><h4 id="Apache-Maven方式"><a href="#Apache-Maven方式" class="headerlink" title="Apache Maven方式"></a>Apache Maven方式</h4><h4 id="Apache-Maven方式-1"><a href="#Apache-Maven方式-1" class="headerlink" title="Apache Maven方式"></a>Apache Maven方式</h4><h4 id="与Jekins集成"><a href="#与Jekins集成" class="headerlink" title="与Jekins集成"></a>与Jekins集成</h4>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javacoco-代码覆盖率/" rel="tag">#javacoco, 代码覆盖率</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/01/安全扫描工具drozer的使用/" rel="next" title="安全扫描工具drozer的使用">
+                <i class="fa fa-chevron-left"></i> 安全扫描工具drozer的使用
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/02/java代码优化建议（持续更新）/" rel="prev" title="java代码优化建议（持续更新）">
+                java代码优化建议（持续更新） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/02/代码覆盖工具jacoco的介绍和使用/"
+           data-title="浅谈代码覆盖率" data-url="http://yoursite.com/2017/03/02/代码覆盖工具jacoco的介绍和使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率"><span class="nav-text">代码覆盖率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率统计方式"><span class="nav-text">代码覆盖率统计方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率意义"><span class="nav-text">代码覆盖率意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具"><span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco简介"><span class="nav-text">Jacoco简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco等工具的工作原理"><span class="nav-text">Jacoco等工具的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo插桩原理"><span class="nav-text">JaCoCo插桩原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#On-The-Fly"><span class="nav-text">On-The-Fly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Offline"><span class="nav-text">Offline</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo使用"><span class="nav-text">JaCoCo使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Ant方式"><span class="nav-text">Apache Ant方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命令行方式"><span class="nav-text">命令行方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Maven方式"><span class="nav-text">Apache Maven方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Maven方式-1"><span class="nav-text">Apache Maven方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#与Jekins集成"><span class="nav-text">与Jekins集成</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java ,代码优化, findbugs," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+最近做静态代码扫描过程中，收集了一些开发经常使用，但是可以优化的代码，整理出来，供大家参考和交流。
+使用的静态代码扫描工具：findbugs、360火线。
+
+问题记录Integer.valueOf(“XXXXX”)
+这种写法主要会影响代码性能，建议使用Integer.parseInt(“XXXX”)
+通过阅读源码我们可以知道，Integer.valueOf(“a”) 当a在[-128, 12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java代码优化建议（持续更新）">
+<meta property="og:url" content="http://yoursite.com/2017/03/02/java代码优化建议（持续更新）/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+最近做静态代码扫描过程中，收集了一些开发经常使用，但是可以优化的代码，整理出来，供大家参考和交流。
+使用的静态代码扫描工具：findbugs、360火线。
+
+问题记录Integer.valueOf(“XXXXX”)
+这种写法主要会影响代码性能，建议使用Integer.parseInt(“XXXX”)
+通过阅读源码我们可以知道，Integer.valueOf(“a”) 当a在[-128, 12">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java代码优化建议（持续更新）">
+<meta name="twitter:description" content="背景
+最近做静态代码扫描过程中，收集了一些开发经常使用，但是可以优化的代码，整理出来，供大家参考和交流。
+使用的静态代码扫描工具：findbugs、360火线。
+
+问题记录Integer.valueOf(“XXXXX”)
+这种写法主要会影响代码性能，建议使用Integer.parseInt(“XXXX”)
+通过阅读源码我们可以知道，Integer.valueOf(“a”) 当a在[-128, 12">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/02/java代码优化建议（持续更新）/"/>
+
+
+  <title> java代码优化建议（持续更新） | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                java代码优化建议（持续更新）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T16:47:37+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/02/java代码优化建议（持续更新）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/02/java代码优化建议（持续更新）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>最近做静态代码扫描过程中，收集了一些开发经常使用，但是可以优化的代码，整理出来，供大家参考和交流。</li>
+<li>使用的静态代码扫描工具：findbugs、360火线。</li>
+</ul>
+<h2 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h2><h3 id="Integer-valueOf-“XXXXX”"><a href="#Integer-valueOf-“XXXXX”" class="headerlink" title="Integer.valueOf(“XXXXX”)"></a>Integer.valueOf(“XXXXX”)</h3><ul>
+<li>这种写法主要会影响代码性能，建议使用Integer.parseInt(“XXXX”)</li>
+<li>通过阅读源码我们可以知道，Integer.valueOf(“a”) 当a在[-128, 128]之间时本地有缓存返回int类型，但是不在这个区间，比如大于128时，会new Integer(a)返回。而Integer.paseInt(“a”) 始终返回的是int类型。</li>
+<li>所以Integer.valueOf(“XXXXX”)这种写法，会多了一次从int到Integer（自动装箱）和 从Integer到int（自动拆箱）的过程，从而影响效率。</li>
+</ul>
+<h3 id="循环中使用-来拼接String"><a href="#循环中使用-来拼接String" class="headerlink" title="循环中使用 + 来拼接String"></a>循环中使用 + 来拼接String</h3><ul>
+<li>这种写法对性能影响很大。用 加号 拼接String，比较方便，所以很多人习惯性的就这么用。</li>
+<li>以 cc = “aa” + “bb”为例，编译器在处理时会 cc = new StringBuffer(“aa”).append(“bb”).toString()。</li>
+<li>这明显有两个影响效率的方面：1. 每次会 new 一个对象，（循环中会增加内存碎片）  2. 每次还要调用toString 转成字符串。 如果在循环中这么用，对性能影响是相当大的。</li>
+</ul>
+<h3 id="stream-amp-amp-resource-忘记关闭"><a href="#stream-amp-amp-resource-忘记关闭" class="headerlink" title="stream &amp;&amp; resource 忘记关闭"></a>stream &amp;&amp; resource 忘记关闭</h3><ul>
+<li>这个问题是老生常谈的问题。但是findbugs还是扫出来很多没有close的stream。</li>
+<li>不关闭资源会造成资源浪费，并且可能造成内存泄漏。</li>
+<li>建议写这类代码时，只要new 出来一个资源，就立即在finally中去close资源，防止逻辑写多了，忘记close。</li>
+</ul>
+<h3 id="对空指针考虑不充分"><a href="#对空指针考虑不充分" class="headerlink" title="对空指针考虑不充分"></a>对空指针考虑不充分</h3><ul>
+<li>这个问题可能在某些场景下出现，直接造成程序崩溃。下面就直接贴几段代码<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SyncPowerData syncPowerData = <span class="keyword">null</span>;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">        syncPowerData = apiFactory.getAccountApi().getSyncPowerRequest(map).execute().body();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> code = syncPowerData.getCode();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">FileChannel in = <span class="keyword">null</span>;</div><div class="line">FileChannel out = <span class="keyword">null</span>;</div><div class="line">FileInputStream inStream = <span class="keyword">null</span>;</div><div class="line">FileOutputStream outStream = <span class="keyword">null</span>;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    inStream = <span class="keyword">new</span> FileInputStream(srcFile);</div><div class="line">    outStream = <span class="keyword">new</span> FileOutputStream(destFile);</div><div class="line">    in = inStream.getChannel();</div><div class="line">    out = outStream.getChannel();</div><div class="line">    in.transferTo(<span class="number">0</span>, in.size(), out);</div><div class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">    LogUtil.getUtils().e(<span class="string">"copyFile failed when copy data"</span> + e.getMessage(),e);</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> FileIOException(FileIOException.ERROR_COPY_FILE);</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        inStream.close();</div><div class="line">        in.close();</div><div class="line">        outStream.close();</div><div class="line">        out.close();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div></pre></td></tr></table></figure>
+<ul>
+<li>上面两个例子其实类似，当有异常发生，造成对象没有初始化成功时，那么再使用对象就会抛出nullpointerException。</li>
+<li>所以要养成良好的编程习惯，在可能出现null的地方判null。增加程序的健壮性</li>
+</ul>
+<h3 id="单例模式写法不规范"><a href="#单例模式写法不规范" class="headerlink" title="单例模式写法不规范"></a>单例模式写法不规范</h3><ul>
+<li>这个问题主要在多线程情况下会产生影响，可能多个线程调用返回的是不同的对象，从而失去了单例的意义。</li>
+<li><p>建议使用双重校验锁模式，代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;  </div><div class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton single;    <span class="comment">//声明静态的单例对象的变量  </span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;    <span class="comment">//私有构造方法   </span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getSingle</span><span class="params">()</span></span>&#123;    <span class="comment">//外部通过此方法可以获取对象    </span></div><div class="line">    <span class="keyword">if</span>(single == <span class="keyword">null</span>)&#123;     </div><div class="line">        <span class="keyword">synchronized</span> (Singleton.class) &#123;   <span class="comment">//保证了同一时间只能只能有一个对象访问此同步块        </span></div><div class="line">            <span class="keyword">if</span>(single == <span class="keyword">null</span>)&#123;      </div><div class="line">                single = <span class="keyword">new</span> Singleton();          </div><div class="line">        &#125;     </div><div class="line">      &#125;  </div><div class="line">    &#125;    </div><div class="line">    <span class="keyword">return</span> single;   <span class="comment">//返回创建好的对象   </span></div><div class="line">  &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>注意这种方法一定要加volatile，主要在于instance = new Singleton()这句，这并非是一个原子操作，事实上在 JVM 中这句话大概做了下面 3 件事情:</p>
+<blockquote>
+<ul>
+<li>给 instance 分配内存</li>
+<li>调用 Singleton 的构造函数来初始化成员变量</li>
+<li>将instance对象指向分配的内存空间（执行完这步 instance 就为非 null 了）</li>
+<li>但是在 JVM 的即时编译器中存在指令重排序的优化。也就是说上面的第二步和第三步的顺序是不能保证的，最终的执行顺序可能是 1-2-3 也可能是 1-3-2。如果是后者，则在 3 执行完毕、2 未执行之前，被线程二抢占了，这时 instance 已经是非 null 了（但却没有初始化），所以线程二会直接返回 instance，然后使用，然后顺理成章地报错。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>加volatile最主要的作用是禁止指令重排。关于指令重排的知识，大家可以网上查资料<a href="http://wuchong.me/blog/2014/08/28/how-to-correctly-write-singleton-pattern/" target="_blank" rel="external">单例详细介绍</a></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java-代码优化-findbugs/" rel="tag">#java ,代码优化, findbugs</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/02/代码覆盖工具jacoco的介绍和使用/" rel="next" title="浅谈代码覆盖率">
+                <i class="fa fa-chevron-left"></i> 浅谈代码覆盖率
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/07/初识gradle/" rel="prev" title="初识gradle（gradle系列一）">
+                初识gradle（gradle系列一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/02/java代码优化建议（持续更新）/"
+           data-title="java代码优化建议（持续更新）" data-url="http://yoursite.com/2017/03/02/java代码优化建议（持续更新）/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题记录"><span class="nav-text">问题记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Integer-valueOf-“XXXXX”"><span class="nav-text">Integer.valueOf(“XXXXX”)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环中使用-来拼接String"><span class="nav-text">循环中使用 + 来拼接String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-amp-amp-resource-忘记关闭"><span class="nav-text">stream && resource 忘记关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对空指针考虑不充分"><span class="nav-text">对空指针考虑不充分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单例模式写法不规范"><span class="nav-text">单例模式写法不规范</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Fps 页面流畅度 过度重绘," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+现在App，为了能更加吸引用户，总是会加入很酷炫的动画以及在列表中插入大量规格不一的图片，这么做可能会对页面流畅度造成一定的影响，给用户最直观的感受是APP变卡了，因此从测试的角度，了解一些页面显示的原理及测试工具的使用是很有必要的。
+一般测页面流畅度会从两方面入手：页面过渡重绘 和 页面帧率测试，接下来我们围绕这两种情况进行介绍。
+
+过渡重绘（overdraw）概念
+android系统绘制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android页面流畅度测试">
+<meta property="og:url" content="http://yoursite.com/2017/02/16/Android页面流畅度测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+现在App，为了能更加吸引用户，总是会加入很酷炫的动画以及在列表中插入大量规格不一的图片，这么做可能会对页面流畅度造成一定的影响，给用户最直观的感受是APP变卡了，因此从测试的角度，了解一些页面显示的原理及测试工具的使用是很有必要的。
+一般测页面流畅度会从两方面入手：页面过渡重绘 和 页面帧率测试，接下来我们围绕这两种情况进行介绍。
+
+过渡重绘（overdraw）概念
+android系统绘制">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/过度绘制1.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/LayoutInspecter.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/LayoutInspecterResult.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/过渡重绘.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/monitor_Gpu.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/android_gps.png">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android页面流畅度测试">
+<meta name="twitter:description" content="背景
+现在App，为了能更加吸引用户，总是会加入很酷炫的动画以及在列表中插入大量规格不一的图片，这么做可能会对页面流畅度造成一定的影响，给用户最直观的感受是APP变卡了，因此从测试的角度，了解一些页面显示的原理及测试工具的使用是很有必要的。
+一般测页面流畅度会从两方面入手：页面过渡重绘 和 页面帧率测试，接下来我们围绕这两种情况进行介绍。
+
+过渡重绘（overdraw）概念
+android系统绘制">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/过度绘制1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/16/Android页面流畅度测试/"/>
+
+
+  <title> Android页面流畅度测试 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android页面流畅度测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-16T14:48:51+08:00" content="2017-02-16">
+              2017-02-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">Android性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/16/Android页面流畅度测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/16/Android页面流畅度测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>现在App，为了能更加吸引用户，总是会加入很酷炫的动画以及在列表中插入大量规格不一的图片，这么做可能会对页面流畅度造成一定的影响，给用户最直观的感受是APP变卡了，因此从测试的角度，了解一些页面显示的原理及测试工具的使用是很有必要的。</li>
+<li>一般测页面流畅度会从两方面入手：页面过渡重绘 和 页面帧率测试，接下来我们围绕这两种情况进行介绍。</li>
+</ul>
+<h2 id="过渡重绘（overdraw）"><a href="#过渡重绘（overdraw）" class="headerlink" title="过渡重绘（overdraw）"></a>过渡重绘（overdraw）</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>android系统绘制屏幕的时候，先画父view，然后子view，再是更深的子view等等。这会导致所有的view都被绘制到了屏幕上并且view是垂直摆放的（对我们可见的是子view，它下面是父view，以此类推），因此有些父View必然是不可见的，如果他们也绘制，我们就认为发生了过渡重绘。例如：一个白色背景的窗口，在它上面有一个按钮。当系统绘制按钮时，要绘制在已存在的白色背景上。</li>
+<li>因为过渡重绘，不可见页面的绘制必然会占用可见页面绘制的时间和资源，所以会对页面流畅度造成影响。</li>
+<li>Google给我们提供了工具来检测并快速定位过渡重绘：开发者选项——调试GPU过度绘制 选择【显示过度绘制区域】。</li>
+</ul>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li>勾选【显示过度绘制区域】后在屏幕上会呈现出不同的颜色，如下图所示：<br><img src="/upload/image/zlw/过度绘制1.png" alt="过度重绘"></li>
+</ul>
+<p>没有颜色（白色）： 意味着没有overdraw。像素只画了一次。<br>蓝色： 意味着overdraw 1倍。像素绘制了两次。（因为overdraw时，屏幕上同一位置像素点两个view都需要绘制）<br>绿色： 意味着overdraw 2倍。像素绘制了三次。<br>浅红： 意味着overdraw 3倍。像素绘制了四次。<br>暗红： 意味着overdraw 4倍。像素绘制了五次或者更多。</p>
+<p>我们期望的情况是：</p>
+<ul>
+<li>页面尽量是没有overdraw，即白色。（但根据经验，这比较难达到）。</li>
+<li>页面如果大部分是蓝色区域或者绿色区域，也是可以接受的。</li>
+<li>页面浅红色的区域不能超过 1/3（通过估算），需要排查下原因，看能否优化成白色、蓝色或者绿色。</li>
+<li>页面不能出现深红色的区域。</li>
+</ul>
+<h3 id="问题排查"><a href="#问题排查" class="headerlink" title="问题排查"></a>问题排查</h3><ul>
+<li>在测试过程中，发现问题，最好能自己分析下错误的可能原因，即使自己没有找到问题的根本原因，但是也可以将自己发现的星星点点的可能原因在提bug的时候作为描述，告诉开发，这样可以提高问题被解决的效率，一定程度上提升了工作效率。</li>
+</ul>
+<p>碰到过渡重绘的问题，可以从以下几个思路来分析问题：</p>
+<h4 id="页面层级太多"><a href="#页面层级太多" class="headerlink" title="页面层级太多"></a>页面层级太多</h4><ul>
+<li><p>我们可以使用AndroidStudio monitor 【Layout Inspecter】工具（最好用最新版，记得之前的版本好像还没集成Layout Inspecter），如下图所示：<br><img src="/upload/image/zlw/LayoutInspecter.PNG" alt="LayoutInspector"></p>
+</li>
+<li><p>抓取到的结果如下图所示：<br><img src="/upload/image/zlw/LayoutInspecterResult.PNG" alt="过渡重绘"></p>
+</li>
+<li><p>上图第1部分是界面元素的构成情况，是分层展示的。可再回过头去想下上面提到的子view和父view的关系。</p>
+</li>
+<li>上图第2部分是我们能看到的界面的样子，鼠标在上面移动，图中第1和3部分也会跟着改变值。</li>
+<li><p>上图第3部分是我们在第2部分选中view的一些属性值。比如我们写UI自动化时，可以从这里查看坐标或者元素id。</p>
+</li>
+<li><p>我截取了我认为有问题的元素，如下图所示：<br>!<img src="/upload/image/zlw/过渡重绘.PNG" alt="过渡重绘实例"></p>
+</li>
+<li><p>这个页面，三个item都是淡红色的，查看他们布局，我觉得用红线圈中的第二个LinearLayout可以考虑去掉，直接用RelativeLayout来实现，这样可以节省一层。</p>
+</li>
+<li>不过对布局问题的排查，需要一些Android界面的基础知识，但也不难，大家可以熟悉常见的几种布局即可。RelativeLayout、LinearLayout、FrameLayout。</li>
+</ul>
+<h4 id="去掉View没必要的背景色"><a href="#去掉View没必要的背景色" class="headerlink" title="去掉View没必要的背景色"></a>去掉View没必要的背景色</h4><ul>
+<li>这种问题也比较常见，开发在写布局时，经常先加个背景，方便调整界面，但是完成之后，背景可能被其他的View覆盖，就忘记去掉。</li>
+<li>不过这个需要有布局文件才能去查看，可以问开发要一份代码，便于分析问题。</li>
+<li>但是如果没有开发代码，也可以通过 apktool 命令来反编译apk的资源文件，也是可以拿到布局文件的。（不过现在有的公司已经将资源文件也处理了，比如360，但大部分的还是可以的）</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>从开发的角度，还有其他优化方案，不过我们从测试的角度，能分析到这个程度已经可以了，循序渐进，慢慢再去挖掘更多的解决方案。</li>
+</ul>
+<h2 id="FPS（页面帧率）"><a href="#FPS（页面帧率）" class="headerlink" title="FPS（页面帧率）"></a>FPS（页面帧率）</h2><h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><h4 id="60fps-VS-16ms-VS-60HZ"><a href="#60fps-VS-16ms-VS-60HZ" class="headerlink" title="60fps VS 16ms VS 60HZ"></a>60fps VS 16ms VS 60HZ</h4><ul>
+<li>60HZ是屏幕的刷新频率，即1s内，屏幕被刷新来展示数据的次数。</li>
+<li>60fps是系统1s内绘制的图像帧的数目，有一些对比数据，让我们更好的理解fps， 书本快速翻页（小时候看的那种小人书）是12fps， 电影胶片的帧率是24fps。30fps已经能够展示相对流畅的画面，而60fps能够将画面展示的更加逼真和绚丽。不过大于60fps，对于人类的眼睛已经没有什么区别了，但fps越高，硬件成本会提高，所以Google将帧率的标准定为60（页面流畅的标准，理论上小于这个值，页面会有卡顿感）。不过有人肯定会有疑问，为啥电影用24fps就够了，那是因为电影胶片的一帧带有一些方向及动态元素，而手机上的一帧就是静态的一帧（之前其实尝试过高帧电影，但效果不理想，现在还在不断尝试）。</li>
+<li>16ms是系统绘制一帧的时间，计算方法 = 1s / 60 fps   约等于16ms。</li>
+</ul>
+<h3 id="工具-1"><a href="#工具-1" class="headerlink" title="工具"></a>工具</h3><h4 id="AndroidStudio测试工具介绍"><a href="#AndroidStudio测试工具介绍" class="headerlink" title="AndroidStudio测试工具介绍"></a>AndroidStudio测试工具介绍</h4><ul>
+<li><p>最新的AndroidStudio monitor已经集成了GPU测试工具，如下图所示：<br>!<img src="/upload/image/zlw/monitor_Gpu.PNG" alt="GPU"></p>
+</li>
+<li><p>图中 1 是个【Launch in GFX trace mode】,可以用来trace 图形加载过程中每一帧的绘制过程，这个非常有用，可以很准备的查看每一帧都绘制了什么。但需要一些gl绘制命令的知识，目前我也没搞太明白。研究中。</p>
+</li>
+<li>图中2 是四种色值（因为我用的5.x的手机，6.x的设备有9种色值，将绘制的过程更加的细化），我这里就介绍下四种色值的情况，对于6.x设备的情况，大家可以自己查一下去了解：</li>
+</ul>
+<blockquote>
+<ol>
+<li>蓝色（draw）代表CPU buildDisplayList的时间，换句话就是View执行onDraw方法的时间，如果蓝色占比较多，表示View比较复杂，造成onDraw耗时。</li>
+<li>紫色（prepare）是5.x系统新增的，因为从5.x新增了Render Thread 专门用来渲染view（在这个过程中，UI thread 可以用来去处理之后的帧）， 紫色表示CPU 中 UI thread 往Render Thread写数据的时间。紫色较多，表示需要传递的数据太多，还是反映View复杂。</li>
+<li>红色（Process）表示drawDisplayList的时间，即执行前面创建的DisplayList，转换成OpenGL命令，所以DisplayList越多，那么这个过程耗时就越多，换句话说是界面上元素较多且元素的种类也多。这里可以研究下纹理的概念。</li>
+<li>橙色（Execute）发送OpenGL命令到GPU。这个阶段是一个阻塞调用，因为CPU在这里只会发送一个含有一些OpenGL命令的缓冲区给GPU，并且等待GPU返回空的缓冲区以便再次传递下一帧的OpenGL命令。而这些缓冲区的总量是一定的，如果GPU太过于繁忙，那么CPU则会去等待下一个空缓冲区。所以，如果我们看到这一阶段耗时比较长，那可能是因为GPU过于繁忙的绘制UI，而造成这个的原因则可能是在短时间内绘制了过于复杂的view。</li>
+</ol>
+</blockquote>
+<ul>
+<li>x轴代表测试的时间。</li>
+<li>y轴代表的一帧绘制的时间。</li>
+<li>此外，和X轴平行的还有一根绿线和红线。绿线表示的是60fps，红线表示的是30fps。</li>
+</ul>
+<h4 id="Android手机上测试工具"><a href="#Android手机上测试工具" class="headerlink" title="Android手机上测试工具"></a>Android手机上测试工具</h4><ul>
+<li><p>此外Android手机上也有GPU调试工具，在【开发者选项】—— 【GPU呈现模式分析】 选择【在屏幕上显示为条形图】，这样在手机上就能看到展示了，如下图所示：<br><img src="/upload/image/zlw/android_gps.png" alt="Android_gps"></p>
+</li>
+<li><p>它的色值代表的含义和AndroidStudio工具的是一样的。</p>
+</li>
+<li>上面提到的两种工具都可以，根据自己的需要选择。</li>
+</ul>
+<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><ul>
+<li>腾讯的GT，腾讯提出来页面流畅度的概念，认为fps并不能代表页面是否流畅的标准，因为在不滑动的时候，fps为0，但并不能说页面不流畅，所以fps也并不是越小页面越不流畅。它们认为1s内有多少vsync，才能代表页面是否流畅，详细介绍可参考<a href="http://mp.weixin.qq.com/s?__biz=MzA3NTYzODYzMg==&amp;mid=208258190&amp;idx=2&amp;sn=22af4f01a6090599da3dca4c44f0f396&amp;scene=21#wechat_redirect" target="_blank" rel="external">如何量化Android应用的“卡”？—流畅度原理&amp;定义篇</a></li>
+<li>因为我觉得测fps时，我们一般会在不断滑动和操作页面，理论上可排除静止时fps为0的情况，我们暂时还推荐用AndroidStudio的工具。不过我们要知道有这么回事。</li>
+</ul>
+<h3 id="问题排查-1"><a href="#问题排查-1" class="headerlink" title="问题排查"></a>问题排查</h3><ul>
+<li>帧率问题排查相对CPU、Memory等，略复杂，很多时候需要多种工具结合起来使用，并且需要对Android的一些绘制原理比较熟悉，所以这里如果不结合具体实例，可能讲不明白，后面碰到具体问题，再写一篇文章介绍。</li>
+<li>一般会用到的工具，【traceView】【systrace】【OpenGL Trace（和上面提到的AndroidStudio GPU monitor中的GFX trace类似）】。</li>
+</ul>
+<h4 id="分析问题的大致思路"><a href="#分析问题的大致思路" class="headerlink" title="分析问题的大致思路"></a>分析问题的大致思路</h4><p>这里只能先写点假如我碰到卡顿问题怎么去分析的思路：</p>
+<ul>
+<li>首先在滑动过程中，用traceView抓一个trace，分析onDraw()方法比较耗时的操作，或者列表滑动时，是否重复的Infalate()。主要是找和View的绘制相关的方法，是否有耗时的方法。</li>
+<li>如果TraceView没有找到任何问题思路，可以用DDMS中【systrace】，这个工具是抓取系统所有的CPU及其线程在做哪些操作。我们可以找到RenderThread线程，找到有丢帧的点，然后具体分析为啥丢帧（最新版的工具，会有alert，告诉用户耗时原因），结合着其他线程在做什么任务分析。不过最后还是要回归代码去查看具体的情况或者再回到TraceView有针对性的查看对应的方法。</li>
+<li>如果上面两种工具都不行，则要用杀手锏了DDMS中的【OpenGL trace】，它记录了每一帧的绘制情况，可以查看绘制帧的过程都调用了哪些方法及其耗时。我对这个工具，用的也不多，还需要多解决问题，多分析才能熟练。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>页面流畅度，我觉得多用于列表页面（可滑动）、动画复杂页面、View比较复杂页面，对于一般的展示页面，比如设置页面（一页显示完不可滑动），帧率测试可作为参考选项。</li>
+<li>测页面流畅度，尽量选择性能比较差的手机，因为性能差的手机，更容易暴露问题。</li>
+<li>分析问题是个耗时且高度专注的过程。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Fps-页面流畅度-过度重绘/" rel="tag">#Fps 页面流畅度 过度重绘</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/13/Android7-0新特性/" rel="next" title="Android7.0新特性">
+                <i class="fa fa-chevron-left"></i> Android7.0新特性
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/24/主流UI自动化脚本对比/" rel="prev" title="主流UI自动化脚本录制和执行工具对比">
+                主流UI自动化脚本录制和执行工具对比 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/16/Android页面流畅度测试/"
+           data-title="Android页面流畅度测试" data-url="http://yoursite.com/2017/02/16/Android页面流畅度测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过渡重绘（overdraw）"><span class="nav-text">过渡重绘（overdraw）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题排查"><span class="nav-text">问题排查</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#页面层级太多"><span class="nav-text">页面层级太多</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#去掉View没必要的背景色"><span class="nav-text">去掉View没必要的背景色</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPS（页面帧率）"><span class="nav-text">FPS（页面帧率）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念-1"><span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#60fps-VS-16ms-VS-60HZ"><span class="nav-text">60fps VS 16ms VS 60HZ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具-1"><span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AndroidStudio测试工具介绍"><span class="nav-text">AndroidStudio测试工具介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android手机上测试工具"><span class="nav-text">Android手机上测试工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他工具"><span class="nav-text">其他工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题排查-1"><span class="nav-text">问题排查</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析问题的大致思路"><span class="nav-text">分析问题的大致思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

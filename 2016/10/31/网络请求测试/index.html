@@ -1,0 +1,708 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="流量请求 耗流量 网络请求 客户端性能," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
+1.1 流量
+通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络请求测试">
+<meta property="og:url" content="http://yoursite.com/2016/10/31/网络请求测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
+1.1 流量
+通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
+<meta property="og:image" content="http://yoursite.com/upload/image/data-model.jpg">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.839Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络请求测试">
+<meta name="twitter:description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
+1.1 流量
+通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/data-model.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/31/网络请求测试/"/>
+
+
+  <title> 网络请求测试 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                网络请求测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-31T09:48:58+08:00" content="2016-10-31">
+              2016-10-31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/实例分析/" itemprop="url" rel="index">
+                    <span itemprop="name">实例分析</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/31/网络请求测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/31/网络请求测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
+</code></pre><p>1.1 流量</p>
+<pre><code>通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严格控制后台静默时流量的使用。
+</code></pre><p>1.2 流量统计工具</p>
+<pre><code>DDMS Network Statistics、Android studio monitor
+
+3款代理工具: fiddler, charles, wmock
+
+抓包工具 : tcpdump
+</code></pre><p>1.3 弱网络模拟&amp;网络切换测试</p>
+<pre><code>使用 charles throttle settings模拟，能够对上下行带宽，丢包率，延迟等网络参数进行设置
+</code></pre><hr>
+<p>关于弱网以及网络切换测试作为app功能/场测测试的一部分，所以在客户端网络请求性能测试上不在涉及，上面之所以把它拿出来，是想告诉大家我们测试APP软件的过程中思路不要太过局限。<br>        1、APP网络专项测试过程中：我们测试的范围只是包括应用后台情况下的静置耗流量测试，需对比同类应用相同环境下做对比测试；网络数据包请求测试。<br>        （1）、静置耗流量测试，用于测试静默状态下的流量消耗，已经在后台使用过程中的业务操作，重点着眼于无业务情况下的流量消耗，确定是否有无效业务偷流量，耗费系统资源。因此，如果静置耗流量比较高，一定是业务请求出了问题，所以静置耗流量属于网络数据包请求测试的一种场景，只不过它测试的是一段时间内的业务量。<br>        （2）网络请求测试的重点：<br>                 1.无重复请求，无重复下载(图片)<br>                 2.常用切换界面需要做缓存<br>                 3.支持分页加载<br>例如流量测试可能出现以下类型的BUG:<br><img src="/upload/image/data-model.jpg" alt="batterystats"></p>
+<hr>
+<p>举例分析其中一种情况：如测试客户端过程中，重复发出多次请求：<br>1、我们可以通过抓包软件fidder进行测试，当我们每操作一步APP的某个功能的时候，可以发现fiddler发出相同请求的个数，并通过收到服务端数据包的个数，以及数据包的类型是否相同来进行判断业务是否有重复的请求，如果有，就是存在问题，应该尽量避免有多余无效的应用请求。<br>2、我们也可以通过Android studio monitor来进行测试，当然测试过程中需要配合实时的logcat获取应用执行过程中的log，因为通过log也能看到应用发送和接受的数据，当然这没有fiddler的数据包更直观。<br>在执行测试app的每个业务场景的时候，实时抓取操作该动作前后，应用消耗的流量（上传和下载的流量综合），从而宏观的了解到应用操作该业务所消耗的流量，在测试每个场景网络请求的过程中，配合采集的流量数据，可以进行下一版本的横向比较，通过横向比较在无重复网络请求的情况下，我们可以知道版本质量的性能变化趋势。</p>
+<p>小结：app网络流量性能测试点和测试范围：</p>
+<p> 1.后台无操作情况下静置流量消耗（用于测试静默业务下的流量消耗），输出结果为静默状态下的一个流量消耗的值，用于版本横向比较，与其他应用进行比较，出现过高流量消耗时，需要抓取log进行分析。<br> 2、测试应用在前台各个操作场景下的网络请求次数、无效请求、重复请求次数。<br> 3、测试应用在前台各个操作场景下的每一类操作下的流量消耗的值，（可多次测试记录消耗平均值、波动范围等参数，用于优化和分析调优，也用于版本横向比较），关于本部分每部操作下流量消耗总量的统计、绘图及分析方法可以通过Python脚本实现。因为现有测试工具Android studio monitor 实现的数据流量实时监控，但不会采集数据并保存我们需要的数据。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/流量请求-耗流量-网络请求-客户端性能/" rel="tag">#流量请求 耗流量 网络请求 客户端性能</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/24/Android耗电量测试/" rel="next" title="Android耗电量测试">
+                <i class="fa fa-chevron-left"></i> Android耗电量测试
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/31/Android对cpu测试/" rel="prev" title="Android对cpu的测试">
+                Android对cpu的测试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/31/网络请求测试/"
+           data-title="网络请求测试" data-url="http://yoursite.com/2016/10/31/网络请求测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="build.gradle," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="理解Gradle脚本
+当你新建一个AndroidStudio 工程时，会默认的创建三个gradle文件，一个setting.gradle, 两个build.gradle，他们的文件结构如下：12345MyApp  ├── build.gradle  ├── settings.gradle  └── app      └── build.gradle
+
+
+setting.gradle
+当你的app只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初始build.gradle(gradle系列二)">
+<meta property="og:url" content="http://yoursite.com/2017/03/08/初始build-gradle-gradle系列二/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="理解Gradle脚本
+当你新建一个AndroidStudio 工程时，会默认的创建三个gradle文件，一个setting.gradle, 两个build.gradle，他们的文件结构如下：12345MyApp  ├── build.gradle  ├── settings.gradle  └── app      └── build.gradle
+
+
+setting.gradle
+当你的app只">
+<meta property="og:updated_time" content="2017-03-08T06:09:26.055Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初始build.gradle(gradle系列二)">
+<meta name="twitter:description" content="理解Gradle脚本
+当你新建一个AndroidStudio 工程时，会默认的创建三个gradle文件，一个setting.gradle, 两个build.gradle，他们的文件结构如下：12345MyApp  ├── build.gradle  ├── settings.gradle  └── app      └── build.gradle
+
+
+setting.gradle
+当你的app只">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/08/初始build-gradle-gradle系列二/"/>
+
+
+  <title> 初始build.gradle(gradle系列二) | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                初始build.gradle(gradle系列二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-08T10:38:01+08:00" content="2017-03-08">
+              2017-03-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/08/初始build-gradle-gradle系列二/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/08/初始build-gradle-gradle系列二/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="理解Gradle脚本"><a href="#理解Gradle脚本" class="headerlink" title="理解Gradle脚本"></a>理解Gradle脚本</h2><ul>
+<li>当你新建一个AndroidStudio 工程时，会默认的创建三个gradle文件，一个setting.gradle, 两个build.gradle，他们的文件结构如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">MyApp</div><div class="line">  ├── build.gradle</div><div class="line">  ├── settings.gradle</div><div class="line">  └── app</div><div class="line">      └── build.gradle</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="setting-gradle"><a href="#setting-gradle" class="headerlink" title="setting.gradle"></a>setting.gradle</h3><ul>
+<li><p>当你的app只有一个模块的时候，你的setting.gradle是这个样子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include <span class="string">':app'</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>setting.gradle 文件将会在初始化时期执行，它定义了哪个模块会被构建，比如上面app模块会被构建。setting.gradle 是针对多模块操作的，所以单独的模块工程可以删除掉该文件。初始化后，Gradle会为我们创建一个Setting对象，并为其包含必要的方法。</p>
+</li>
+</ul>
+<h3 id="根目录的build-gradle"><a href="#根目录的build-gradle" class="headerlink" title="根目录的build.gradle"></a>根目录的build.gradle</h3><ul>
+<li><p>该gradle文件是定义在这个工程下的所有模块的公共属性，它默认包含二个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">     repositories &#123;</div><div class="line">         jcenter()</div><div class="line">     &#125;</div><div class="line">      dependencies &#123;</div><div class="line">          classpath <span class="string">'com.android.tools.build:gradle:1.2.3'</span></div><div class="line">      &#125;</div><div class="line">&#125;</div><div class="line">allprojects &#123;</div><div class="line">     repositories &#123;</div><div class="line">          jcenter()</div><div class="line">     &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>buildscript方法是定义了全局的相关属性，repositories定义了jcenter作为仓库，一个仓库代表着你依赖包的来源。</p>
+</li>
+<li>dependencies用来定义构建过程，你只需要定义默认的Android插件就可以了，因为该插件可以让你执行相关的Android的tasks。</li>
+<li>allprojects方法可以用来定义各个模块的默认属性，你可以不仅仅局限于默认的配置，你可以自己创建tasks在allprojects方法体内，这些tasks将会在所有模块中可见。</li>
+</ul>
+<h3 id="模块内的build-gradle"><a href="#模块内的build-gradle" class="headerlink" title="模块内的build.gradle"></a>模块内的build.gradle</h3><ul>
+<li><p>模块内的gradle文件只对该模块起作用，而且其可以重写任何来自于根目录gradle文件的参数，该模块文件如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line">   android &#123;</div><div class="line">       compileSdkVersion <span class="number">22</span></div><div class="line">       buildToolsVersion <span class="string">"22.0.1"</span></div><div class="line">       defaultConfig &#123;</div><div class="line">           applicationId <span class="string">"com.gradleforandroid.gettingstarted"</span></div><div class="line">           minSdkVersion <span class="number">14</span></div><div class="line">           targetSdkVersion <span class="number">22</span></div><div class="line">           versionCode <span class="number">1</span></div><div class="line">           versionName <span class="string">"1.0"</span></div><div class="line">       &#125;</div><div class="line">       buildTypes &#123;</div><div class="line">           release &#123;</div><div class="line">               <span class="function">minifyEnabled <span class="keyword">false</span></span></div><div class="line">               proguardFiles <span class="title">getDefaultProguardFile</span></div><div class="line">                <span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'</div><div class="line">           &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">       <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></div><div class="line">       compile 'com.android.support:appcompat-v7:22.2.0'</div><div class="line">     &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>第一行是Android应用插件，是Google的Android开发团队编写的插件，可以提供所有Android应用和依赖库的构建，打包和测试。</p>
+</li>
+<li>android括号包含了Android属性，而唯一必须的属性是：compileSdkVersion （编译app时使用的api版本）和 buildToolsVersion（Android构建工具的版本号），其中构建工具包含了很多使用的命令行命令，比如：aapt、zipalign、dx等。</li>
+<li><p>defaultConfig方法包含了该app的核心属性，该属性会重写AndroidMainfest.xml中的对应属性。</p>
+<blockquote>
+<ol>
+<li>applicationId ,该属性复写了AndroidManifest.xml文件中的包名packageName</li>
+<li>minSdkVersion和targetSDKVersion，这两个和AndroidManifes中的<uses-sdk>很像。</uses-sdk></li>
+<li>versionCode 将作为版本号标示，而versionName没有作用。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>buildTypes 方法定义了如何构建不同版本的app。</p>
+</li>
+<li>dependencies 为app定义了所有的依赖包，默认情况下，会依赖所有libs文件下的jar文件，同时包含了AppCompat这个aar文件。</li>
+</ul>
+<h2 id="理解tasks"><a href="#理解tasks" class="headerlink" title="理解tasks"></a>理解tasks</h2><ul>
+<li>如果你想知道你有多少tasks可以用，直接运行gradlew tasks，其会为你展示所有可用的tasks，当你创建一个Android工程，那么将包含Android tasks、build tasks、build setup tasks、help tasks、install tasks、verification tasks等。</li>
+</ul>
+<h3 id="基本的tasks"><a href="#基本的tasks" class="headerlink" title="基本的tasks"></a>基本的tasks</h3><ul>
+<li>Android插件依赖于java插件，而java插件依赖于base插件。</li>
+<li>base插件有基本的tasks生命周期和一些通用的属性。</li>
+<li><p>base插件定义了例如assemble和clean任务，java插件定义了check和build任务，这两个任务不在base插件中定义。这些tasks的含义：</p>
+<blockquote>
+<ol>
+<li>assemble 集合所有的output</li>
+<li>clean   清除所有的output</li>
+<li>check   执行所有的checks检查，通常是unit测试和instrumentation测试。</li>
+<li>build   执行所有的assemble和check</li>
+</ol>
+</blockquote>
+</li>
+<li><p>java插件同时也添加了source sets的概念。</p>
+</li>
+</ul>
+<h3 id="Android-tasks"><a href="#Android-tasks" class="headerlink" title="Android tasks"></a>Android tasks</h3><ul>
+<li><p>Android插件继承了这些基本tasks并且实现了它自己的行为：</p>
+<blockquote>
+<ol>
+<li>assemble 针对每个版本创建一个apk</li>
+<li>clean    删除所有的构建任务，包含apk文件。</li>
+<li>check    执行lint检查并且能够在lint检查到错误后停止执行脚本。</li>
+<li>build    执行assemble和check</li>
+</ol>
+</blockquote>
+</li>
+<li><p>默认情况下assemble tasks定义了assembleDebug和assembleRelease，当然你还可以定义更多的构建版本，除了这些tasks，Android插件也提供了一些新的tasks：</p>
+<blockquote>
+<ol>
+<li>connectedCheck 在测试机上面执行所有测试任务。</li>
+<li>deviceCheck     执行所有的测试在远程设备上。</li>
+<li>installDebug 和 installRelease 在设备安装一个特殊的版本。</li>
+<li>所有的install task 对应有uninstall 任务。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>build task依赖于check任务，但是不依赖于connectedCheck或者deviceCheck，执行check任务的使用的lint会产生一些相关文件，这些报告可以在/app/build/outputs/中查看。</p>
+</li>
+</ul>
+<h3 id="BuildConfig-amp-resources"><a href="#BuildConfig-amp-resources" class="headerlink" title="BuildConfig &amp; resources"></a>BuildConfig &amp; resources</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    buildTypes &#123;</div><div class="line">        debug &#123;</div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"API_URL"</span>,</div><div class="line">               <span class="string">"\"http://test.example.com/api\""</span></div><div class="line">            buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_HTTP_CALLS"</span>, <span class="string">"true"</span></div><div class="line">     &#125;</div><div class="line">       release &#123;</div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"API_URL"</span>,</div><div class="line">                <span class="string">"\"http://example.com/api\""</span></div><div class="line">            buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_HTTP_CALLS"</span>,<span class="string">"false"</span></div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>这样定义的常量，可以在代码中使用BuildConfig.API_URL和BuildConfig.LOG_HTTP</li>
+</ul>
+<h3 id="全局设置"><a href="#全局设置" class="headerlink" title="全局设置"></a>全局设置</h3><ul>
+<li><p>如果你有很多模块在一个工程下，你可以这么定义你的project文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">allprojects &#123;</div><div class="line">       apply plugin: <span class="string">'com.android.application'</span></div><div class="line">       android &#123;</div><div class="line">           compileSdkVersion <span class="number">22</span></div><div class="line">           buildToolsVersion <span class="string">"22.0.1"</span></div><div class="line">       &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>这样只有你的模块是Android app应用的时候有效，你需要添加Android插件才能访问Android的tasks，更好的做法是在你全局的gradle文件中定义一些属性，然后在模块中运用他们，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ext &#123;</div><div class="line">      compileSdkVersion = <span class="number">22</span></div><div class="line">      buildToolsVersion = <span class="string">"22.0.1"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这样你在子模块中就可以使用这些属性了：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       compileSdkVersion rootProject.ext.compileSdkVersion</div><div class="line">       buildToolsVersion rootProject.ext.buildToolsVersion</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Project-properties"><a href="#Project-properties" class="headerlink" title="Project properties"></a>Project properties</h3><ul>
+<li><p>上面提到的ext只是一种办法，还有其他方法，比如：gradle properties 、-p参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ext &#123;</div><div class="line">     local = <span class="string">'Hello from build.gradle'</span></div><div class="line">&#125;</div><div class="line">   task printProperties &lt;&lt; &#123;</div><div class="line">     println local        <span class="comment">// Local extra property</span></div><div class="line">     println propertiesFile        <span class="comment">// Property from file</span></div><div class="line">     <span class="keyword">if</span> (project.hasProperty(<span class="string">'cmd'</span>)) &#123;</div><div class="line">       println cmd        <span class="comment">// Command line property</span></div><div class="line">     &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在gradle.properties中定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">propertiesFile = Hello from gradle.properties</div></pre></td></tr></table></figure>
+</li>
+<li><p>这样在命令行执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ gradlew <span class="built_in">print</span>Properties -P cmd=<span class="string">'Hello from the command line'</span></div><div class="line">:<span class="built_in">print</span>Properties</div><div class="line">Hello from build.gradle</div><div class="line">Hello from gradle.properties</div><div class="line">Hello from the <span class="built_in">command</span> line</div></pre></td></tr></table></figure>
+</li>
+<li><p>上面就是三种定义gradle属性的方法。可以根据自己的需求来选择使用哪种方式。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/build-gradle/" rel="tag">#build.gradle</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/07/初识gradle/" rel="next" title="初识gradle（gradle系列一）">
+                <i class="fa fa-chevron-left"></i> 初识gradle（gradle系列一）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/08/依赖管理/" rel="prev" title="依赖管理(gradle系列三)">
+                依赖管理(gradle系列三) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/08/初始build-gradle-gradle系列二/"
+           data-title="初始build.gradle(gradle系列二)" data-url="http://yoursite.com/2017/03/08/初始build-gradle-gradle系列二/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#理解Gradle脚本"><span class="nav-text">理解Gradle脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setting-gradle"><span class="nav-text">setting.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根目录的build-gradle"><span class="nav-text">根目录的build.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块内的build-gradle"><span class="nav-text">模块内的build.gradle</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解tasks"><span class="nav-text">理解tasks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本的tasks"><span class="nav-text">基本的tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android-tasks"><span class="nav-text">Android tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BuildConfig-amp-resources"><span class="nav-text">BuildConfig & resources</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局设置"><span class="nav-text">全局设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Project-properties"><span class="nav-text">Project properties</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

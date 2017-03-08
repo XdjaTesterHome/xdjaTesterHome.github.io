@@ -1,0 +1,781 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,cpu," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景知识先了解几个和Linux时间有关的名词：HZ、tick
+HZ:Linux内核每隔固定周期会发出时间中断（timer interrupt），HZ是用来定义每一秒有几次timer interrupts，比如：HZ为1000，就代表每秒有1000次timer interrupts。
+Tick：Tick是HZ的倒数，Tick = 1/HZ。即timer interrupt每发生一次中断的时间，比如：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android对cpu的测试">
+<meta property="og:url" content="http://yoursite.com/2016/10/31/Android对cpu测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景知识先了解几个和Linux时间有关的名词：HZ、tick
+HZ:Linux内核每隔固定周期会发出时间中断（timer interrupt），HZ是用来定义每一秒有几次timer interrupts，比如：HZ为1000，就代表每秒有1000次timer interrupts。
+Tick：Tick是HZ的倒数，Tick = 1/HZ。即timer interrupt每发生一次中断的时间，比如：">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/battery_stat.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/uidstat.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/method_tracing.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/cpu_method_trace.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/tracing_method.PNG">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.834Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android对cpu的测试">
+<meta name="twitter:description" content="背景知识先了解几个和Linux时间有关的名词：HZ、tick
+HZ:Linux内核每隔固定周期会发出时间中断（timer interrupt），HZ是用来定义每一秒有几次timer interrupts，比如：HZ为1000，就代表每秒有1000次timer interrupts。
+Tick：Tick是HZ的倒数，Tick = 1/HZ。即timer interrupt每发生一次中断的时间，比如：">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/battery_stat.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/31/Android对cpu测试/"/>
+
+
+  <title> Android对cpu的测试 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android对cpu的测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-31T14:49:52+08:00" content="2016-10-31">
+              2016-10-31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">Android性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/31/Android对cpu测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/31/Android对cpu测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><h6 id="先了解几个和Linux时间有关的名词：HZ、tick"><a href="#先了解几个和Linux时间有关的名词：HZ、tick" class="headerlink" title="先了解几个和Linux时间有关的名词：HZ、tick"></a>先了解几个和Linux时间有关的名词：HZ、tick</h6><ul>
+<li>HZ:Linux内核每隔固定周期会发出时间中断（timer interrupt），HZ是用来定义每一秒有几次timer interrupts，比如：HZ为1000，就代表每秒有1000次timer interrupts。</li>
+<li>Tick：Tick是HZ的倒数，Tick = 1/HZ。即timer interrupt每发生一次中断的时间，比如：HZ为250，tick=4ms</li>
+<li>Android基于Linux，而Linux是一个典型的分时系统，CPU时间被分成多个时间片，这是多任务实现的基础，Linux内核依赖tick，即时钟中断来进行分时。</li>
+</ul>
+<h6 id="jiffies"><a href="#jiffies" class="headerlink" title="jiffies"></a>jiffies</h6><ul>
+<li>有了以上预热知识，我们就能解释jiffies是什么了。jiffies是用来记录从开机开始，已经经过了多少个tick，每一次发生timer interrupt，jiffies就会增加1。</li>
+<li>我们可以计算出来，其实内核每秒钟将jiffies变量增加HZ次。</li>
+</ul>
+<h6 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h6><ul>
+<li>文件中存放的就是所有cpu的jiffies信息，如下图所示：<br><img src="/upload/image/zlw/battery_stat.png" alt="battery_stat.png"></li>
+<li>从上图可以看出我的手机是8核的，第一行代表总的cpu jiffies情况，后面cpu0到cpu1代表的是各个cpu的jiffies情况。</li>
+<li>user：从系统启动开始累计到当前时刻，用户态的jiffies，不包含nice值为负的进程。</li>
+<li>nice：从系统启动开始累计到当前时刻，nice值为负的进程所占用的jiffies。（nice值是Linux中用来设置线程进程优先级的，取值范围是-20到19，nice值越小，进程优先级越高，获得cpu调用的机会越多，在Android中一般用不到nice值，不过我们可以控制线程的优先级）</li>
+<li>system：从系统启动开始累计到当前时刻，系统态的jiffies。</li>
+<li>idle：从系统启动开始累计到当前时刻，除硬盘IO等待时间以外其它等待的jiffies。</li>
+<li>iowait ： 从系统启动开始累计到当前时刻，硬盘IO等待的jiffies。</li>
+<li>irq ： 从系统启动开始累计到当前时刻，硬中断的jiffies</li>
+<li>softirq ：从系统启动开始累计到当前时刻，软中断的jiffies。</li>
+<li>上面这几项相加=一段时间内总的cpu时间片。<h6 id="proc-uid-stat"><a href="#proc-uid-stat" class="headerlink" title="/proc/uid/stat"></a>/proc/uid/stat</h6></li>
+<li>这个文件中存放的是uid进程的cpu 运行情况。如下图所示：<br><img src="/upload/image/zlw/uidstat.PNG" alt="uidstat.PNG"></li>
+<li>这里值比较多，我就不一一介绍了，都是关于进程的信息，有兴趣的同学可以参考：<a href="http://blog.sina.com.cn/s/blog_aed19c1f0102wcuo.html" target="_blank" rel="external">/proc/[pid]/stat文件分析</a>。<br>我们重点关注第14、15、16、17列的信息：</li>
+<li>第14行是utime= 26，表示该任务在用户态运行的时间，单位为jiffies</li>
+<li>第15行是stime = 15，表示该任务在核心态运行的时间，单位为jiffies</li>
+<li>第16行是cutime = 0 ，累计的该任务的所有的waited-for进程（已死进程）曾经在用户态运行的时间，单位为jiffies</li>
+<li>第17行是cstime = 0，累计的该任务的所有的waited-for进程（已死进程）曾经在核心态运行的时间，单位为jiffies</li>
+<li>所以该进程占用cpu的总时间就是上面四个值相加：utime+stime+cutime+cstime。</li>
+</ul>
+<h2 id="计算CPU占有率"><a href="#计算CPU占有率" class="headerlink" title="计算CPU占有率"></a>计算CPU占有率</h2><h6 id="计算Android整机的CPU占有率"><a href="#计算Android整机的CPU占有率" class="headerlink" title="计算Android整机的CPU占有率"></a>计算Android整机的CPU占有率</h6><ul>
+<li>读取/proc/stat文件的数据可以拿到总的cpu时间片。</li>
+<li>数据采集时间间隔要足够短（考虑到数据精确性），我一般采用1s或者小于1s的时间。</li>
+<li>假设前后取了两次总的cpu时间片分别为total1，total2。则这个时间段内总的cpu时间片 total= total2 - total1</li>
+<li>假设前后取了两次空闲时间idle时间片（上面有提到，/proc/stat 第四列），分别为i1, i2。则这个时间段内idle的时间片 idle= i2 - i1。</li>
+<li>总的cpu占用率 = 100*(total - idle） / total</li>
+</ul>
+<h6 id="计算单个进程的cpu占用率"><a href="#计算单个进程的cpu占用率" class="headerlink" title="计算单个进程的cpu占用率"></a>计算单个进程的cpu占用率</h6><ul>
+<li>读取/proc/uid/stat 可以得到某一进程占用的cpu时间片。</li>
+<li>数据采集时间间隔要足够短（考虑到数据精确性），我一般采用1s或者小于1s的时间。</li>
+<li>假设前后取了两次进程占用cpu时间片的值，分别为：proc1， proc2 。 则这个时间段内进程占用的时间片为proc = proc2 - proc1</li>
+<li>假设前后取了两次总的cpu时间片分别为total1，total2。则这个时间段内总的cpu时间片 total= total2 - total1</li>
+<li>单个进程的cpu占有率  = 100*(total - proc) / total</li>
+</ul>
+<h6 id="top-和-dumpsys-cpuinfo区别"><a href="#top-和-dumpsys-cpuinfo区别" class="headerlink" title="top 和 dumpsys cpuinfo区别"></a>top 和 dumpsys cpuinfo区别</h6><ul>
+<li>网上有很多的帖子来介绍如何计算cpu使用率，其中介绍了必然会提到两种方式：top命令和dumpsys cpuinfo。我一直比较好奇他们之间有什么区别，并且他们的结果有些不同。</li>
+<li>主要是因为他们的计算方法是不同的，top命令方式和dumpsys cpuinfo两者计算分子是相同的，不同的是分母：top命令的分母是上面提到的时间片jiffies，而dumpsys cpuinfo的分母是通过SystemClock.uptimeMillis()计算时间差。</li>
+<li>不过通过top命令得到的cpu占有率是整数的。所以之前经常看到0%的，以为真的是0。其实有可能是0.x%。</li>
+<li>网上有个哥们讲了这个问题，可以参考<a href="http://blog.csdn.net/oujunli/article/details/51463707" target="_blank" rel="external">top和dumpsys cpuinfo</a>，也可以自己查看下源码验证下这哥们讲的是否是正确的。</li>
+</ul>
+<h6 id="AndroidStudio-cpu-monitor测App-cpu占用率不为0"><a href="#AndroidStudio-cpu-monitor测App-cpu占用率不为0" class="headerlink" title="AndroidStudio cpu monitor测App cpu占用率不为0"></a>AndroidStudio cpu monitor测App cpu占用率不为0</h6><ul>
+<li>在之前的公司，要求App静默时的cpu占有率达到0，但是用AndroidStudio 测试总是不为0，会维持在0.22%到0.44%。</li>
+<li>做了个实验，用Python脚本采用上面的方法计算app的cpu占有率。得到的结果和AndroidStudio monitor的结果对比比较接近，都是0.22%-0.44%。</li>
+<li>第一次尝试：怀疑是不是和采集数据时间短，所以我每隔2s采集一次数据，发现和原来的结果一样，所以这种情况排除。</li>
+<li>第二次尝试：我发现用AndroidStudio monitor trace的结果中，只有jdwp一个线程在工作，于是我猜测是不是AndroidStudio在不断通过jdwp在干着什么工作。所以我关掉了AndroidStudio，然后再运行Python脚本，果然cpu占有率变成0。然后我又再次打开AndroidStudio，不选择调试【安全邮件】进程，用Python脚本采集cpu占有率数据，果然cpu占有率还是0。然后选择调试【安全邮件】进程，再用Python脚本采集数据，cpu占有率变成了0.22%-0.44%。</li>
+<li>通过上面的实验也就验证了AndroidStudio cpu monitor 测试App cpu占有率不为0的原因：JDWP线程，它是在每个进程启动的时候都会开启的一个用于和DDMS进行通信的线程。</li>
+<li><strong> 结论是建议用脚本<a href="http://gitlab.idc.safecenter.cn/zhouliwei/AutoScriptForAndroid/blob/master/commonoperation/cpu_inspect_thread.py" target="_blank" rel="external">测试cpu占有率</a>，或者用AndroidStudio测试时当cpu占有率大于0.44%时可能是有问题的。</strong></li>
+</ul>
+<h2 id="分析CPU相关问题"><a href="#分析CPU相关问题" class="headerlink" title="分析CPU相关问题"></a>分析CPU相关问题</h2><h6 id="测试场景"><a href="#测试场景" class="headerlink" title="测试场景"></a>测试场景</h6><ul>
+<li>静默状态：静默状态cpu占有率应该为0。</li>
+<li>操作之后停止操作：这种情况下，cpu占有率会在一定时间后变为0。</li>
+<li>操作过程中：cpu占有率不应该非常高，超过50%（没有数据支撑，只是拍脑袋感觉）。</li>
+<li>之前用AndroidStudio monitor测试，cpu静默时不能为0，维持在0.22%-0.44%，通过抓取MethodTracing，发现只有一个JDWP线程。</li>
+</ul>
+<h6 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h6><ul>
+<li>分析问题的手段有很多：TraceView、DDMS的Threads（查看哪些线程还活着）、AndroidStudio monitor抓trace。</li>
+<li>我们结合着AndroidStudio monitor的trace来分析下，因为容易操作且采集的数据比较丰富。</li>
+<li>因为我手边没有cpu问题的例子，所以我用一个操作过程中cpu变化的场景来分析下：打开【安全邮件】，然后在AndroidStudio cpu monitor点击【start Method Tracing】如下图所示：<img src="/upload/image/zlw/method_tracing.PNG" alt="method_tracing.PNG"></li>
+<li>然后多次滑动邮件列表，持续大概10几秒，可以观察到cpu占有率在6%左右。</li>
+<li>再次点击【start tracing method】（这个时候是stop tracing method），AndroidStudio会自动打开一份trace文件，我们主要分析这份trace文件，它包括了每个方法的耗时，对我们分析问题非常有帮助。</li>
+<li>我们先来看下它长什么样子，如下图所示：<img src="/upload/image/zlw/cpu_method_trace.PNG" alt="cpu_method_trace.PNG"></li>
+<li>Thread 表示当前进程里面还有什么线程在工作，一般我们关心的是main（主线程）、xx_thread_pool、自己命名的线程等，对于Binder、JDWP这些是系统干活的线程，一般我们不需要关心。</li>
+<li>x-axis 表示的是下面这个柱状图横坐标以什么为基准排序，有两个选项：thread time是线程执行时间不包括线程 sleep时间；Wall Clock Time 是系统运行时间，包括线程sleep等时间。</li>
+<li>搜索按钮  可以用来搜索我们感兴趣的内容，比如我们应用的包名。搜索结果在柱状图中会有体现。</li>
+<li>Invocation Count 表示方法执行了多少次。</li>
+<li>Inclusive Time 表示方法执行了多长时间（单位是微秒），包括执行其他方法的时间。</li>
+<li><p>Exclusive Time 表示方法本身执行了多长时间，不包括执行其他方法的时间。</p>
+</li>
+<li><p>回到上面的例子，我们在搜索框中搜索：xdja 如下图所示：<img src="/upload/image/zlw/tracing_method.PNG" alt="tracing_method.PNG"></p>
+</li>
+<li>可以看到有相关的方法在工作，如果是静默状态，理论上是不应该有任何方法在执行的（排除心跳包的场景），所以这个可能就是存在问题的。</li>
+<li>如果通过上面的方法不能确定问题，我们可以进一步的通过TraceView来分析方法的调用栈，从而排查问题。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>测App 的CPU占有率，用脚本测要关掉AndroidStudio对App的调试，排除其对采集数据的影响。如果用AndroidStudio cpu monitor测，静默时CPU占有率稳定在0.22%-0.44%，并不为0。</li>
+<li>首先用AndroidStudio cpu monitor的【start Method Tracing】来采集方法执行时间分析问题。分析思路是查找和自己应用相关的操作。</li>
+<li>更进一步的分析问题可以使用TraceView抓取方法调用栈。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-cpu/" rel="tag">#Android,cpu</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/31/网络请求测试/" rel="next" title="网络请求测试">
+                <i class="fa fa-chevron-left"></i> 网络请求测试
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/03/移动APP耗电量&功耗测试，应该如何开展？/" rel="prev" title="移动APP耗电量&功耗测试，应该如何开展？">
+                移动APP耗电量&功耗测试，应该如何开展？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/31/Android对cpu测试/"
+           data-title="Android对cpu的测试" data-url="http://yoursite.com/2016/10/31/Android对cpu测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景知识"><span class="nav-text">背景知识</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#先了解几个和Linux时间有关的名词：HZ、tick"><span class="nav-text">先了解几个和Linux时间有关的名词：HZ、tick</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#jiffies"><span class="nav-text">jiffies</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#proc-stat"><span class="nav-text">/proc/stat</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#proc-uid-stat"><span class="nav-text">/proc/uid/stat</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算CPU占有率"><span class="nav-text">计算CPU占有率</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#计算Android整机的CPU占有率"><span class="nav-text">计算Android整机的CPU占有率</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#计算单个进程的cpu占用率"><span class="nav-text">计算单个进程的cpu占用率</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#top-和-dumpsys-cpuinfo区别"><span class="nav-text">top 和 dumpsys cpuinfo区别</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#AndroidStudio-cpu-monitor测App-cpu占用率不为0"><span class="nav-text">AndroidStudio cpu monitor测App cpu占用率不为0</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析CPU相关问题"><span class="nav-text">分析CPU相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#测试场景"><span class="nav-text">测试场景</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#分析问题"><span class="nav-text">分析问题</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

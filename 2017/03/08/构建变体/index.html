@@ -1,0 +1,807 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="gradle，构建变体," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+当你在开发一个app,通常你会有几个版本。大多数情况是你需要一个开发版本，用来测试app和弄清它的质量，然后还需要一个生产版本。这些版本通常有不同的设置，例如不同的URL地址。更可能的是你可能需要一个免费版和收费版本。基于上述情况，你需要处理不同的版本：开发免费版，开发付费版本，生产免费版，生产付费版，而针对不同的版本不同的配置，这极大增加的管理难度。
+Gradle有一些方便的方法来管理这些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建变体(gradle系列四)">
+<meta property="og:url" content="http://yoursite.com/2017/03/08/构建变体/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+当你在开发一个app,通常你会有几个版本。大多数情况是你需要一个开发版本，用来测试app和弄清它的质量，然后还需要一个生产版本。这些版本通常有不同的设置，例如不同的URL地址。更可能的是你可能需要一个免费版和收费版本。基于上述情况，你需要处理不同的版本：开发免费版，开发付费版本，生产免费版，生产付费版，而针对不同的版本不同的配置，这极大增加的管理难度。
+Gradle有一些方便的方法来管理这些">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/buildtypes.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/资源优先级.png">
+<meta property="og:updated_time" content="2017-03-08T11:17:42.892Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建变体(gradle系列四)">
+<meta name="twitter:description" content="背景
+当你在开发一个app,通常你会有几个版本。大多数情况是你需要一个开发版本，用来测试app和弄清它的质量，然后还需要一个生产版本。这些版本通常有不同的设置，例如不同的URL地址。更可能的是你可能需要一个免费版和收费版本。基于上述情况，你需要处理不同的版本：开发免费版，开发付费版本，生产免费版，生产付费版，而针对不同的版本不同的配置，这极大增加的管理难度。
+Gradle有一些方便的方法来管理这些">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/buildtypes.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/08/构建变体/"/>
+
+
+  <title> 构建变体(gradle系列四) | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                构建变体(gradle系列四)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-08T16:15:00+08:00" content="2017-03-08">
+              2017-03-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/08/构建变体/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/08/构建变体/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>当你在开发一个app,通常你会有几个版本。大多数情况是你需要一个开发版本，用来测试app和弄清它的质量，然后还需要一个生产版本。这些版本通常有不同的设置，例如不同的URL地址。更可能的是你可能需要一个免费版和收费版本。基于上述情况，你需要处理不同的版本：开发免费版，开发付费版本，生产免费版，生产付费版，而针对不同的版本不同的配置，这极大增加的管理难度。</li>
+<li>Gradle有一些方便的方法来管理这些问题。我们很早之前谈过debug和release版本，现在我们谈到另外一个概念，不同的产品版本。构建版本和生产版本通常可以合并，构建版本和生产版本的合并版叫做构建变种。</li>
+</ul>
+<h2 id="构建版本"><a href="#构建版本" class="headerlink" title="构建版本"></a>构建版本</h2><ul>
+<li><p>在Gradle的Android插件中，一个构建版本意味着定义一个app或者依赖库如何被构建，每个构建版本都有特殊的需求，比如是否需要debug，applicationId是什么，是否需要删除无用的资源文件，通过buildTypes方法来定义一个构建版本。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       buildTypes &#123;</div><div class="line">           release &#123;</div><div class="line">               <span class="function">minifyEnabled <span class="keyword">false</span></span></div><div class="line">               proguardFiles <span class="title">getDefaultProguardFile</span></div><div class="line">                 <span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'</div><div class="line">           &#125;</div><div class="line">        &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>这个文件定义了模块的release版本，然后定义了proguard的位置，该release版本不是唯一的构建版本，默认情况下，还有个debug版本，AndroidStudio把它视为默认的构建版本。</p>
+</li>
+</ul>
+<h3 id="创建自己的构建版本"><a href="#创建自己的构建版本" class="headerlink" title="创建自己的构建版本"></a>创建自己的构建版本</h3><ul>
+<li><p>创建构建版本只需要在buildTypes写入自己的版本，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    buildTypes &#123;</div><div class="line">        staging &#123;</div><div class="line">            applicationIdSuffix <span class="string">".staging"</span></div><div class="line">            versionNameSuffix <span class="string">"-staging"</span></div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"API_URL"</span>,</div><div class="line">            <span class="string">"\"http://staging.example.com/api\""</span></div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>上面定义了一个staging版本，该版本定义了一个新的applicationid，这让其与debug和release版本的applicationId不同，假设使用了默认的配置，那么applicationID将会是这样：</p>
+<blockquote>
+<ol>
+<li>Debug:com.package</li>
+<li>Release: com.package</li>
+<li>Staging: com.package.staging</li>
+</ol>
+</blockquote>
+</li>
+<li><p>构建类型默认的属性和值如下图所示：<br><img src="/upload/image/zlw/buildtypes.PNG" alt="buildTypes"></p>
+</li>
+<li><p>这意味着你可以在你的设备上安装staging版本和release版本，但是你可以继承已有的版本：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       buildTypes &#123;</div><div class="line">           staging.initWith(buildTypes.debug)</div><div class="line">           staging &#123;</div><div class="line">               applicationIdSuffix <span class="string">".staging"</span></div><div class="line">               versionNameSuffix <span class="string">"-staging"</span></div><div class="line">               debuggable = <span class="keyword">false</span></div><div class="line">           &#125;</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// initWith()方法创建了一个新的版本的同时，复制所有存在的构建版本，类似于继承。</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Source-sets"><a href="#Source-sets" class="headerlink" title="Source sets"></a>Source sets</h3><ul>
+<li>当你创建了一个新的构建版本，Gradle也创建了新的source set。使用source set的目的是将一些源文件组合起来，为了某个特殊目的在逻辑上进行分组，方便对文件进行管理。默认情况下，该文件夹不会自动为你创建，所以要手工创建。<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">app</div><div class="line">└── src</div><div class="line">├── debug</div><div class="line">│ ├── java</div><div class="line">       │   │   └── com.<span class="keyword">package</span></div><div class="line"> │ │</div><div class="line">│ ├── res</div><div class="line">│ │ └── layout</div><div class="line">│   │       └── activity_main.xml</div><div class="line">│   └── AndroidManifest.xml</div><div class="line">├── main</div><div class="line">│ ├── java</div><div class="line">│   │   └── com.<span class="keyword">package</span></div><div class="line">│ │</div><div class="line">│ ├── res</div><div class="line">└── MainActivity.java</div><div class="line">└── Constants.java</div><div class="line">│ │</div><div class="line">│ │</div><div class="line">│ │</div><div class="line">│   └── AndroidManifest.xml</div><div class="line">├── staging</div><div class="line">│ ├── java</div><div class="line">│   │   └── com.<span class="keyword">package</span></div><div class="line">├── drawable</div><div class="line">└── layout</div><div class="line">└── activity_main.xml</div><div class="line">│ │</div><div class="line">│ ├── res</div><div class="line">│ │ └── layout</div><div class="line">│   │       └── activity_main.xml</div><div class="line">│   └── AndroidManifest.xml</div><div class="line">└── release</div><div class="line">    ├── java</div><div class="line">    │   └── com.<span class="keyword">package</span></div><div class="line">    │       └── Constants.java</div><div class="line">    └── AndroidManifest.xml</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<ol>
+<li>当添加了一个java类到staging版本，你可以添加相同的类到debug和release版本，但是不能添加到main版本，否则会抛出异常。</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>当使用不同的source sets时，资源文件的处理需要特殊的方式，Drawable和layout文件将会覆盖在main中的重名文件，但是values文件夹下的资源不会，gradle将会把这些资源连同main里面的资源一起合并。举个例子</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">在main中创建了一个string.xml</div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"app_name"</span>&gt;</span>TypesAndFlavors<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"hello_world"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div><div class="line"></div><div class="line">在staging版本也添加了string.xml</div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"app_name"</span>&gt;</span>TypesAndFlavors STAGING<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div><div class="line">然后合并的strings.xml将会是这样的：</div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"app_name"</span>&gt;</span>TypesAndFlavors STAGING<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"hello_world"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div><div class="line">当你创建一个新的构建版本不是staging，最终的string.xml将会是main目录下的strings.xml</div></pre></td></tr></table></figure>
+</li>
+<li><p>manifest和value的情况一样，Android插件会合并他们，比如，你在staging下面创建一个manifest，那么你只需要添加自己的标签，不需要去拷贝在main下面的mainfest文件。</p>
+</li>
+</ul>
+<h3 id="依赖包"><a href="#依赖包" class="headerlink" title="依赖包"></a>依赖包</h3><ul>
+<li>每一个构建版本都有自己的依赖包，如果你想为debug版本添加一个logging框架，可以这么做：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">   <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></div><div class="line">   compile 'com.android.support:appcompat-v7:22.2.0'</div><div class="line">   debugCompile 'de.mindpipe.android:android-logging-log4j:1.0.3'</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="product-flavors（产品版本）"><a href="#product-flavors（产品版本）" class="headerlink" title="product flavors（产品版本）"></a>product flavors（产品版本）</h2><ul>
+<li>和构建版本不同，product flavors用来为一个app创建不同的版本。典型的例子是，一个app有付费和免费版。它简化了基于相同的代码构建不同版本的app。</li>
+</ul>
+<h3 id="创建product-flavors"><a href="#创建product-flavors" class="headerlink" title="创建product flavors"></a>创建product flavors</h3><ul>
+<li><p>productFlavors代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    productFlavors &#123;</div><div class="line">        red &#123;</div><div class="line">             applicationId <span class="string">'com.gradleforandroid.red'</span></div><div class="line">             versionCode <span class="number">3</span></div><div class="line">        &#125;</div><div class="line">        blue &#123;</div><div class="line">             applicationId <span class="string">'com.gradleforandroid.blue'</span></div><div class="line">             minSdkVersion <span class="number">14</span></div><div class="line">             versionCode <span class="number">4</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>product flavors和构建版本的配置不同，因为product flavors有自己的ProductFlavor类，就像defaultConfig，这意味着你的所有的productFlavors都分享一样的属性。</p>
+</li>
+</ul>
+<h3 id="多个flavor构建变体"><a href="#多个flavor构建变体" class="headerlink" title="多个flavor构建变体"></a>多个flavor构建变体</h3><ul>
+<li><p>在某些场景下，你可能需要创建一些product flavors的合并版本，举个例子：client A 和client B都需要一个free和paid版本，而他们又都基于一样的代码，但是不一样的颜色，如果创建4个不同的flavors意味着重复的配置，合并flavors最简单的做法可能是使用flavor dimensions：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">      flavorDimensions <span class="string">"color"</span>, <span class="string">"price"</span></div><div class="line">      productFlavors &#123;</div><div class="line">          red &#123;</div><div class="line">              flavorDimension <span class="string">"color"</span></div><div class="line">          &#125;</div><div class="line">          blue &#123;</div><div class="line">              flavorDimension <span class="string">"color"</span></div><div class="line">          &#125;</div><div class="line">          free &#123;</div><div class="line">              flavorDimension <span class="string">"price"</span></div><div class="line">          &#125;</div><div class="line">          paid &#123;</div><div class="line">              flavorDimension <span class="string">"price"</span></div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>当你添加了flavor dimensions，你就需要为每个flavor添加flavorDimension，否则会提示错误。flavorDimensions定义了不同的dimensions，当然其顺序也很重要。当你合并二个不同的flavors时，他们可能有一样的配置和资源。例如上例：</p>
+<blockquote>
+<ol>
+<li>blueFreeDebug and blueFreeRelease</li>
+<li>bluePaidDebug and bluePaidRelease</li>
+<li>redFreeDebug and redFreeRelease</li>
+<li>redPaidDebug and redPaidRelease</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2 id="构建变体"><a href="#构建变体" class="headerlink" title="构建变体"></a>构建变体</h2><ul>
+<li>构建变体是构建版本和生产版本的结合体，可以在AndroidStudio左下角的BuildVariants中查看。</li>
+<li>如果没有product flavors，那么变体就只包含构建版本，即使没有定义任何构建版本，AndroidStudio 也会默认为你创建debug版本的。</li>
+</ul>
+<h3 id="tasks"><a href="#tasks" class="headerlink" title="tasks"></a>tasks</h3><ul>
+<li>Android插件会为每一个变体创建不同的配置，一个新的Android项目会有debug和release版本，所以可以使用assembleDebug和assembleRelease，也可以只使用assemble，debug和release都会执行，当添加了新的构建版本或者生产版本，同样的也会创建新的task。以上面的productFlavors为例：<blockquote>
+<ol>
+<li>assembleBlue uses the blue flavor configuration and assembles both BlueRelease and BlueDebug.</li>
+<li>assembleBlueDebug combines the flavor configuration with the build type configuration, and the flavor settings override the build type settings.</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h3 id="Source-sets-1"><a href="#Source-sets-1" class="headerlink" title="Source sets"></a>Source sets</h3><ul>
+<li>构建变体也可以有自己的资源文件夹，比如，上面列子，可以有src/blueFreeDebug/java/</li>
+</ul>
+<h3 id="资源文件和manifest的合并"><a href="#资源文件和manifest的合并" class="headerlink" title="资源文件和manifest的合并"></a>资源文件和manifest的合并</h3><ul>
+<li>在打包app之前，Android插件会合并main中的代码和构建的代码，当然，依赖项目也可以提供额外的资源，他们也会被合并，举个例子：你不想在main中申明这个权限，因为可能会导致一些问题，所以你可以添加一个额外的manifest文件在debug的文件夹中，申请额外的权限。资源和manifest的优先级是这样的：<br><img src="/upload/image/zlw/资源优先级.png" alt="资源优先级"></li>
+<li>如果一个资源在main中和在flavor中定义了，那么那个在flavor中的资源有更高的优先级。这样那个在flavor文件夹中的资源将会被打包到apk。而在依赖项目申明的资源总是拥有最低优先级。</li>
+</ul>
+<h3 id="创建构建变体"><a href="#创建构建变体" class="headerlink" title="创建构建变体"></a>创建构建变体</h3><ul>
+<li>gradle让处理构建变体变得更加容易：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       buildTypes &#123;</div><div class="line">           debug &#123;</div><div class="line">               buildConfigField <span class="string">"String"</span>, <span class="string">"API_URL"</span>,</div><div class="line">               <span class="string">"\"http://test.example.com/api\""</span></div><div class="line">        &#125;</div><div class="line">           staging.initWith(android.buildTypes.debug)</div><div class="line">           staging &#123;</div><div class="line">               buildConfigField <span class="string">"String"</span>, <span class="string">"API_URL"</span>,</div><div class="line">                 <span class="string">"\"http://staging.example.com/api\""</span></div><div class="line">               applicationIdSuffix <span class="string">".staging"</span></div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       productFlavors &#123;</div><div class="line">           red &#123;</div><div class="line">               applicationId <span class="string">"com.gradleforandroid.red"</span></div><div class="line">               resValue <span class="string">"color"</span>, <span class="string">"flavor_color"</span>, <span class="string">"#ff0000"</span></div><div class="line">           &#125;</div><div class="line">           blue &#123;</div><div class="line">               applicationId <span class="string">"com.gradleforandroid.blue"</span></div><div class="line">               resValue <span class="string">"color"</span>, <span class="string">"flavor_color"</span>, <span class="string">"#0000ff"</span></div><div class="line">           &#125;</div><div class="line">     &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="变体过滤器"><a href="#变体过滤器" class="headerlink" title="变体过滤器"></a>变体过滤器</h3><ul>
+<li>忽略某个变体是可行的，这样你可以加速你的构建，当使用assemble时候，将不会执行你不需要的变体，在build.gradle中添加代码：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">android.variantFilter &#123; variant -&gt;</div><div class="line">       <span class="keyword">if</span>(variant.buildType.name.equals(<span class="string">'release'</span>)) &#123;</div><div class="line">           variant.getFlavors().each() &#123; flavor -&gt;</div><div class="line">               <span class="keyword">if</span> (flavor.name.equals(<span class="string">'blue'</span>)) &#123; variant.setIgnore(<span class="keyword">true</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="签名配置"><a href="#签名配置" class="headerlink" title="签名配置"></a>签名配置</h3><ul>
+<li><p>在发布你的应用之前，你需要为你的app私钥签名，如果你有付费版和免费版，你需要有不同的key去签名不同的变体，配置签名可以这样定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">     signingConfigs &#123;</div><div class="line">         staging.initWith(signingConfigs.debug)</div><div class="line">         release &#123;</div><div class="line">             <span class="function">storeFile <span class="title">file</span><span class="params">(<span class="string">"release.keystore"</span>)</span></span></div><div class="line">             storePassword"secretpassword"</div><div class="line">             keyAlias "gradleforandroid"</div><div class="line">             keyPassword "secretpassword"</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>上面这个例子，我们创建了2个不同的签名配置，debug配置是AndroidStudio默认的，其使用了公共的keystore和password。release配置默认使用了storeFile，定义了key alias和password。</p>
+</li>
+<li><p>在构建版本有一个属性叫做singingConfig，可以这么配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       buildTypes &#123;</div><div class="line">           release &#123;</div><div class="line">               signingConfig signingConfigs.release</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>假如你需要对每个版本生成不同的验证，你可以这么定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       productFlavors &#123;</div><div class="line">           blue &#123;</div><div class="line">               signingConfig signingConfigs.release</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>但是上面也提到，buildType的优先级高于flavor，所以在flavor中定义可能会被覆盖，最好的方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">       buildTypes &#123;</div><div class="line">           release &#123;</div><div class="line">               productFlavors.red.signingConfig signingConfigs.red</div><div class="line">               productFlavors.blue.signingConfig signingConfigs.blue</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gradle，构建变体/" rel="tag">#gradle，构建变体</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/08/依赖管理/" rel="next" title="依赖管理(gradle系列三)">
+                <i class="fa fa-chevron-left"></i> 依赖管理(gradle系列三)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/08/构建变体/"
+           data-title="构建变体(gradle系列四)" data-url="http://yoursite.com/2017/03/08/构建变体/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建版本"><span class="nav-text">构建版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自己的构建版本"><span class="nav-text">创建自己的构建版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Source-sets"><span class="nav-text">Source sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖包"><span class="nav-text">依赖包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#product-flavors（产品版本）"><span class="nav-text">product flavors（产品版本）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建product-flavors"><span class="nav-text">创建product flavors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个flavor构建变体"><span class="nav-text">多个flavor构建变体</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建变体"><span class="nav-text">构建变体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tasks"><span class="nav-text">tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Source-sets-1"><span class="nav-text">Source sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源文件和manifest的合并"><span class="nav-text">资源文件和manifest的合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建构建变体"><span class="nav-text">创建构建变体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变体过滤器"><span class="nav-text">变体过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#签名配置"><span class="nav-text">签名配置</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

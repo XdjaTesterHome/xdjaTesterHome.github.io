@@ -1,0 +1,768 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MAT,工具," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景介绍MAT简介
+MAT(Memory Analyzer Tool)，一个用于内存分析的工具，它能够抓取一段时间内的内存快照，帮助我们分析这一段时间内存的分配情况，通过分析内存情况可以帮助我们发现内存泄漏、内存大量分配等问题的原因所在。Eclipse本身可以装MAT的插件，但是现在我们一般都转向AndroidStudio，所以可以使用MAT独立的版本，可以从这里下载MAT
+
+下载完成之后，解压就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MAT（Memory Analyzer Tool）工具的使用">
+<meta property="og:url" content="http://yoursite.com/2016/10/19/MAT工具的使用/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景介绍MAT简介
+MAT(Memory Analyzer Tool)，一个用于内存分析的工具，它能够抓取一段时间内的内存快照，帮助我们分析这一段时间内存的分配情况，通过分析内存情况可以帮助我们发现内存泄漏、内存大量分配等问题的原因所在。Eclipse本身可以装MAT的插件，但是现在我们一般都转向AndroidStudio，所以可以使用MAT独立的版本，可以从这里下载MAT
+
+下载完成之后，解压就">
+<meta property="og:image" content="http://yoursite.com/upload/image/gc_tree.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/mat.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/ddmsgc.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/androidstudio_MAT.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/Androidstudio_hprof.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/AndroidStudio_Analyzermemory.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/MAT_hprof.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/histogram.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/Dominator_tree.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/gc_root_look.png">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MAT（Memory Analyzer Tool）工具的使用">
+<meta name="twitter:description" content="背景介绍MAT简介
+MAT(Memory Analyzer Tool)，一个用于内存分析的工具，它能够抓取一段时间内的内存快照，帮助我们分析这一段时间内存的分配情况，通过分析内存情况可以帮助我们发现内存泄漏、内存大量分配等问题的原因所在。Eclipse本身可以装MAT的插件，但是现在我们一般都转向AndroidStudio，所以可以使用MAT独立的版本，可以从这里下载MAT
+
+下载完成之后，解压就">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/gc_tree.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/19/MAT工具的使用/"/>
+
+
+  <title> MAT（Memory Analyzer Tool）工具的使用 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MAT（Memory Analyzer Tool）工具的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-19T17:28:59+08:00" content="2016-10-19">
+              2016-10-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/工具使用/" itemprop="url" rel="index">
+                    <span itemprop="name">工具使用</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/19/MAT工具的使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/19/MAT工具的使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><h4 id="MAT简介"><a href="#MAT简介" class="headerlink" title="MAT简介"></a>MAT简介</h4><ul>
+<li><p>MAT(Memory Analyzer Tool)，一个用于内存分析的工具，它能够抓取一段时间内的内存快照，帮助我们分析这一段时间内存的分配情况，通过分析内存情况可以帮助我们发现内存泄漏、内存大量分配等问题的原因所在。Eclipse本身可以装MAT的插件，但是现在我们一般都转向AndroidStudio，所以可以使用MAT独立的版本，可以从这里下载<a href="https://eclipse.org/mat/downloads.php" target="_blank" rel="external">MAT</a></p>
+</li>
+<li><p>下载完成之后，解压就可以直接使用。</p>
+</li>
+</ul>
+<h4 id="java垃圾回收机制"><a href="#java垃圾回收机制" class="headerlink" title="java垃圾回收机制"></a>java垃圾回收机制</h4><ul>
+<li>java比较幸福的一件事情就是有GC（Garbage Collection），但是在项目节奏比较快的情况下，有可能开发同学会随心所欲的使用内存，重而就有可能造成内存泄漏，即有些内存明明不使用了，但是却不能被回收，严重浪费资源。</li>
+<li>JVM（java虚拟机）是根据<strong>对象树</strong>来判断某个对象是否能被回收的。如下图所示：<br><img src="/upload/image/gc_tree.png" alt="GC Tree"></li>
+<li>即从GC Root（直译为GC 根，形象的理解为一颗大树的根吧）开始检查看哪些对象是可以到达的，直到遍历完所有的叶子结点。遍历完成之后，就去回收那些不可达的对象。</li>
+</ul>
+<h6 id="GC-root分类"><a href="#GC-root分类" class="headerlink" title="GC root分类"></a>GC root分类</h6><ul>
+<li>我们应该掌握几种GC root，便于后面使用MAT对内存进行分析。</li>
+<li>Class：即由System Class Loader/Boot Class Loader加载的类对象，这些类对象不会被回收。</li>
+<li>Thread线程：激活状态的线程</li>
+<li>Stack Local栈中的对象，每个线程都会分配一个栈，栈中的局部变量或者参数都是GC root，因为它们的引用随时可能被用到</li>
+<li>JNI JNI中的引用的对象；可能在JNI中定义的，也可能在虚拟机中定义</li>
+<li>Monitor Used 用于保证同步的对象，例如wait()，notify()中使用的对象、锁等。</li>
+<li>Held by JVM JVM持有的对象。JVM为了特殊用途保留的对象，它与JVM的具体实现有关。比如有System Class Loader, 一些Exceptions对象，和一些其它的Class Loader。对于这些类，JVM也没有过多的信息。</li>
+</ul>
+<h2 id="使用MAT"><a href="#使用MAT" class="headerlink" title="使用MAT"></a>使用MAT</h2><h4 id="抓取内存快照"><a href="#抓取内存快照" class="headerlink" title="抓取内存快照"></a>抓取内存快照</h4><h6 id="DDMS"><a href="#DDMS" class="headerlink" title="DDMS"></a>DDMS</h6><ul>
+<li>直接使用DDMS，点击[Dump Hprof file],等待5s钟会弹出保存hprof文件的对话框，如下图所示：<br><img src="/upload/image/mat.PNG" alt="DDMS MAT"></li>
+<li>不过在Dump Hprof file之前，需要GC至少两次，让JVM回收那些可以被回收的对象。如下图所示：<img src="/upload/image/ddmsgc.PNG" alt="ddms gc"></li>
+<li>生成的hprof不能直接被MAT打开，需要用Android SDK Tools中工具转一下<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ hprof-conv dump.hprof converted-dump.hprof</div><div class="line">  之后就可以打开了。</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h6 id="AndroidStudio-Monitor"><a href="#AndroidStudio-Monitor" class="headerlink" title="AndroidStudio Monitor"></a>AndroidStudio Monitor</h6><ul>
+<li>AndroidStudio最新版本我感觉比DDMS要人性化，所有的操作都可以在一个面板中完成，如下图所示：<img src="/upload/image/androidstudio_MAT.PNG" alt="AndroidStudio monitor"></li>
+<li>如图中所示，1 对应的就是GC   2 对应的是可以抓取堆内存快照hprof文件（堆中对象的引用情况）  3 对应的是抓取一定时间内对象的分配情况（分配对象的个数及大小）。</li>
+<li>抓取hprof时，还是先GC至少两次。</li>
+<li>点击【dump java heap】后会在AndroidStudio的左边目录栏的Captures选项中的Heap SnapShot列表中多一个以时间命名的hprof文件，然后在hprof文件上右键选择【Export to standard .hprof】即可以转成MAT能打开的格式。如下图所示：<br><img src="/upload/image/Androidstudio_hprof.PNG" alt="Androidstudio_hprof"></li>
+<li>这里要说下AndroidStudio比较好用的功能，最新版（我也不知道从哪个版本开始）提供了可以检测内存泄漏的工具，直接点击上一步中生成的hprof文件，然后在右侧有一个【Analyzer Tasks】的选项，用它就可以直接来分析内存泄漏。如下图所示：<br><img src="/upload/image/AndroidStudio_Analyzermemory.PNG" alt="AndroidStudio_Analyzermemor"></li>
+</ul>
+<h4 id="MAT分析hprof文件"><a href="#MAT分析hprof文件" class="headerlink" title="MAT分析hprof文件"></a>MAT分析hprof文件</h4><ul>
+<li>这里主要介绍下MAT的各个模块都是干啥的以及简单用法，至于更详细的用法会在后面的实例分析中进行说明。</li>
+<li>打开hprof文件之后，如下图所示：<br><img src="/upload/image/MAT_hprof.PNG" alt="MAT_hprof"></li>
+<li>如上所示，最顶部的是工具栏，大家可以自己点点用用，反正我觉得是不经常用到，这里就不过多介绍了。最常用的是【Histogram】(用于列出每个class的实例个数)和【Dominator Tree】(用于列出还存活的大对象，是从大到小进行排序)，下面就分别介绍下他们简单的用法</li>
+</ul>
+<h6 id="Histogram"><a href="#Histogram" class="headerlink" title="Histogram"></a>Histogram</h6><ul>
+<li>点开Histogram，会列出每个class对应的对象个数，以及他们占有内存的大小，如下图所示：<img src="/upload/image/histogram.PNG" alt="histogram"></li>
+<li>如图中所示最左边这一列是class，第二列是Object个数，第三列是Shallow Heap表示<strong>对象在内存中的实际空间</strong>，第四列是<strong>对象回收后能释放出来的空间</strong></li>
+<li>需要说明非常有用的是第一行是可以过滤信息的，可以写正则表达式，一般我们想过滤和我们业务有关系的，比如：xdja，我们就直接输入xdja，然后就可以过滤出来我们需要的东西啦。</li>
+</ul>
+<h6 id="doinator-tree"><a href="#doinator-tree" class="headerlink" title="doinator_tree"></a>doinator_tree</h6><ul>
+<li>点开doinator_tree,会列出每个对象的内存大小情况，样子和HIstogram长的比较像，如下图所示：<img src="/upload/image/Dominator_tree.PNG" alt="Dominator_tree"></li>
+<li>如图所示第一列是所有对象的名称 第二列是Shallow Heap表示<strong>对象实际所占用的内存空间大小</strong>，第三列是Retained Heap 表示<strong>对象被释放之后所能释放的空间大小</strong> 第四列表示对象占用内存空间的百分比</li>
+<li>我们一般通过比较Retained Heap 的大小来估计内存泄漏的内存大小。Shallow Heap在分析问题时一般作用不大。</li>
+<li>Shallow Heap 和 Dominator的单位是Byte，所以一般可以直接除以1000，转成KB来预估大小。</li>
+</ul>
+<h6 id="查看对象树"><a href="#查看对象树" class="headerlink" title="查看对象树"></a>查看对象树</h6><ul>
+<li>通过上面两种方式可以过滤出自己关心的类或者对象，然后在类或者对象的item上单击右键，如下图所示：<br><img src="/upload/image/gc_root_look.png" alt="gc_root_look"></li>
+<li>如图所示，我们介绍下弹出菜单中各个选项的作用。</li>
+<li>【merge shortest Paths to  GC Roots】合并从GC根节点到一个对象或一组对象的共同路径。</li>
+<li>【Path To GC Roots】查看这个对象所有的GC Roots。</li>
+<li>上面两个选项，点击之后子菜单中再选择exclude all phantom/weak/soft etc.references(排查虚引用/弱引用/软引用等）因为被虚引用/弱引用/软引用的对象可以直接被GC给回收。</li>
+<li>List objects -&gt; with incoming references ：查看这个对象持有的外部对象引用</li>
+<li><p>List objects -&gt; with outcoming references ：查看这个对象被哪些外部对象引用</p>
+</li>
+<li><p>其实所有MAT的菜单选项都是由SQL语句组成的，你也可以写自己的sql语句，只不过MAT帮我们封装的基本已经够我们用了</p>
+</li>
+</ul>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><ul>
+<li>上面只是简单介绍了MAT的基本用法，其实它还有很多可供我们使用的工具，比如：将drawable怎么以bitmap的形式查看、查看集合的值、写SQL语句、查看线程信息等。大家可以在使用的时候Google一下就可以了。上面讲的是最常用的用法。</li>
+<li>之后会有结合实例分析的文章，进一步熟悉MAT的使用。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MAT-工具/" rel="tag">#MAT,工具</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/19/TraceView工具的使用/" rel="next" title="TraceView工具的使用">
+                <i class="fa fa-chevron-left"></i> TraceView工具的使用
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/21/分析安全邮件首次启动内存问题/" rel="prev" title="分析安全邮件首次启动内存问题">
+                分析安全邮件首次启动内存问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/19/MAT工具的使用/"
+           data-title="MAT（Memory Analyzer Tool）工具的使用" data-url="http://yoursite.com/2016/10/19/MAT工具的使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景介绍"><span class="nav-text">背景介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MAT简介"><span class="nav-text">MAT简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java垃圾回收机制"><span class="nav-text">java垃圾回收机制</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#GC-root分类"><span class="nav-text">GC root分类</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用MAT"><span class="nav-text">使用MAT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#抓取内存快照"><span class="nav-text">抓取内存快照</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#DDMS"><span class="nav-text">DDMS</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#AndroidStudio-Monitor"><span class="nav-text">AndroidStudio Monitor</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MAT分析hprof文件"><span class="nav-text">MAT分析hprof文件</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Histogram"><span class="nav-text">Histogram</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#doinator-tree"><span class="nav-text">doinator_tree</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#查看对象树"><span class="nav-text">查看对象树</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结尾"><span class="nav-text">结尾</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

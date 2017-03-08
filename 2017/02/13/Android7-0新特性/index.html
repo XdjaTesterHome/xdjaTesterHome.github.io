@@ -1,0 +1,824 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android7.0特性," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+Android7.0已经发布有些日子了，Android7.2.3马上也要出来了，我整理了一些Android7.0的特性，对测试过程中需要注意的点进行了分析。
+
+Doze(打盹模式)加强版对应改动点
+打盹模式其实是从6.0就增加的特性，不过7.0是加强版。
+当设备屏幕关闭一定时间后（无论充电与否，6.0只有在未充电时）设备会进入打盹模式第一部分限制：关闭应用网络访问和CPU、推迟作业和同步。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android7.0新特性">
+<meta property="og:url" content="http://yoursite.com/2017/02/13/Android7-0新特性/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+Android7.0已经发布有些日子了，Android7.2.3马上也要出来了，我整理了一些Android7.0的特性，对测试过程中需要注意的点进行了分析。
+
+Doze(打盹模式)加强版对应改动点
+打盹模式其实是从6.0就增加的特性，不过7.0是加强版。
+当设备屏幕关闭一定时间后（无论充电与否，6.0只有在未充电时）设备会进入打盹模式第一部分限制：关闭应用网络访问和CPU、推迟作业和同步。">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.832Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android7.0新特性">
+<meta name="twitter:description" content="背景
+Android7.0已经发布有些日子了，Android7.2.3马上也要出来了，我整理了一些Android7.0的特性，对测试过程中需要注意的点进行了分析。
+
+Doze(打盹模式)加强版对应改动点
+打盹模式其实是从6.0就增加的特性，不过7.0是加强版。
+当设备屏幕关闭一定时间后（无论充电与否，6.0只有在未充电时）设备会进入打盹模式第一部分限制：关闭应用网络访问和CPU、推迟作业和同步。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/13/Android7-0新特性/"/>
+
+
+  <title> Android7.0新特性 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android7.0新特性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-13T20:03:15+08:00" content="2017-02-13">
+              2017-02-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android知识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android知识</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/13/Android7-0新特性/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/13/Android7-0新特性/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>Android7.0已经发布有些日子了，Android7.2.3马上也要出来了，我整理了一些Android7.0的特性，对测试过程中需要注意的点进行了分析。</li>
+</ul>
+<h4 id="Doze-打盹模式-加强版"><a href="#Doze-打盹模式-加强版" class="headerlink" title="Doze(打盹模式)加强版"></a>Doze(打盹模式)加强版</h4><h6 id="对应改动点"><a href="#对应改动点" class="headerlink" title="对应改动点"></a>对应改动点</h6><ul>
+<li>打盹模式其实是从6.0就增加的特性，不过7.0是加强版。</li>
+<li>当设备屏幕关闭一定时间后（无论充电与否，6.0只有在未充电时）设备会进入打盹模式第一部分限制：关闭应用网络访问和CPU、推迟作业和同步。</li>
+<li>设备处于打盹模式并且静止一段时间后，系统会对WakeLock、AlarmManager、GPS和Wi-Fi扫描等。</li>
+<li>在打盹模式下，系统会有一个时间窗口，在设定的场景下，集中执行我们想要执行的作业/同步。Google从6.0时就建议用Schedule的方式来执行任务。</li>
+<li>在Doze模式中还有一种Standy的模式（从android6.0就有），这个模式也称之为应用待机模式，即：用户长时间未与应用发生交互时，Android系统会使应用进入空闲状态。</li>
+</ul>
+<h6 id="测试点"><a href="#测试点" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>app的保活进程在静置一段时间后，是否还能存活。</li>
+<li>app在静置时能否及时的同步消息，比如安通+能否及时收到消息。</li>
+<li>app心跳包的时间间隔是否随着时间的增加而增加。</li>
+<li>对于性能测试，需要关注电量消耗。</li>
+</ul>
+<h6 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h6><ul>
+<li>使用JobSchedule来执行心跳包的逻辑或者定时同步消息的任务。</li>
+</ul>
+<h6 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h6><ul>
+<li><p>运行adb命令使系统进入Doze模式：<br>adb shell dumpsys battery unplug<br>adb shell dumpsys deviceidle step</p>
+</li>
+<li><p>测试stanby模式<br>adb shell dumpsys battery unplug<br>adb shell am set inactive packageName true<br>(true时代表进入模式，  false时恢复)</p>
+</li>
+</ul>
+<h4 id="隐式广播优化"><a href="#隐式广播优化" class="headerlink" title="隐式广播优化"></a>隐式广播优化</h4><h6 id="改动点"><a href="#改动点" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>应用不再接收静态注册的CONNECTIVITY_ACTION广播，但是应用在前台<br>时可以接收动态注册的CONNECTIVITY_CHANGE广播。</li>
+<li>应用不能发送或者接收ACTION_NEW_PICTURE和ACTION_NEW_VEDIO广播</li>
+<li>主要为了减少设备的唤醒，节省内存和电量</li>
+</ul>
+<h6 id="测试点-1"><a href="#测试点-1" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>app中涉及到网络切换场景的，需要注意适配，比如：某些保活进程会监听网络切换来发送心跳、监听网络状态变化去下载大文件、监听网络状态去同步数据，可重点测试app置于后台的场景。</li>
+<li>app中有涉及到拍照片及录视频的场景，逻辑是否正常（照片能否正常加载、视频录制完的逻辑）。</li>
+</ul>
+<h6 id="优化建议-1"><a href="#优化建议-1" class="headerlink" title="优化建议"></a>优化建议</h6><p>这里的参考方案都是针对网络状态变化广播的</p>
+<ul>
+<li>使用JObSchedule。</li>
+<li>动态注册广播，监听CONNECTIVITY_CHANGE的广播，前提是应用在前台运行时。</li>
+<li>使用ConnectivityManager，通过回调来监听网络变化。</li>
+</ul>
+<h4 id="权限变更（系统权限更改）"><a href="#权限变更（系统权限更改）" class="headerlink" title="权限变更（系统权限更改）"></a>权限变更（系统权限更改）</h4><h6 id="改动点-1"><a href="#改动点-1" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>优化了Android6.0中动态获取权限的方式，封装性更好。</li>
+<li>app不能使用私有文件（/data/data/package/目录）的文件权限，也就是不能直接通过File的API来访问文件。</li>
+<li>DownloadManager不再按文件名（通过 COLUMN_LOCAL_FILENAME）获取私人存储路径。</li>
+</ul>
+<h6 id="测试点-2"><a href="#测试点-2" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>涉及到权限申请的逻辑是否正常（读取联系人、写文件等）</li>
+<li>目前，这种限制还没有完全生效，仍然可以通过File来访问自有文件</li>
+<li>app中有访问本地文件的操作，比如浏览文件、读取某个文件的操作是否正常。</li>
+<li>下载一般文件的逻辑，通常都是自己写的，不会用到DownloadManager，可以结合代码全局搜索下是否使用了DownloadManager。</li>
+<li>若没有代码，可直接验证app中下载大文件的逻辑是否正常。</li>
+</ul>
+<h4 id="应用间共享文件"><a href="#应用间共享文件" class="headerlink" title="应用间共享文件"></a>应用间共享文件</h4><h6 id="测试点-3"><a href="#测试点-3" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>Android系统强制执行了StrictMode API政策，禁止向你的应用外公开<br>File://Uri。</li>
+<li>如果其他应用通过Intent包含File://Uri来访问你的文件，则会抛FileUriExposedException的异常。</li>
+<li>比如 系统相机拍照、裁剪照片。</li>
+</ul>
+<h6 id="测试点-4"><a href="#测试点-4" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>验证app中，有加载本地图片、拍照（意见反馈及添加图片）的用例，看是否正常。</li>
+</ul>
+<h6 id="优化建议-2"><a href="#优化建议-2" class="headerlink" title="优化建议"></a>优化建议</h6><ul>
+<li>通过FileProvider解决。FileProvider的使用方法可以自行查询。</li>
+<li>裁剪图片推荐TakePhoto开源库</li>
+</ul>
+<h4 id="无障碍改进"><a href="#无障碍改进" class="headerlink" title="无障碍改进"></a>无障碍改进</h4><h6 id="改动点-2"><a href="#改动点-2" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>屏幕缩放：支持用户设置显示尺寸，放大或者缩小屏幕上的元素，从而提升设备对视力不佳用户的可访问性。</li>
+<li>当屏幕密度发生变化时，所有进程（包括前台和后台）都会收到有关配置变更的通知。</li>
+</ul>
+<h6 id="测试点-5"><a href="#测试点-5" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>在屏幕宽度为320dp的设备上测试app，确保其逻辑正常，无按钮不能点甚至crash出现。</li>
+<li>屏幕缩小和放大，app的界面和逻辑是否正常，内容是否能展示完全。</li>
+</ul>
+<h6 id="优化建议-3"><a href="#优化建议-3" class="headerlink" title="优化建议"></a>优化建议</h6><ul>
+<li>避免用像素单位制定尺寸，因为像素不会随屏幕密度缩放，应该使用dp与像素无关的单位。<h4 id="NDK应用链接至平台库"><a href="#NDK应用链接至平台库" class="headerlink" title="NDK应用链接至平台库"></a>NDK应用链接至平台库</h4><h6 id="改动点-3"><a href="#改动点-3" class="headerlink" title="改动点"></a>改动点</h6></li>
+<li>NDK，只能使用Android平台提供的公开API</li>
+<li>如果使用了非公开API，在Android7.0的设备上运行的APP在日志消息输出中生成一个错误，并且会在手机上作为消息显示。</li>
+</ul>
+<h6 id="测试点-6"><a href="#测试点-6" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>主要是App的稳定性，APP启动过程和功能模块加载过程（可能会用到NDK库的场景）中是否会有crash</li>
+</ul>
+<h4 id="多屏模式"><a href="#多屏模式" class="headerlink" title="多屏模式"></a>多屏模式</h4><h6 id="改动点-4"><a href="#改动点-4" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>可以拖拽app在屏幕上同时运行两个应用，比如可以同时浏览网页和写邮件</li>
+<li>这种情况下，会忽略屏幕旋转的配置。</li>
+</ul>
+<h6 id="测试点-7"><a href="#测试点-7" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>主要是界面的适配，比如界面元素能否显示完全，滚动条是否可以正常使用等。</li>
+<li>app的交互逻辑是否正常，比如：页面跳转、点击事件等。</li>
+</ul>
+<h4 id="逐步引入JDK8-0"><a href="#逐步引入JDK8-0" class="headerlink" title="逐步引入JDK8.0"></a>逐步引入JDK8.0</h4><h6 id="改动点-5"><a href="#改动点-5" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>主要改动是会引入一些新的语法及去掉一些不再使用的方法</li>
+<li>其他java8的特性，比如：Lambdas</li>
+</ul>
+<h6 id="测试点-8"><a href="#测试点-8" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>app的整体的兼容性，是否有crash。比如：ArrayList实现中的私有属性array被移除，假如用到它，就可能会crash。</li>
+<li>牵扯到一些api的变更，需要整体适配。</li>
+</ul>
+<h4 id="通知增强功能"><a href="#通知增强功能" class="headerlink" title="通知增强功能"></a>通知增强功能</h4><h6 id="改动点-6"><a href="#改动点-6" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>自定义消息样式（可以设计和自己app符合的样式）</li>
+<li>捆绑通知（消息设置成组）</li>
+<li>直接回复</li>
+<li>自定义视图</li>
+</ul>
+<h6 id="测试点-9"><a href="#测试点-9" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>验证app通知展示及逻辑是否正常。</li>
+<li>验证app通知直接回复是否可以正常使用。</li>
+</ul>
+<h4 id="JIT-AOT编译"><a href="#JIT-AOT编译" class="headerlink" title="JIT/AOT编译"></a>JIT/AOT编译</h4><h6 id="测试点-10"><a href="#测试点-10" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>安装APK时不再编译成本地机器码，而只是解释字节码（类似Dalvik）</li>
+<li>ART有一种更快的解释器，通过一种新的JIT完成。代码在执行期间被分析，分析结果保存起来，当设备空闲或者充电时，ART会对 执行频繁的代码进行编译成机器码。</li>
+</ul>
+<h4 id="Data-Saver"><a href="#Data-Saver" class="headerlink" title="Data Saver"></a>Data Saver</h4><h6 id="改动点-7"><a href="#改动点-7" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>主要是为了限制后台应用的流量消耗（针对蜂窝网络：4G、3G、2G）</li>
+<li>开启Data Saver之后，后台应用无法访问网络，可以通过intent启动Data Saver设置页面</li>
+</ul>
+<h6 id="测试点-11"><a href="#测试点-11" class="headerlink" title="测试点"></a>测试点</h6><ul>
+<li>验证app在Data Saver开启之后的逻辑是否正常：比如是否能拉起设置页面。</li>
+<li>验证开启Data Saver之后，心跳包逻辑是否正常（是否会不停做无意义的重连操作等）。</li>
+</ul>
+<h4 id="其他重要说明"><a href="#其他重要说明" class="headerlink" title="其他重要说明"></a>其他重要说明</h4><h6 id="改动点-8"><a href="#改动点-8" class="headerlink" title="改动点"></a>改动点</h6><ul>
+<li>因为屏幕可以缩放，在Android7.0及以上版本，当屏幕密度发生变化时不会终止所有的应用。</li>
+<li>在Android7.0以下的版本，当屏幕密度发生变化时，会终止应用的进程。</li>
+<li>Android7.0上的应用能够妥善处理配置变更。</li>
+<li>新增了StrictMode在主线程写TCP套接字数据的判断，会抛出android.os.NetworkOnMainThreadException。</li>
+<li>Debug.startMethodTracing()方法抓取的trace文件不再存储到sdcard，而是放到上面提到的共享存储空间特定目录中。</li>
+<li>检查Binder事务间发送的大负载，比如在Activity.onSaveInstance()上传过多的数据。这会引发RuntimeException</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android7-0特性/" rel="tag">#android7.0特性</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/08/Adb工作原理/" rel="next" title="Adb工作原理">
+                <i class="fa fa-chevron-left"></i> Adb工作原理
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/16/Android页面流畅度测试/" rel="prev" title="Android页面流畅度测试">
+                Android页面流畅度测试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/13/Android7-0新特性/"
+           data-title="Android7.0新特性" data-url="http://yoursite.com/2017/02/13/Android7-0新特性/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Doze-打盹模式-加强版"><span class="nav-text">Doze(打盹模式)加强版</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#对应改动点"><span class="nav-text">对应改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点"><span class="nav-text">测试点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#优化建议"><span class="nav-text">优化建议</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#备注"><span class="nav-text">备注</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐式广播优化"><span class="nav-text">隐式广播优化</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-1"><span class="nav-text">测试点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#优化建议-1"><span class="nav-text">优化建议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权限变更（系统权限更改）"><span class="nav-text">权限变更（系统权限更改）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-1"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-2"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用间共享文件"><span class="nav-text">应用间共享文件</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-3"><span class="nav-text">测试点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-4"><span class="nav-text">测试点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#优化建议-2"><span class="nav-text">优化建议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#无障碍改进"><span class="nav-text">无障碍改进</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-2"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-5"><span class="nav-text">测试点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#优化建议-3"><span class="nav-text">优化建议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NDK应用链接至平台库"><span class="nav-text">NDK应用链接至平台库</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-3"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-6"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多屏模式"><span class="nav-text">多屏模式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-4"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-7"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逐步引入JDK8-0"><span class="nav-text">逐步引入JDK8.0</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-5"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-8"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通知增强功能"><span class="nav-text">通知增强功能</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-6"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-9"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JIT-AOT编译"><span class="nav-text">JIT/AOT编译</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-10"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data-Saver"><span class="nav-text">Data Saver</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-7"><span class="nav-text">改动点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试点-11"><span class="nav-text">测试点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他重要说明"><span class="nav-text">其他重要说明</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#改动点-8"><span class="nav-text">改动点</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

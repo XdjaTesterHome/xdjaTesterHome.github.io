@@ -1,0 +1,772 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="TraceView,工具," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="TraceView简介
+在性能分析和定位过程中，TraceView是使用比较多的一个工具，在遇到APP启动时间过长、界面切换时间比较长以及卡顿的时候，都可以先用TraceView来查看方法调用栈，查看比较耗时的方法以及各个线程的执行情况。
+Traceview是Android平台特有的数据采集和分析工具,它主要用于分析Android中应用程序的性能问题。Traceview本身只是一个数据分析工具,而">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TraceView工具的使用">
+<meta property="og:url" content="http://yoursite.com/2016/10/19/TraceView工具的使用/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="TraceView简介
+在性能分析和定位过程中，TraceView是使用比较多的一个工具，在遇到APP启动时间过长、界面切换时间比较长以及卡顿的时候，都可以先用TraceView来查看方法调用栈，查看比较耗时的方法以及各个线程的执行情况。
+Traceview是Android平台特有的数据采集和分析工具,它主要用于分析Android中应用程序的性能问题。Traceview本身只是一个数据分析工具,而">
+<meta property="og:image" content="http://yoursite.com/upload/image/Traceview_ddms.jpg">
+<meta property="og:image" content="http://yoursite.com/upload/image/traceview_choose.png">
+<meta property="og:image" content="http://yoursite.com/upload/image/trace_view_panel.png">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TraceView工具的使用">
+<meta name="twitter:description" content="TraceView简介
+在性能分析和定位过程中，TraceView是使用比较多的一个工具，在遇到APP启动时间过长、界面切换时间比较长以及卡顿的时候，都可以先用TraceView来查看方法调用栈，查看比较耗时的方法以及各个线程的执行情况。
+Traceview是Android平台特有的数据采集和分析工具,它主要用于分析Android中应用程序的性能问题。Traceview本身只是一个数据分析工具,而">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/Traceview_ddms.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/19/TraceView工具的使用/"/>
+
+
+  <title> TraceView工具的使用 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                TraceView工具的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-19T15:50:49+08:00" content="2016-10-19">
+              2016-10-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/工具使用/" itemprop="url" rel="index">
+                    <span itemprop="name">工具使用</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/19/TraceView工具的使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/19/TraceView工具的使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TraceView简介"><a href="#TraceView简介" class="headerlink" title="TraceView简介"></a>TraceView简介</h2><ul>
+<li>在性能分析和定位过程中，TraceView是使用比较多的一个工具，在遇到APP启动时间过长、界面切换时间比较长以及卡顿的时候，都可以先用TraceView来查看方法调用栈，查看比较耗时的方法以及各个线程的执行情况。</li>
+<li>Traceview是Android平台特有的数据采集和分析工具,它主要用于分析Android中应用程序的性能问题。Traceview本身只是一个数据分析工具,而数据的采集则需要使用Android SDK中的Debug类或者利用DDMS工具。</li>
+</ul>
+<h2 id="TraceView的使用"><a href="#TraceView的使用" class="headerlink" title="TraceView的使用"></a>TraceView的使用</h2><h4 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h4><ul>
+<li>上面提到，数据采集有两种方式，使用Android SDK中的Debug类或者利用DDMS工具，下面就分别介绍下：</li>
+</ul>
+<h5 id="Android-SDK中Debug类"><a href="#Android-SDK中Debug类" class="headerlink" title="Android SDK中Debug类"></a>Android SDK中Debug类</h5><ul>
+<li>开发者在一些关键代码段开始前调用Android SDK中Debug类的startMethodTracing函数,并在关键代码段结束前调用stopMethodTracing函数。这两个函数运行过程中将采集运行时间内该应用所有线程（注意,只能是Java线程）的函数执行情况,并将采集数据保存到/mnt/sdcard/下的一个文件中。</li>
+</ul>
+<h5 id="DDMS工具"><a href="#DDMS工具" class="headerlink" title="DDMS工具"></a>DDMS工具</h5><ul>
+<li>借助Android SDK中的DDMS工具。DDMS可采集系统中某个正在运行的进程的函数调用信息。对开发者而言,此方法适用于没有目标应用源代码的情况。DDMS工具中Traceview的使用如图所示。<br><img src="/upload/image/Traceview_ddms.jpg" alt="DDMS_traceView的使用"></li>
+<li>在对Android4.4以上手机点击TraceView按钮的时候，会出现2中方式的选择对话框，如下图所示：<br><img src="/upload/image/traceview_choose.png" alt="TraceView DDMS"></li>
+<li>Sample based profiling：以固定的频率像VM发送中断,并搜集调用栈信息。低版本手机也是采用该方式来采集样本的,默认是1毫秒采集一次。精确度和采集的频率有关,间隔频率越小会越精确,但运行也会相应的更慢。一般我们默认用1000微秒就足够了。</li>
+<li>Trace based profiling：不论多小的函数,都会跟踪整个函数的执行过程,所以开销也会很大。运行起来会非常的慢,不适合检测滑动性能。</li>
+</ul>
+<h5 id="上面两种方式比较"><a href="#上面两种方式比较" class="headerlink" title="上面两种方式比较"></a>上面两种方式比较</h5><ul>
+<li>使用Android Debug类一般还需要去熟悉代码，且采集到的数据还要pull到本地，然后转换成MAT（参考MAT的使用），使用起来相对麻烦，所以对于测试同学来说DDMS是比较好的方式，但是对于某些场景是需要用Debug类方式来测试的，比如APP首次启动，因为进程还没创建，所以DDMS没法用。</li>
+<li>在做性能分析的过程中,基本都是采用DDMS工具中来启动TraceView,这样简单易用,随便哪个地方的代码都可以跟踪。所以一般测试过程中，我们用DDMS工具的方式比较多。</li>
+</ul>
+<h4 id="数据分析"><a href="#数据分析" class="headerlink" title="数据分析"></a>数据分析</h4><h5 id="初识Traceview界面"><a href="#初识Traceview界面" class="headerlink" title="初识Traceview界面"></a>初识Traceview界面</h5><ul>
+<li>使用DDMS工具采集数据的方式，暂停之后会自动打开一个分析数据的界面，如下图所示：<img src="/upload/image/trace_view_panel.png" alt="TraceView面板"></li>
+<li>不过需要注意的是，在DDMS工具中打开的Traceview界面中的搜索框是没作用的，你不管输入任何东西也过滤不出来。如果想使用搜索功能（搜索功能其实还挺有用），可以通过 Android SDK tools 下的TraceView命令打开数据采集生成的trace文件（一般存放在C:\Users\xxx\AppData\Local\Temp\xxxx.trace）</li>
+<li>如上图所示，Traceview其UI划分为上下两个面板,即Timeline Panel和Profile Panel。</li>
+<li>Timeline Panel左边是测试数据中所采集的线程信息,右边Pane所示为时间线,时间线上是每个线程测试时间段内所涉及的函数调用信息。内容的丰富代表该时间段执行的函数多,从而可以反应线程的繁忙状态。也可以看出线程的启动时间和结束时间等。开发者可以在时间线Pane中移动时间线纵轴。纵轴上边将显示当前时间点中某线程正在执行的函数信息。</li>
+<li>Profile Panel是Traceview的核心界面,其内涵非常丰富。它主要展示了某个线程（先在Timeline Panel中选择线程）中各个函数调用的情况,包括CPU使用时间、调用次数等信息。而这些信息正是查找性能瓶颈的关键依据。</li>
+<li>两个面板之间是相互联动的，点击下面的函数，可以在时间轴上显示对应的位置（如上图所示，点击draw方法，在时间线main线程上有很多下拉框）。另外在时间线上拉伸可以放大时间线，双击顶部的时间条区域可以缩小原始状态。</li>
+</ul>
+<h5 id="Profile-Panel中各列的含义"><a href="#Profile-Panel中各列的含义" class="headerlink" title="Profile Panel中各列的含义"></a>Profile Panel中各列的含义</h5><ul>
+<li>网上关于这个的介绍非常多，我这里就再搬过来写一遍，省去大家去查找的时间了。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>该线程运行过程中所调用的函数名</td>
+</tr>
+<tr>
+<td>Incl Cpu Time</td>
+<td>某函数占用的CPU时间,包含内部调用其它函数的CPU时间</td>
+</tr>
+<tr>
+<td>Excl Cpu Time</td>
+<td>某函数占用的CPU时间,但不含内部调用其它函数所占用的CPU时间</td>
+</tr>
+<tr>
+<td>Incl Real Time</td>
+<td>某函数运行的真实时间（以毫秒为单位）,内含调用其它函数所占用的真实时间</td>
+</tr>
+<tr>
+<td>Excl Real Time</td>
+<td>数运行的真实时间（以毫秒为单位）,不含调用其它函数所占用的真实时间</td>
+</tr>
+<tr>
+<td>Call+Recur Calls/Total</td>
+<td>某函数被调用次数以及递归调用次数/总调用次数</td>
+</tr>
+<tr>
+<td>Cpu Time/Call</td>
+<td>某函数调用CPU时间与调用次数的比。相当于该函数平均执行时间</td>
+</tr>
+<tr>
+<td>Real Time/Call</td>
+<td>同CPU Time/Call类似,只不过统计单位换成了真实时间</td>
+</tr>
+</tbody>
+</table>
+<h6 id="上面这些指标中我们经常用到的有"><a href="#上面这些指标中我们经常用到的有" class="headerlink" title="上面这些指标中我们经常用到的有"></a>上面这些指标中我们经常用到的有</h6><ul>
+<li>Incl Cpu Time 可以用来排序查找比较耗时的逻辑。</li>
+<li>Call+Recur Calls/Total 可以用来查看是否有重复调用的情况，比如：ListView在滑动过程中，是否多次调用getview()。</li>
+<li>Cpu Time/Call 可以用来查看一个方法的平均执行时间，比如：App首次启动过程中某个初始化方法init()执行时间比较长。</li>
+<li>这几个指标可以排序，结合起来排查问题。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/TraceView-工具/" rel="tag">#TraceView,工具</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/19/如何写文章/" rel="next" title="如何写文章">
+                <i class="fa fa-chevron-left"></i> 如何写文章
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/19/MAT工具的使用/" rel="prev" title="MAT（Memory Analyzer Tool）工具的使用">
+                MAT（Memory Analyzer Tool）工具的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/19/TraceView工具的使用/"
+           data-title="TraceView工具的使用" data-url="http://yoursite.com/2016/10/19/TraceView工具的使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TraceView简介"><span class="nav-text">TraceView简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TraceView的使用"><span class="nav-text">TraceView的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据采集"><span class="nav-text">数据采集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Android-SDK中Debug类"><span class="nav-text">Android SDK中Debug类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DDMS工具"><span class="nav-text">DDMS工具</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#上面两种方式比较"><span class="nav-text">上面两种方式比较</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据分析"><span class="nav-text">数据分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#初识Traceview界面"><span class="nav-text">初识Traceview界面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Profile-Panel中各列的含义"><span class="nav-text">Profile Panel中各列的含义</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#上面这些指标中我们经常用到的有"><span class="nav-text">上面这些指标中我们经常用到的有</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

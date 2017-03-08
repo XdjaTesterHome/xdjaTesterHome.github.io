@@ -1,0 +1,808 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,内存泄漏," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+感觉我们公司的App，比较严重的是内存问题，而内存问题比较严重的是泄漏问题，所以搞清楚常见的内存泄漏问题，有助于我们平时去排查内存泄漏问题。
+这篇文章是参考Android内存泄漏的八种可能，然后准备结合着具体的小例子来分析。
+Android开发中，最容易引起内存泄漏问题的是Context，比如之前测安全邮件的时候，退出APP之后进程没有被杀死，所以它引用的大量的view、工具类对象都不能被释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见Android内存泄漏">
+<meta property="og:url" content="http://yoursite.com/2016/11/03/Android内存泄漏Tips/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+感觉我们公司的App，比较严重的是内存问题，而内存问题比较严重的是泄漏问题，所以搞清楚常见的内存泄漏问题，有助于我们平时去排查内存泄漏问题。
+这篇文章是参考Android内存泄漏的八种可能，然后准备结合着具体的小例子来分析。
+Android开发中，最容易引起内存泄漏问题的是Context，比如之前测安全邮件的时候，退出APP之后进程没有被杀死，所以它引用的大量的view、工具类对象都不能被释">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/staticActivity.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/static_view.PNG.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/innerclass.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/anonymous.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/handler.PNG">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/service.PNG">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.833Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见Android内存泄漏">
+<meta name="twitter:description" content="背景
+感觉我们公司的App，比较严重的是内存问题，而内存问题比较严重的是泄漏问题，所以搞清楚常见的内存泄漏问题，有助于我们平时去排查内存泄漏问题。
+这篇文章是参考Android内存泄漏的八种可能，然后准备结合着具体的小例子来分析。
+Android开发中，最容易引起内存泄漏问题的是Context，比如之前测安全邮件的时候，退出APP之后进程没有被杀死，所以它引用的大量的view、工具类对象都不能被释">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/staticActivity.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/03/Android内存泄漏Tips/"/>
+
+
+  <title> 常见Android内存泄漏 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                常见Android内存泄漏
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-03T14:17:22+08:00" content="2016-11-03">
+              2016-11-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/实例分析/" itemprop="url" rel="index">
+                    <span itemprop="name">实例分析</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/03/Android内存泄漏Tips/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/03/Android内存泄漏Tips/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>感觉我们公司的App，比较严重的是内存问题，而内存问题比较严重的是泄漏问题，所以搞清楚常见的内存泄漏问题，有助于我们平时去排查内存泄漏问题。</li>
+<li>这篇文章是参考<a href="http://www.jianshu.com/p/ac00e370f83d" target="_blank" rel="external">Android内存泄漏的八种可能</a>，然后准备结合着具体的小例子来分析。</li>
+<li>Android开发中，最容易引起内存泄漏问题的是Context，比如之前测安全邮件的时候，退出APP之后进程没有被杀死，所以它引用的大量的view、工具类对象都不能被释放，一泄漏就是一大片的对象。</li>
+</ul>
+<h4 id="java-内存分配策略"><a href="#java-内存分配策略" class="headerlink" title="java 内存分配策略"></a>java 内存分配策略</h4><ul>
+<li>这个话题网上应该挺多总结的，我大概的提一下，方便大家对java内存管理有个印象。</li>
+<li>静态存储区（方法区）：主要存放静态数据、全局static数据和常量。这块数据在编译时就已经分配好，并且在程序运行期间都存在，这也是静态变量会引起内存泄漏的原因，下面会多次提到。</li>
+<li>栈区：当方法被执行时，方法体内的局部变量都在栈上创建，并在方法执行结束时这些局部变量所持有的内存将会自动被释放。因为栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限，栈区的大小可以通过-xss配置。</li>
+<li>堆区：又称动态内存分配，通常就是指在程序运行时直接 new 出来的内存。这部分内存在不使用时将会由 Java 垃圾回收器来负责回收。</li>
+</ul>
+<h4 id="下面就分析下常见的内存泄漏问题："><a href="#下面就分析下常见的内存泄漏问题：" class="headerlink" title="下面就分析下常见的内存泄漏问题："></a>下面就分析下常见的内存泄漏问题：</h4><h2 id="static-Activities"><a href="#static-Activities" class="headerlink" title="static Activities"></a>static Activities</h2><h4 id="问题出现原因"><a href="#问题出现原因" class="headerlink" title="问题出现原因"></a>问题出现原因</h4><ul>
+<li>在某个类中定义了静态的Activity变量，把当前运行的Activity实例赋值于这个静态变量（比较常见的是某些单例xxxxHelper在Activity中使用时将Activity设置进去）。静态变量的生命周期比较长，因为垃圾回收并不回收静态变量，除非我们手动的将静态变量释放掉。因此使用静态变量要特别小心，很容易导致泄漏。</li>
+<li><p>我这里写了个例子，有两个Activity，其中一个Activity中静态变量引用另一个Activity，然后多次启动Activity。下面是FirstActivity的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">       setContentView(R.layout.activity_first);</div><div class="line"></div><div class="line">       Button button = (Button) findViewById(R.id.jump_btn);</div><div class="line">       button.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">               SecondActivity.setContext(FirstActivity.<span class="keyword">this</span>);</div><div class="line">               Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">               intent.setClass(FirstActivity.<span class="keyword">this</span>, SecondActivity.class);</div><div class="line">               FirstActivity.<span class="keyword">this</span>.startActivity(intent);</div><div class="line">           &#125;</div><div class="line">       &#125;);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>两个Activity跳转几次后，GC两次，然后用AndroidStudio memory Monitor抓取hprof（抓取内存快照的方法参考<a href="/2016/10/19/MAT工具的使用/" title="MAT工具的使用">MAT工具的使用</a>），我这里用MAT进行分析（也可以用AndroidStudio分析，更方便），结果如下图所示：<img src="/upload/image/zlw/staticActivity.PNG" alt="staticActivity.PNG"></p>
+</li>
+<li>从图中可以看出来，SecondActivity通过mContext持有了FirstActivity对象的引用，造成FirstActivity不能被释放。</li>
+</ul>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li><p>上面提到对于静态变量，需要我们自己处理，虽然静态变量不可控，但是Activity的生命周期是已知的，所以我们只需要在有静态变量的类销毁时，将静态变量置为null就可以了。在这个例子中我们是在SecondActivity销毁时，将静态变量置空</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onDestroy();</div><div class="line">    mContext = <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>当然有时候可能这个静态变量是不能被立即释放掉的，这个时候我们可以用WeakReference，关于java中的引用类型，有不明白的可以Google下不难理解。<br>用WeakReference不会阻止对象的释放，即当GC扫描到WeakReference对象时，会立即将它回收掉。</p>
+</li>
+<li><p>修改之后再抓取Hprof，会发现FirstActivity不会被泄漏了。</p>
+</li>
+</ul>
+<h2 id="static-Views"><a href="#static-Views" class="headerlink" title="static Views"></a>static Views</h2><ul>
+<li><p>静态变量持有View，有时候开发同学基于自己逻辑的某些需要（比如另一个类中需要用到当前类的某些View，或者想用来缓存当前View）会将View写成静态的。我们先直接看个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> Button staticBtn;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">      <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">      setContentView(R.layout.activity_first);</div><div class="line"></div><div class="line">      staticBtn = (Button) findViewById(R.id.jump_btn);</div><div class="line">      staticBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line"><span class="comment">//                SecondActivity.setContext(FirstActivity.this);</span></div><div class="line">              Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">              intent.setClass(FirstActivity.<span class="keyword">this</span>, SecondActivity.class);</div><div class="line">              FirstActivity.<span class="keyword">this</span>.startActivity(intent);</div><div class="line">          &#125;</div><div class="line">      &#125;);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用MAT分析抓到的hprof，搜索发现FirstActivity泄漏，如下图：<br><img src="/upload/image/zlw/static_view.PNG.PNG" alt="staticActivity.PNG"></p>
+</li>
+<li><p>从图中可以看出，FirstActivity通过staticBtn引用了AppCompatButton，最后又通过mContext引用了FirstActivity，又绕回来了。这是因为Activity中的View会持有对Activity的引用。所以最终还是造成Activity内存泄漏。</p>
+</li>
+</ul>
+<h4 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>参考 static Activity的解决方法，是相似的。</li>
+</ul>
+<h2 id="Inner-Class"><a href="#Inner-Class" class="headerlink" title="Inner Class"></a>Inner Class</h2><ul>
+<li>内部类我觉得在平时开发中用到的非常多，主要是因为感觉没必要重新写一个新的类，同时还能有一定的封装性。</li>
+<li>内部类显著的一个特点是它持有外部类的一个引用。所以使用不当，非常容易造成内存泄漏。</li>
+<li><p>再改造下之前的例子，让内部类持有一个静态变量的引用，主要代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">staticBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line"><span class="comment">//                SecondActivity.setContext(FirstActivity.this);</span></div><div class="line">        createInnerClass();</div><div class="line">        Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">        intent.setClass(FirstActivity.<span class="keyword">this</span>, SecondActivity.class);</div><div class="line">        FirstActivity.<span class="keyword">this</span>.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">&#125;</div><div class="line"><span class="keyword">static</span> InnerClass mInnerClass;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">InnerClass</span></span>&#123;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">createInnerClass</span><span class="params">()</span></span>&#123;</div><div class="line">mInnerClass = <span class="keyword">new</span> InnerClass();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用MAT分析抓到的hprof文件，如下图所示：<br><img src="/upload/image/zlw/innerclass.PNG" alt="innerclass.PNG"></p>
+</li>
+<li>从上图可以看出因为内部类因为静态变量mInnerClass,造成FirstActivity内存泄漏。正是因为内部类InnerClass会持有外部类FirstActivity的实例，而InnerClass因为静态变量无法释放造成的泄漏。</li>
+</ul>
+<h4 id="解决方法-2"><a href="#解决方法-2" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>可以考虑使用静态内部类，静态内部类不会持有外部类的引用。</li>
+<li>慎用静态变量，比如上面的例子中将mInnerClass改成非静态的是可以避免这一类的内存泄漏的。</li>
+</ul>
+<h2 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h2><ul>
+<li>匿名内部类在Android开发中用的非常广，因为方便，比如我们设置监听事件、开启一个AsyncTask都可以用匿名内部类方便的实现。</li>
+<li><p>匿名内部类同样会持有外部类的一个引用，这也是容易泄露的原因。这里的例子是用AsyncTask开启一个永远完不成的任务，代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">    *  开启AsyncTask</div><div class="line">    */</div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">startAsyncTask</span><span class="params">()</span></span>&#123;</div><div class="line">       <span class="keyword">new</span> AsyncTask&lt;Void, Void, Void&gt;()&#123;</div><div class="line"></div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">protected</span> Void <span class="title">doInBackground</span><span class="params">(Void... params)</span> </span>&#123;</div><div class="line">               <span class="keyword">while</span> (<span class="keyword">true</span>);</div><div class="line">           &#125;</div><div class="line">       &#125;.execute();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用MAT分析hprof，经过分析，得到如下结果：<br><img src="/upload/image/zlw/anonymous.PNG" alt="anonymous.PNG"></p>
+</li>
+<li>因为AsyncTask内部是线程在工作，而匿名内部类会持有外部的引用，所以当AsyncTask任务没完成时，会造成外部类引用释放不了，重而内存泄漏。所以当见到GCRoot[GCroot的概念参考<a href="/2016/10/19/MAT工具的使用/" title="MAT工具的使用">MAT工具的使用</a>]是Thread时，就可以怀疑是不是Thread的任务没完成，造成的内存泄漏。</li>
+</ul>
+<h4 id="解决方法-3"><a href="#解决方法-3" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>使用静态内部类，静态内部类没有外部类的引用。</li>
+<li>在页面退出时，终止线程的任务，比如本例中的AsyncTask，在退出页面时可以cancel任务。这样也能避免内存泄漏。</li>
+</ul>
+<h2 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h2><ul>
+<li>开发中也经常定义一个匿名Runnable对象并交给Handler去处理，比如做延时操作等。这种写法也是非常容易造成内存泄漏的。因为Runnable对象间接引用了外部类Activity对象，然后Runnable会被提交到Handler的MessageQueue中，所以如果Activity 销毁时Runnable还没有被执行，那么activity就会被泄漏掉。</li>
+<li><p>我们写个例子，用来执行一个延时任务，代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * 创建一个Handler</div><div class="line">  */</div><div class="line"> <span class="function"><span class="keyword">void</span> <span class="title">createHandler</span><span class="params">()</span></span>&#123;</div><div class="line">     <span class="keyword">new</span> Handler()&#123;</div><div class="line">         <span class="meta">@Override</span></div><div class="line">         <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">             <span class="keyword">super</span>.handleMessage(msg);</div><div class="line">         &#125;</div><div class="line">     &#125;.postDelayed(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">         <span class="meta">@Override</span></div><div class="line">         <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">             <span class="keyword">while</span> (<span class="keyword">true</span>);</div><div class="line">         &#125;</div><div class="line">     &#125;, Long.MAX_VALUE &gt;&gt; <span class="number">1</span>);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>页面切换几次后，用AndroidStudio抓取hprof数据，用MAT分析结果如下图所示：<br><img src="/upload/image/zlw/handler.PNG" alt="handler.PNG"></p>
+</li>
+<li>这个内存泄漏结果是比较常见的，GCroot  是Thread，它以java Local的形式被Message持有，表示MessageQueue中还有message在处理，造成了内存泄漏。</li>
+</ul>
+<h4 id="解决方法-4"><a href="#解决方法-4" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>参考上面匿名内部类的处理方法</li>
+</ul>
+<h2 id="service-Manager"><a href="#service-Manager" class="headerlink" title="service Manager"></a>service Manager</h2><ul>
+<li>通过Context.getSystemService(int name)可以获取服务，这些服务工作在各自的进程中，帮助应用处理后台任务，处理硬件交互。如果需要使用这些服务，可以注册监听器，这会导致服务持有了Context的引用，如果在Activity销毁的时候没有注销这些监听器，会导致内存泄漏。</li>
+<li><p>我们就用SensorManager来写个例子，验证下，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">    *  注册Listener</div><div class="line">    */</div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">registerListener</span><span class="params">()</span></span>&#123;</div><div class="line">       SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);</div><div class="line">       Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ALL);</div><div class="line">       sensorManager.registerListener(<span class="keyword">this</span>, sensor, SensorManager.SENSOR_DELAY_FASTEST);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用MAT分析hprof数据，如下图所示：<br><img src="/upload/image/zlw/service.PNG" alt="service.PNG"></p>
+</li>
+<li>可以看到，注册Listener的时候，sensor会持有外部类的一个实例。造成内存泄漏。</li>
+</ul>
+<h4 id="解决方法-5"><a href="#解决方法-5" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>在页面退出时，能够unregisteListener，这样就能够释放外部类引用，避免内存泄漏。</li>
+<li>在开发的过程中，非常容易忘记去UNregisterListener，所以好的习惯是，写一个register之后立马写一个Unregister，这样可以避免忘记反注册。</li>
+</ul>
+<h2 id="集合类的泄漏"><a href="#集合类的泄漏" class="headerlink" title="集合类的泄漏"></a>集合类的泄漏</h2><ul>
+<li>集合在平时开发中也是被大量使用的，如果这个集合类是由静态变量引用，并且只添加了元素，但是在不用的时候并没有释放元素，那么就有可能造成内存泄漏。不过由于如果元素不清理的话可能会影响程序的逻辑，所以一般可以避免这种情况，但是稍有不留意，也是非常容易出现内存泄漏的。</li>
+<li>这里就不举例子说明了，这种场景相对简单。</li>
+</ul>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul>
+<li>在页面退出时，要清空不用的数据集合。</li>
+</ul>
+<h2 id="其他常见泄漏场景"><a href="#其他常见泄漏场景" class="headerlink" title="其他常见泄漏场景"></a>其他常见泄漏场景</h2><ul>
+<li>资源未关闭造成的内存泄漏， 比如：File、Cursor、Stream、Bitmap等资源，他们在不使用的时候一定要及时销毁回收。特别是Bitmap，会占用非常大的内存空间。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们从上面的例子中可以总结出，造成内存泄漏的原因有下面两种：</p>
+<ul>
+<li>过多的使用static变量，并且没有正确释放不用的对象。</li>
+<li>对象的生命周期（比如Thread）比Activity的生命周期长，造成内存泄漏。</li>
+</ul>
+<p>这里就先总结了常见的内存泄漏场景，后面碰见比较经典的问题再总结。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-内存泄漏/" rel="tag">#Android,内存泄漏</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/03/移动APP耗电量&功耗测试，应该如何开展？/" rel="next" title="移动APP耗电量&功耗测试，应该如何开展？">
+                <i class="fa fa-chevron-left"></i> 移动APP耗电量&功耗测试，应该如何开展？
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/11/root权限下删除系统应用/" rel="prev" title="root权限下删除系统应用">
+                root权限下删除系统应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/03/Android内存泄漏Tips/"
+           data-title="常见Android内存泄漏" data-url="http://yoursite.com/2016/11/03/Android内存泄漏Tips/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#java-内存分配策略"><span class="nav-text">java 内存分配策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面就分析下常见的内存泄漏问题："><span class="nav-text">下面就分析下常见的内存泄漏问题：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#static-Activities"><span class="nav-text">static Activities</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题出现原因"><span class="nav-text">问题出现原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#static-Views"><span class="nav-text">static Views</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-1"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inner-Class"><span class="nav-text">Inner Class</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-2"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匿名内部类"><span class="nav-text">匿名内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-3"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handler"><span class="nav-text">Handler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-4"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service-Manager"><span class="nav-text">service Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-5"><span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合类的泄漏"><span class="nav-text">集合类的泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-text">解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他常见泄漏场景"><span class="nav-text">其他常见泄漏场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

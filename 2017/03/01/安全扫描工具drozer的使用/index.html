@@ -1,0 +1,774 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="drozer, 安全扫描," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+Drozer是一个由 MWR 安全团队维护开源的软件，该软件是针对Android平台的安全审计和攻击框架。安全人员可以通过drozer自身提供的一些module完成一些基础的安全测试功能，同时也可以根据需求实现自己的module，甚至可以在利用drozer提供的框架实现一些自动化审计功能。
+Drozer提供了一些工具来帮助你使用和分享Android上的公共利用漏洞。对于远程漏洞利用，它能生成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安全扫描工具drozer的使用">
+<meta property="og:url" content="http://yoursite.com/2017/03/01/安全扫描工具drozer的使用/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+Drozer是一个由 MWR 安全团队维护开源的软件，该软件是针对Android平台的安全审计和攻击框架。安全人员可以通过drozer自身提供的一些module完成一些基础的安全测试功能，同时也可以根据需求实现自己的module，甚至可以在利用drozer提供的框架实现一些自动化审计功能。
+Drozer提供了一些工具来帮助你使用和分享Android上的公共利用漏洞。对于远程漏洞利用，它能生成">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/drozer.PNG">
+<meta property="og:updated_time" content="2017-03-07T04:18:14.838Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="安全扫描工具drozer的使用">
+<meta name="twitter:description" content="背景
+Drozer是一个由 MWR 安全团队维护开源的软件，该软件是针对Android平台的安全审计和攻击框架。安全人员可以通过drozer自身提供的一些module完成一些基础的安全测试功能，同时也可以根据需求实现自己的module，甚至可以在利用drozer提供的框架实现一些自动化审计功能。
+Drozer提供了一些工具来帮助你使用和分享Android上的公共利用漏洞。对于远程漏洞利用，它能生成">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/drozer.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/01/安全扫描工具drozer的使用/"/>
+
+
+  <title> 安全扫描工具drozer的使用 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                安全扫描工具drozer的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-01T15:07:17+08:00" content="2017-03-01">
+              2017-03-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/工具使用/" itemprop="url" rel="index">
+                    <span itemprop="name">工具使用</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/01/安全扫描工具drozer的使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/01/安全扫描工具drozer的使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>Drozer是一个由 MWR 安全团队维护开源的软件，该软件是针对Android平台的安全审计和攻击框架。安全人员可以通过drozer自身提供的一些module完成一些基础的安全测试功能，同时也可以根据需求实现自己的module，甚至可以在利用drozer提供的框架实现一些自动化审计功能。</li>
+<li>Drozer提供了一些工具来帮助你使用和分享Android上的公共利用漏洞。对于远程漏洞利用，它能生成shellcode来帮助你部署drozer代理端。</li>
+</ul>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="PC客户端"><a href="#PC客户端" class="headerlink" title="PC客户端"></a>PC客户端</h3><ul>
+<li>下载drozer ：<a href="https://labs.mwrinfosecurity.com/tools/drozer/" target="_blank" rel="external">drozer</a>，选择适合自己系统的版本。我这里选择的是Windows版本<a href="https://github.com/mwrlabs/drozer/releases/download/2.3.4/drozer-installer-2.3.4.zip" target="_blank" rel="external">windows</a>。</li>
+<li>下载完之后，直接安装就好，Windows双击exe文件。</li>
+<li>drozer没有界面，需要将drozer的安装目录配置到环境变量。因为后面要用drozer命令。</li>
+<li>在下载的安装文件夹中，有一个agent.apk,是用于手机端的。</li>
+</ul>
+<h3 id="手机端"><a href="#手机端" class="headerlink" title="手机端"></a>手机端</h3><ul>
+<li>上面提到的agent.apk,直接命令行adb install agent.apk安装就行。</li>
+<li>如果上述文件夹中没有agent.apk，可以下载一个<a href="https://github.com/mwrlabs/drozer/releases/download/2.3.4/drozer-agent-2.3.4.apk" target="_blank" rel="external">apk</a></li>
+<li>安装完apk后，打开应用，点击Embedded server开关，开启服务。</li>
+</ul>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="创建连接"><a href="#创建连接" class="headerlink" title="创建连接"></a>创建连接</h3><ul>
+<li>手机需要usb连接到PC，先用adb devices命令检查手机是否连上PC。</li>
+<li>命令行执行adb forward tcp:31415 tcp:31415  ,adb forward的作用是将PC端31415端口的数据，转发到手机端31415端口，从而实现PC和手机的通信。</li>
+<li>命令行执行 drozer console connect 用于连接手机端的agent，成功后会有如下图所示界面：<br><img src="/upload/image/zlw/drozer.PNG" alt="drozer img"></li>
+<li>如果碰到【Error 10054】之类的错误，检查下手机端的服务是否开启成功。</li>
+</ul>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h4 id="获取包名"><a href="#获取包名" class="headerlink" title="获取包名"></a>获取包名</h4><ul>
+<li>run app.package.list -f [app关键字]   查找某个app包名  -f[app关键字]用于通过关键字筛选</li>
+</ul>
+<h4 id="获取应用基本信息"><a href="#获取应用基本信息" class="headerlink" title="获取应用基本信息"></a>获取应用基本信息</h4><ul>
+<li>run app.package.info -a packageName  返回对应包名的详细信息：权限、APKPATH等</li>
+</ul>
+<h4 id="确定攻击面"><a href="#确定攻击面" class="headerlink" title="确定攻击面"></a>确定攻击面</h4><ul>
+<li>run app.package.attacksurface  packageName 查找攻击面，主要关注Android 固有的IPC通信机制的脆弱性，这些特点导致了这个App泄漏敏感信息给同一台设备上的其它App</li>
+<li>我们首先运行上面这个命令确定哪些方面可能存在问题。</li>
+<li>我们需要关注那些被export，但是并没有设置调用权限的组件：Activity、Service、BroadReceiver、ContentProvider</li>
+</ul>
+<h4 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h4><ul>
+<li>run app.activity.info -a packageName ，上面命令可能找到了整体的攻击情况，这个命令用于进一步获取每个组件的攻击面信息，如activity</li>
+<li>我们需要关注的是那些 除了首页Activity之外的所有【可导出且不需要权限的activity】，因为他们可以被随意的被其他应用启动。</li>
+<li>run  app.activity.start  –component packageName  ActivityName 用drozer来启动对应的activity</li>
+</ul>
+<h4 id="检查Content-Provider问题"><a href="#检查Content-Provider问题" class="headerlink" title="检查Content Provider问题"></a>检查Content Provider问题</h4><h5 id="获取Content-Provider信息"><a href="#获取Content-Provider信息" class="headerlink" title="获取Content Provider信息"></a>获取Content Provider信息</h5><ul>
+<li>run app.provider.info -a packageName 获取content provider的信息</li>
+</ul>
+<h5 id="Content-Providers（数据泄露）"><a href="#Content-Providers（数据泄露）" class="headerlink" title="Content Providers（数据泄露）"></a>Content Providers（数据泄露）</h5><ul>
+<li>run scanner.provider.finduris -a packageName 用于查找对应包名的可能存在问题的URI</li>
+<li>run app.provider.query –vertical URI        通过URI从content中获取信息，比如可以获取密码账号相关信息</li>
+<li>run scanner.provider.injection  -a  packageName   检测可注入的URI的注入点</li>
+</ul>
+<h5 id="Content-Providers（SQL注入）"><a href="#Content-Providers（SQL注入）" class="headerlink" title="Content Providers（SQL注入）"></a>Content Providers（SQL注入）</h5><ul>
+<li>run app.provider.query  URI –projection “‘“  使用projection参数传递sql注入语句到content provider中</li>
+<li>run app.provider.query URI –projection “* from sqlite_master where type=’table’;–” –vertical    通过sql注入列出当前数据库DBContentProvider中的所有表名和字段名</li>
+<li>run app.provider.query URI –selection “‘“  使用selection 参数传递sql注入语句到content provider中</li>
+</ul>
+<h5 id="同时检测SQL注入和目录遍历"><a href="#同时检测SQL注入和目录遍历" class="headerlink" title="同时检测SQL注入和目录遍历"></a>同时检测SQL注入和目录遍历</h5><ul>
+<li>run scanner.provider.injection -a packageName</li>
+<li>run scanner.provider.traversal -a packageName</li>
+</ul>
+<h4 id="intent组件触发（拒绝服务、权限提升）"><a href="#intent组件触发（拒绝服务、权限提升）" class="headerlink" title="intent组件触发（拒绝服务、权限提升）"></a>intent组件触发（拒绝服务、权限提升）</h4><h5 id="介绍名词"><a href="#介绍名词" class="headerlink" title="介绍名词"></a>介绍名词</h5><ul>
+<li>拒绝服务：应用在使用getIntent()，getAction()，Intent.getXXXExtra()获取到空数据、异常或者畸形数据时没有进行异常捕获，应用就会发生Crash，应用不可使用（本地拒绝服务）。有些恶意应用可通过向受害者应用发送此类空数据、异常或者畸形数据从而使应用产生本地拒绝服务</li>
+<li>权限提升：</li>
+</ul>
+<h5 id="查看暴露的广播组件信息"><a href="#查看暴露的广播组件信息" class="headerlink" title="查看暴露的广播组件信息"></a>查看暴露的广播组件信息</h5><ul>
+<li>run app.broadcast.info -a com.package.name　　获取broadcast receivers信息</li>
+<li>run app.broadcast.send –component 包名 –action android.intent.action.XXX</li>
+</ul>
+<h5 id="尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）"><a href="#尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）" class="headerlink" title="尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）"></a>尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）</h5><ul>
+<li>run app.broadcast.send 通过intent发送broadcast receiver<h6 id="空action"><a href="#空action" class="headerlink" title="空action"></a>空action</h6></li>
+<li>run app.broadcast.send –component 包名 ReceiverName<h6 id="空extras"><a href="#空extras" class="headerlink" title="空extras"></a>空extras</h6></li>
+<li>run app.broadcast.send –action android.intent.action.XXX</li>
+</ul>
+<h4 id="检查service问题"><a href="#检查service问题" class="headerlink" title="检查service问题"></a>检查service问题</h4><ul>
+<li>run scanner.service -a packageName</li>
+</ul>
+<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><ul>
+<li>run scanner.misc.writablefiles –privileged /data/data/com.sina.weibo</li>
+<li>run scanner.misc.readablefiles –privileged /data/data/com.sina.weibo</li>
+<li>run app.broadcast.send –component 包名 –action android.intent.action.XXX</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>我这里只是列出了命令，并没有结合具体的例子，大家可以参考<a href="http://www.cnblogs.com/1chavez/p/4492574.html" target="_blank" rel="external">drozer的使用</a>，这里的有一些更具具体的例子。</li>
+<li>这里的大多数命令都是从其他地方copy过来的，我自己实践了一部分。这里也是为了记录下来预防之后会需要。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>安全扫描，对APK来说非常重要，因为不经意的一个漏洞，可能会对用户的财产造成损失（因为手机上绑定了用户的银行卡等信息）。</li>
+<li>后面随着对安全扫描的熟悉，考虑将规则添加到静态代码扫描规则中。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/drozer-安全扫描/" rel="tag">#drozer, 安全扫描</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/24/主流UI自动化脚本对比/" rel="next" title="主流UI自动化脚本录制和执行工具对比">
+                <i class="fa fa-chevron-left"></i> 主流UI自动化脚本录制和执行工具对比
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/02/代码覆盖工具jacoco的介绍和使用/" rel="prev" title="浅谈代码覆盖率">
+                浅谈代码覆盖率 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/01/安全扫描工具drozer的使用/"
+           data-title="安全扫描工具drozer的使用" data-url="http://yoursite.com/2017/03/01/安全扫描工具drozer的使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-text">环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PC客户端"><span class="nav-text">PC客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手机端"><span class="nav-text">手机端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建连接"><span class="nav-text">创建连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取包名"><span class="nav-text">获取包名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取应用基本信息"><span class="nav-text">获取应用基本信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定攻击面"><span class="nav-text">确定攻击面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity"><span class="nav-text">Activity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#检查Content-Provider问题"><span class="nav-text">检查Content Provider问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#获取Content-Provider信息"><span class="nav-text">获取Content Provider信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Content-Providers（数据泄露）"><span class="nav-text">Content Providers（数据泄露）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Content-Providers（SQL注入）"><span class="nav-text">Content Providers（SQL注入）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#同时检测SQL注入和目录遍历"><span class="nav-text">同时检测SQL注入和目录遍历</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#intent组件触发（拒绝服务、权限提升）"><span class="nav-text">intent组件触发（拒绝服务、权限提升）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#介绍名词"><span class="nav-text">介绍名词</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查看暴露的广播组件信息"><span class="nav-text">查看暴露的广播组件信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）"><span class="nav-text">尝试拒绝服务攻击检测，向广播组件发送不完整intent（空action或空extras）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#空action"><span class="nav-text">空action</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#空extras"><span class="nav-text">空extras</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#检查service问题"><span class="nav-text">检查service问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件操作"><span class="nav-text">文件操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-text">其他</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
