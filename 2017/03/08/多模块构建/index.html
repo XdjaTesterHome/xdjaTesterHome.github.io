@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="流量请求 耗流量 网络请求 客户端性能," />
+  <meta name="keywords" content="gradle，多模块构建," />
 
 
 
@@ -84,24 +84,21 @@
 
 
 
-<meta name="description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
-1.1 流量
-通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
+<meta name="description" content="背景
+Android studio不仅允许你为你的app和依赖库创建模块，同时也可为Android wear，Android TV，Google App Engine等创建模块，而这些单独的模块又可以在一个单独的项目中使用。举个栗子，在你的app开发后期阶段，你可能需要用到Google Clound或者Android Wear。这种情况下，你可以在你的工程下拥有三个模块：分别是app,google">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网络请求测试">
-<meta property="og:url" content="http://yoursite.com/2016/10/31/网络请求测试/index.html">
+<meta property="og:title" content="多模块构建（gradle系列五）">
+<meta property="og:url" content="http://yoursite.com/2017/03/08/多模块构建/index.html">
 <meta property="og:site_name" content="信大捷安测试团队">
-<meta property="og:description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
-1.1 流量
-通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
-<meta property="og:image" content="http://yoursite.com/upload/image/data-model.jpg">
-<meta property="og:updated_time" content="2017-03-07T04:18:14.839Z">
+<meta property="og:description" content="背景
+Android studio不仅允许你为你的app和依赖库创建模块，同时也可为Android wear，Android TV，Google App Engine等创建模块，而这些单独的模块又可以在一个单独的项目中使用。举个栗子，在你的app开发后期阶段，你可能需要用到Google Clound或者Android Wear。这种情况下，你可以在你的工程下拥有三个模块：分别是app,google">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/AndroidStudio_gradle.png">
+<meta property="og:updated_time" content="2017-03-15T09:37:27.713Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="网络请求测试">
-<meta name="twitter:description" content="目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
-1.1 流量
-通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严">
-<meta name="twitter:image" content="http://yoursite.com/upload/image/data-model.jpg">
+<meta name="twitter:title" content="多模块构建（gradle系列五）">
+<meta name="twitter:description" content="背景
+Android studio不仅允许你为你的app和依赖库创建模块，同时也可为Android wear，Android TV，Google App Engine等创建模块，而这些单独的模块又可以在一个单独的项目中使用。举个栗子，在你的app开发后期阶段，你可能需要用到Google Clound或者Android Wear。这种情况下，你可以在你的工程下拥有三个模块：分别是app,google">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/AndroidStudio_gradle.png">
 
 
 
@@ -122,10 +119,10 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/10/31/网络请求测试/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/08/多模块构建/"/>
 
 
-  <title> 网络请求测试 | 信大捷安测试团队 </title>
+  <title> 多模块构建（gradle系列五） | 信大捷安测试团队 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -275,7 +272,7 @@
             
             
               
-                网络请求测试
+                多模块构建（gradle系列五）
               
             
           </h1>
@@ -287,8 +284,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-31T09:48:58+08:00" content="2016-10-31">
-              2016-10-31
+            <time itemprop="dateCreated" datetime="2017-03-08T19:29:51+08:00" content="2017-03-08">
+              2017-03-08
             </time>
           </span>
 
@@ -301,8 +298,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/实例分析/" itemprop="url" rel="index">
-                    <span itemprop="name">实例分析</span>
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
                   </a>
                 </span>
 
@@ -317,8 +314,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/31/网络请求测试/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/31/网络请求测试/" itemprop="commentsCount"></span>
+                <a href="/2017/03/08/多模块构建/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/08/多模块构建/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -348,23 +345,41 @@
       
 
       
-        <pre><code>目前的网络类型包含2G\3G\4G\wifi，其中还有不同运营商的区分，我们在APP的使用中经常遇到大资源，重复请求，调用响应慢，调用失败等各种情况。在不同的网络类型之下，我们不仅要控制流量使用，还需要加快请求的响应。
-</code></pre><p>1.1 流量</p>
-<pre><code>通常来说APP流量使用最大的两部分是: 服务端api交互，图片/css/js等cdn静态资源。减少这两个部分的资源个数和资源大小，能有效的限制流量的使用。另外还需要严格控制后台静默时流量的使用。
-</code></pre><p>1.2 流量统计工具</p>
-<pre><code>DDMS Network Statistics、Android studio monitor
-
-3款代理工具: fiddler, charles, wmock
-
-抓包工具 : tcpdump
-</code></pre><p>1.3 弱网络模拟&amp;网络切换测试</p>
-<pre><code>使用 charles throttle settings模拟，能够对上下行带宽，丢包率，延迟等网络参数进行设置
-</code></pre><hr>
-<p>关于弱网以及网络切换测试作为app功能/场测测试的一部分，所以在客户端网络请求性能测试上不在涉及，上面之所以把它拿出来，是想告诉大家我们测试APP软件的过程中思路不要太过局限。<br>        1、APP网络专项测试过程中：我们测试的范围只是包括应用后台情况下的静置耗流量测试，需对比同类应用相同环境下做对比测试；网络数据包请求测试。<br>        （1）、静置耗流量测试，用于测试静默状态下的流量消耗，已经在后台使用过程中的业务操作，重点着眼于无业务情况下的流量消耗，确定是否有无效业务偷流量，耗费系统资源。因此，如果静置耗流量比较高，一定是业务请求出了问题，所以静置耗流量属于网络数据包请求测试的一种场景，只不过它测试的是一段时间内的业务量。<br>        （2）网络请求测试的重点：<br>                 1.无重复请求，无重复下载(图片)<br>                 2.常用切换界面需要做缓存<br>                 3.支持分页加载<br>例如流量测试可能出现以下类型的BUG:<br><img src="/upload/image/data-model.jpg" alt="batterystats"></p>
-<hr>
-<p>举例分析其中一种情况：如测试客户端过程中，重复发出多次请求：<br>1、我们可以通过抓包软件fidder进行测试，当我们每操作一步APP的某个功能的时候，可以发现fiddler发出相同请求的个数，并通过收到服务端数据包的个数，以及数据包的类型是否相同来进行判断业务是否有重复的请求，如果有，就是存在问题，应该尽量避免有多余无效的应用请求。<br>2、我们也可以通过Android studio monitor来进行测试，当然测试过程中需要配合实时的logcat获取应用执行过程中的log，因为通过log也能看到应用发送和接受的数据，当然这没有fiddler的数据包更直观。<br>在执行测试app的每个业务场景的时候，实时抓取操作该动作前后，应用消耗的流量（上传和下载的流量综合），从而宏观的了解到应用操作该业务所消耗的流量，在测试每个场景网络请求的过程中，配合采集的流量数据，可以进行下一版本的横向比较，通过横向比较在无重复网络请求的情况下，我们可以知道版本质量的性能变化趋势。</p>
-<p>小结：app网络流量性能测试点和测试范围：</p>
-<p> 1.后台无操作情况下静置流量消耗（用于测试静默业务下的流量消耗），输出结果为静默状态下的一个流量消耗的值，用于版本横向比较，与其他应用进行比较，出现过高流量消耗时，需要抓取log进行分析。<br> 2、测试应用在前台各个操作场景下的网络请求次数、无效请求、重复请求次数。<br> 3、测试应用在前台各个操作场景下的每一类操作下的流量消耗的值，（可多次测试记录消耗平均值、波动范围等参数，用于优化和分析调优，也用于版本横向比较），关于本部分每部操作下流量消耗总量的统计、绘图及分析方法可以通过Python脚本实现。因为现有测试工具Android studio monitor 实现的数据流量实时监控，但不会采集数据并保存我们需要的数据。</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>Android studio不仅允许你为你的app和依赖库创建模块，同时也可为Android wear，Android TV，Google App Engine等创建模块，而这些单独的模块又可以在一个单独的项目中使用。举个栗子，在你的app开发后期阶段，你可能需要用到Google Clound或者Android Wear。这种情况下，你可以在你的工程下拥有三个模块：分别是app,google cloud,Android Wear整合。了解在一个工程下的多模块构建将会加速你的开发周期。</li>
+</ul>
+<h2 id="多模块构建的结构"><a href="#多模块构建的结构" class="headerlink" title="多模块构建的结构"></a>多模块构建的结构</h2><ul>
+<li>一个工程包含多个模块，这些模块会存放到父目录下，然后为了告诉gradle，项目的结构及哪一个子文件夹包含模块，需要添加一个setting.gradle文件，每个模块可以提供其独立的build.gradle文件。举个例子，如下所示：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">project</div><div class="line">  ├─── setting.gradle</div><div class="line">  ├─── build.gradle</div><div class="line">  ├─── app</div><div class="line">  │    └─── build.gradle</div><div class="line">  └─── library</div><div class="line">       └─── build.gradle</div></pre></td></tr></table></figure>
+<ul>
+<li>setting.gradle文件声明的内容如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">include <span class="string">':app'</span>, <span class="string">':library'</span></div><div class="line"><span class="comment">// 这保证了app和library模块都会包含在构建配置中</span></div></pre></td></tr></table></figure>
+<ul>
+<li>如果需要在你的app模块中添加library模块作为其依赖，可以在app的build.gradle中添加：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">      <span class="function">compile <span class="title">project</span><span class="params">(<span class="string">':library'</span>)</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果模块中还包含了子模块，gradle可以满足你的要求，比如：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">project</div><div class="line">├─── setting.gradle</div><div class="line">├─── build.grade</div><div class="line">├─── app</div><div class="line">│    └─── build.gradle</div><div class="line">└─── libraries</div><div class="line">     ├─── library1</div><div class="line">     │    └─── build.gradle</div><div class="line">     └─── library2</div><div class="line">          └─── build.gradle</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果是这种情况，使用library1和library2就需要如下配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">---setting.gradle</div><div class="line">include <span class="string">':app'</span>, <span class="string">':libraries:library1'</span>, <span class="string">':libraries:library2'</span></div><div class="line"></div><div class="line">--- app build.gradle</div><div class="line">dependencies &#123;</div><div class="line">       <span class="function">compile <span class="title">project</span><span class="params">(<span class="string">':libraries:library1'</span>)</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="构建声明周期"><a href="#构建声明周期" class="headerlink" title="构建声明周期"></a>构建声明周期</h2><ul>
+<li>初始化阶段，gradle首先会去找setting.gradle文件，如果该文件不存在，那么gradle会认为你只有一个模块。如果有多个模块，setting.gradle定义了这些模块的位置，如果子模块中包含build.gradle，那么gradle会执行他们，并将他们合并到构建任务中。</li>
+<li>gradle最大的策略是混合，你可以在根目录下定义一个build文件去定义所有模块相同的属性，然后在每个模块中的build文件去配置只属于该模块的参数。</li>
+</ul>
+<h2 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h2><ul>
+<li>在AndroidStudio中运行tasks，假如你定义了多个tasks，在AndroidStudio gradle面板中是可以展示出来的，如下图所示：<br><img src="/upload/image/zlw/AndroidStudio_gradle.png" alt="gradle_androidStudio"></li>
+</ul>
+<h3 id="加速你的多模块构建"><a href="#加速你的多模块构建" class="headerlink" title="加速你的多模块构建"></a>加速你的多模块构建</h3><ul>
+<li>当你构建你的多模块项目，gradle会依次执行所有的模块。当你的电脑内存够大的时候，让你的构建过程多线程将会更快。该特性在gradle早已存在，但是其默认关闭。所以如果你希望启动parallel构建，你需要在grade.properties文件中配置如下属性：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.parallel=<span class="keyword">true</span></div></pre></td></tr></table></figure>
+<h3 id="模块耦合"><a href="#模块耦合" class="headerlink" title="模块耦合"></a>模块耦合</h3><ul>
+<li>即你可以在一个模块中引用其他模块的属性，但是不建议这么做，可以在根目录下的build文件中定义这些公共属性。</li>
+</ul>
 
       
     </div>
@@ -387,7 +402,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/流量请求-耗流量-网络请求-客户端性能/" rel="tag">#流量请求 耗流量 网络请求 客户端性能</a>
+            <a href="/tags/gradle，多模块构建/" rel="tag">#gradle，多模块构建</a>
           
         </div>
       
@@ -396,16 +411,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/24/Android耗电量测试/" rel="next" title="Android耗电量测试">
-                <i class="fa fa-chevron-left"></i> Android耗电量测试
+              <a href="/2017/03/08/构建变体/" rel="next" title="构建变体(gradle系列四)">
+                <i class="fa fa-chevron-left"></i> 构建变体(gradle系列四)
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/10/31/Android对cpu测试/" rel="prev" title="Android对cpu的测试">
-                Android对cpu的测试 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/14/temp_learn_file/LoadRunner使用初探/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -455,8 +470,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/31/网络请求测试/"
-           data-title="网络请求测试" data-url="http://yoursite.com/2016/10/31/网络请求测试/">
+      <div class="ds-thread" data-thread-key="2017/03/08/多模块构建/"
+           data-title="多模块构建（gradle系列五）" data-url="http://yoursite.com/2017/03/08/多模块构建/">
       </div>
     
   </div>
@@ -547,7 +562,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多模块构建的结构"><span class="nav-text">多模块构建的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建声明周期"><span class="nav-text">构建声明周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建议"><span class="nav-text">建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加速你的多模块构建"><span class="nav-text">加速你的多模块构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块耦合"><span class="nav-text">模块耦合</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

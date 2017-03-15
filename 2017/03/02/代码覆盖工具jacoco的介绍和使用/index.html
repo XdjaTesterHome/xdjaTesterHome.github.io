@@ -106,7 +106,8 @@
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/codeConvery.png">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/覆盖率工具工作流程.png">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/插桩原理.jpg">
-<meta property="og:updated_time" content="2017-03-07T04:18:14.837Z">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/jenkins-jacoco.png">
+<meta property="og:updated_time" content="2017-03-15T09:12:38.185Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈代码覆盖率">
 <meta name="twitter:description" content="背景
@@ -418,10 +419,83 @@
 </ol>
 </blockquote>
 </li>
-<li><p>更详细的可以参考腾讯tmq写的系列文章(JAVA代码覆盖率工具JaCoCo-原理篇)[<a href="http://tmq.qq.com/2016/08/java-code-coverage-tools-jacoco-principle/],它里面详细介绍了根据代码逻辑type，怎么埋标记探针。当然也可以找源码看看，不过我也没看源码呢。" target="_blank" rel="external">http://tmq.qq.com/2016/08/java-code-coverage-tools-jacoco-principle/],它里面详细介绍了根据代码逻辑type，怎么埋标记探针。当然也可以找源码看看，不过我也没看源码呢。</a></p>
+<li><p>更详细的可以参考腾讯tmq写的系列文章<a href="http://tmq.qq.com/2016/08/java-code-coverage-tools-jacoco-principle/" target="_blank" rel="external">JAVA代码覆盖率工具JaCoCo-原理篇</a>,它里面详细介绍了根据代码逻辑type，怎么埋标记探针。当然也可以找源码看看，不过我也没看源码呢。</p>
 </li>
 </ul>
-<h3 id="JaCoCo使用"><a href="#JaCoCo使用" class="headerlink" title="JaCoCo使用"></a>JaCoCo使用</h3><h4 id="Apache-Ant方式"><a href="#Apache-Ant方式" class="headerlink" title="Apache Ant方式"></a>Apache Ant方式</h4><h4 id="命令行方式"><a href="#命令行方式" class="headerlink" title="命令行方式"></a>命令行方式</h4><h4 id="Apache-Maven方式"><a href="#Apache-Maven方式" class="headerlink" title="Apache Maven方式"></a>Apache Maven方式</h4><h4 id="Apache-Maven方式-1"><a href="#Apache-Maven方式-1" class="headerlink" title="Apache Maven方式"></a>Apache Maven方式</h4><h4 id="与Jekins集成"><a href="#与Jekins集成" class="headerlink" title="与Jekins集成"></a>与Jekins集成</h4>
+<h3 id="JaCoCo使用"><a href="#JaCoCo使用" class="headerlink" title="JaCoCo使用"></a>JaCoCo使用</h3><ul>
+<li>JaCoco 提供了很多使用方式，比如：Ant、命令行、Maven、gradle、jenkins集成。</li>
+<li>我比较关心的方式是（主要针对Android项目）：Jacoco和UI自动化结合、Jacoco和手动测试结合、Jacoco与Jenkins的集成。</li>
+<li>其实gradle中android插件已经支持了jacoco的使用，因此我们只需要在app build.gradle中配置 jaCoco 以及在buildTypes中配置testCoverageEnabled=true,如下是我写的一个demo：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line">apply plugin: <span class="string">'jacoco'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion <span class="number">25</span></div><div class="line">    buildToolsVersion <span class="string">"25.0.0"</span></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"xdja.com.dreamcode"</span></div><div class="line">        minSdkVersion <span class="number">15</span></div><div class="line">        targetSdkVersion <span class="number">25</span></div><div class="line">        versionCode <span class="number">1</span></div><div class="line">        versionName <span class="string">"1.0"</span></div><div class="line">        testInstrumentationRunner <span class="string">"android.support.test.runner.AndroidJUnitRunner"</span></div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            <span class="function">minifyEnabled <span class="keyword">false</span></span></div><div class="line">            proguardFiles <span class="title">getDefaultProguardFile</span><span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        debug&#123;</div><div class="line">            <span class="function">proguardFiles <span class="title">getDefaultProguardFile</span><span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'</span></div><div class="line">            zipAlignEnabled <span class="keyword">true</span></div><div class="line">            testCoverageEnabled = <span class="keyword">true</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">def coverageSourceDirs = [</div><div class="line">        <span class="string">'../app/src/main/java'</span></div><div class="line">]</div><div class="line"><span class="function">task <span class="title">jacocoTestReport</span><span class="params">(type: JacocoReport)</span> </span>&#123;</div><div class="line">    group = <span class="string">"Reporting"</span></div><div class="line">    description = <span class="string">"Generate Jacoco coverage reports after running tests."</span></div><div class="line">    reports &#123;</div><div class="line">        xml.enabled = <span class="keyword">true</span></div><div class="line">        html.enabled = <span class="keyword">true</span></div><div class="line">    &#125;</div><div class="line">    classDirectories = fileTree(</div><div class="line">            dir: <span class="string">'./build/intermediates/classes/debug'</span>,</div><div class="line">            excludes: [<span class="string">'**/R*.class'</span>,</div><div class="line">                       <span class="string">'**/*$InjectAdapter.class'</span>,</div><div class="line">                       <span class="string">'**/*$ModuleAdapter.class'</span>,</div><div class="line">                       <span class="string">'**/*$ViewInjector*.class'</span></div><div class="line">            ])</div><div class="line">    sourceDirectories = files(coverageSourceDirs)</div><div class="line">    executionData = files(<span class="string">"$buildDir/outputs/code-coverage/connected/coverage.ec"</span>)</div><div class="line"></div><div class="line">    doFirst &#123;</div><div class="line">        <span class="keyword">new</span> File(<span class="string">"$buildDir/intermediates/classes/"</span>).eachFileRecurse &#123; file -&gt;</div><div class="line">            <span class="keyword">if</span> (file.name.contains(<span class="string">'$$'</span>)) &#123;</div><div class="line">                file.renameTo(file.path.replace(<span class="string">'$$'</span>, <span class="string">'$'</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></div><div class="line">    <span class="title">androidTestCompile</span><span class="params">(<span class="string">'com.android.support.test.espresso:espresso-core:2.2.2'</span>, &#123;</span></div><div class="line">        exclude group: <span class="string">'com.android.support'</span>, <span class="keyword">module</span>: <span class="string">'support-annotations'</span></div><div class="line">    &#125;)</div><div class="line">    compile 'com.android.support:appcompat-v7:25.0.1'</div><div class="line">    testCompile 'junit:junit:4.12'</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>上面jacocoTestReport 任务用于将采集的ec文件转成html文件。</li>
+</ul>
+<h3 id="Jacoco和手动测试结合"><a href="#Jacoco和手动测试结合" class="headerlink" title="Jacoco和手动测试结合"></a>Jacoco和手动测试结合</h3><ul>
+<li>与手动结合测试，思路是通过反射，获取收集的覆盖率数据：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">out = <span class="keyword">new</span> FileOutputStream(mCoverageFilePath.getPath(), <span class="keyword">true</span>);</div><div class="line">            Object agent = Class.forName(<span class="string">"org.jacoco.agent.rt.RT"</span>)</div><div class="line">                    .getMethod(<span class="string">"getAgent"</span>)</div><div class="line">                    .invoke(<span class="keyword">null</span>);</div><div class="line">            out.write((<span class="keyword">byte</span>[]) agent.getClass().getMethod(<span class="string">"getExecutionData"</span>, <span class="keyword">boolean</span>.class)</div><div class="line">                    .invoke(agent, <span class="keyword">false</span>));</div></pre></td></tr></table></figure>
+<ul>
+<li>网上有人实现了一种方式是不修改源码的情况下，通过Instrumentation来启动个集成首页Activity的页面，然后当测试完成销毁页面的时候会去执行收集数据的代码。</li>
+<li>不过实现方式上可以根据自己的需要来实现触发收集数据的场景，比如搞个广播、长按某个物理键等等。</li>
+<li>生成的数据时ec格式，需要用到上面的jacocoTestReport task，转成html文件。生成的报告位于：.\app\build\reports\jacoco\jacocoTestReport目录</li>
+</ul>
+<h3 id="Jacoco和UI自动化结合"><a href="#Jacoco和UI自动化结合" class="headerlink" title="Jacoco和UI自动化结合"></a>Jacoco和UI自动化结合</h3><ul>
+<li>首先需要了解gradle android plugin 一些内置的命令：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>connectedAndroidTest</td>
+<td>执行android的case</td>
+</tr>
+<tr>
+<td>createDebugCoverageReport</td>
+<td>产生代码覆盖率的报告</td>
+</tr>
+<tr>
+<td>connectedCheck</td>
+<td>包含上面2个任务</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>只需要将UI自动化代码准备好，然后执行：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ gradlew clean createDebugCoverageReport</div></pre></td></tr></table></figure>
+<ul>
+<li>这个命令会执行UI自动化代码，同时生成jaCoCo报告。</li>
+<li>生成的JaCoCo报告位于：\app\build\reports\coverage（在reports目录下还有单元测试的结果报告）。</li>
+<li>这里再介绍个手动测试收集代码覆盖率的思路： 在UI自动化中，执行一个sleep（比如停10分钟），这10分钟内可以手动操作测试业务，然后10分钟之后，UI自动化结束后会自动生成报告，可以参考<a href="https://testerhome.com/topics/2510" target="_blank" rel="external">Android手工测试的代码覆盖率</a></li>
+</ul>
+<h3 id="Jacoco与Jenkins的集成"><a href="#Jacoco与Jenkins的集成" class="headerlink" title="Jacoco与Jenkins的集成"></a>Jacoco与Jenkins的集成</h3><ul>
+<li>Jenkins 集成Jacoco，其实其原理和上面提到的gradle的处理方式是比较类似的。</li>
+<li>首先Jenkins需要安装一个【Jacoco plugin】，然后在项目配置文件中会有如下图所示的配置选项：<br><img src="/upload/image/zlw/jenkins-jacoco.png" alt="Jenkins-Jacoco"></li>
+</ul>
+<p>其主要配置如下：</p>
+<ul>
+<li>Path to Exec files：\app\build\outputs\code-coverage\connected\coverage.ec    这个路径是执行gradle任务时，生成的ec文件的目录。</li>
+<li>Path to class directories:   \app\build\intermediates\classes\debug           这个路径是编译之后生成class所在的目录</li>
+<li>Path to source directories :  /src/main/java            源代码所在路径</li>
+<li>Inclusions： com/xxx/xxx/ *.class       包含哪些class文件。</li>
+<li>Exclusions： <strong>/R.class, </strong>/R$<em>.class, <strong>/Manifest.class , </strong>/Manifest$</em>.class, **/BuildConfig.class<blockquote>
+<ul>
+<li>这里需要注意，路径结尾的/必须去掉，否则会有非预期的结果，其实也就是加载了我们不需要的目录。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>代码覆盖率虽然对于项目质量不具有绝对的衡量意义，但是对于优化我们的测试用例及UI自动化脚本还是非常有用的。通过代码覆盖率结果，我们大致可以知道我们的UI自动化脚本对代码的覆盖程度。</li>
+<li>因此应该推动代码覆盖率在项目中的应用。</li>
+</ul>
+
       
     </div>
 
@@ -557,7 +631,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -574,7 +648,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -603,7 +677,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率"><span class="nav-text">代码覆盖率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率统计方式"><span class="nav-text">代码覆盖率统计方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率意义"><span class="nav-text">代码覆盖率意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具"><span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco简介"><span class="nav-text">Jacoco简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco等工具的工作原理"><span class="nav-text">Jacoco等工具的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo插桩原理"><span class="nav-text">JaCoCo插桩原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#On-The-Fly"><span class="nav-text">On-The-Fly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Offline"><span class="nav-text">Offline</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo使用"><span class="nav-text">JaCoCo使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Ant方式"><span class="nav-text">Apache Ant方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命令行方式"><span class="nav-text">命令行方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Maven方式"><span class="nav-text">Apache Maven方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-Maven方式-1"><span class="nav-text">Apache Maven方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#与Jekins集成"><span class="nav-text">与Jekins集成</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率"><span class="nav-text">代码覆盖率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率统计方式"><span class="nav-text">代码覆盖率统计方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码覆盖率意义"><span class="nav-text">代码覆盖率意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具"><span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco简介"><span class="nav-text">Jacoco简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco等工具的工作原理"><span class="nav-text">Jacoco等工具的工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo插桩原理"><span class="nav-text">JaCoCo插桩原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#On-The-Fly"><span class="nav-text">On-The-Fly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Offline"><span class="nav-text">Offline</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JaCoCo使用"><span class="nav-text">JaCoCo使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco和手动测试结合"><span class="nav-text">Jacoco和手动测试结合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco和UI自动化结合"><span class="nav-text">Jacoco和UI自动化结合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jacoco与Jenkins的集成"><span class="nav-text">Jacoco与Jenkins的集成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>

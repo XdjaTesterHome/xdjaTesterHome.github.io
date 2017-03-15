@@ -98,7 +98,7 @@ Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个�
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/adbd_sbin.png">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/Adb_logic.png">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/adb_logic2.png">
-<meta property="og:updated_time" content="2017-03-07T04:18:14.832Z">
+<meta property="og:updated_time" content="2017-03-15T06:34:41.988Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Adb工作原理">
 <meta name="twitter:description" content="引言
@@ -360,7 +360,10 @@ Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个�
 <h2 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h2><h3 id="Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："><a href="#Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：" class="headerlink" title="Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："></a>Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：</h3><ul>
 <li>adb server</li>
 <li>adb client</li>
-<li>adb deamon<h3 id="接下来就分开介绍下他们的原理"><a href="#接下来就分开介绍下他们的原理" class="headerlink" title="接下来就分开介绍下他们的原理"></a>接下来就分开介绍下他们的原理</h3><h4 id="adb-server"><a href="#adb-server" class="headerlink" title="adb server"></a>adb server</h4></li>
+<li>adb deamon</li>
+</ul>
+<p>接下来就分开介绍下他们的原理</p>
+<h4 id="adb-server"><a href="#adb-server" class="headerlink" title="adb server"></a>adb server</h4><ul>
 <li>ADB Server是运行在主机上的一个后台进程。它有两个作用：1）检测USB端口感知设备的连接和拔除，以及模拟器实例的启动或停止；2）将adb client的请求通过usb或者tcp的方式发送到对应的adbd上。</li>
 <li>ADB server默认监听5037端口，我们可以通过在cmd命令行输入netstat -nao | findStr 5037 来查看哪个pid的进程在监听5037，我电脑上的pid = 13740，然后再通过tasklist来查看13740对应的应用程序是啥？如下图可以看到是adb.exe（就是adb server）。<br><img src="/upload/image/zlw/adb_tasklist.png" alt="Adb server的进程"></li>
 </ul>
@@ -545,7 +548,7 @@ Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -562,7 +565,7 @@ Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个�
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -591,7 +594,7 @@ Adb是Android Debug bridge的简称，Android的初衷是用adb这样的一个�
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念介绍"><span class="nav-text">概念介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："><span class="nav-text">Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接下来就分开介绍下他们的原理"><span class="nav-text">接下来就分开介绍下他们的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-server"><span class="nav-text">adb server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-client"><span class="nav-text">adb client</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-deamon-adbd"><span class="nav-text">adb deamon(adbd)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信原理"><span class="nav-text">通信原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。"><span class="nav-text">清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流程图"><span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程用文字描述"><span class="nav-text">流程用文字描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-text">常见问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念介绍"><span class="nav-text">概念介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adb-是C-S架构，要了解其工作原理，其实就是要搞清楚下面三个概念："><span class="nav-text">Adb 是C/S架构，要了解其工作原理，其实就是要搞清楚下面三个概念：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-server"><span class="nav-text">adb server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-client"><span class="nav-text">adb client</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-deamon-adbd"><span class="nav-text">adb deamon(adbd)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信原理"><span class="nav-text">通信原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。"><span class="nav-text">清楚了上面的三个概念，相信对他们的通信原理应该已经有了比较清楚的认识。对熟悉他们通信原理就比较容易了。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流程图"><span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程用文字描述"><span class="nav-text">流程用文字描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-text">常见问题</span></a></li></ol></div>
             
           </div>
         </section>

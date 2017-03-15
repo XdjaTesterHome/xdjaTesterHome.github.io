@@ -105,7 +105,7 @@
 功耗仪操作比较麻烦，需要拆机，且不好进行兼容性操作。
 但功耗仪的优点是精确，任何操作或者变化都会">
 <meta property="og:image" content="http://yoursite.com/upload/image/batterystats.png">
-<meta property="og:updated_time" content="2017-03-07T04:18:14.834Z">
+<meta property="og:updated_time" content="2017-03-15T07:08:56.698Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android耗电量测试">
 <meta name="twitter:description" content="背景
@@ -379,7 +379,7 @@
 <li>不过从android4.4开始，Android强制加了权限限制，如下图所示：<br><img src="/upload/image/batterystats.png" alt="batterystats"></li>
 <li>所以从Android4.4开始，想通过api来获取电量也不是那么容易，好在从Android5.0开始，google 又开放了一个利器【batteryStats】（其实它就是执行的api代码），通过这个命令可以收集 从上次充电开始一段时间内的电量数据（换句话说就是不充电状态下的电量数据）。</li>
 </ul>
-<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><h4 id="API方式"><a href="#API方式" class="headerlink" title="API方式"></a>API方式</h4><ul>
+<h2 id="软件方式实现原理"><a href="#软件方式实现原理" class="headerlink" title="软件方式实现原理"></a>软件方式实现原理</h2><h4 id="API方式"><a href="#API方式" class="headerlink" title="API方式"></a>API方式</h4><ul>
 <li>主要涉及到三个类和一个方法，分别是：BatteryStatsHelper、BatteryStatsImpl、PowerProfile，分别介绍下它们：</li>
 </ul>
 <h6 id="BatteryStatsImpl"><a href="#BatteryStatsImpl" class="headerlink" title="BatteryStatsImpl"></a>BatteryStatsImpl</h6><ul>
@@ -584,7 +584,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -601,7 +601,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -630,7 +630,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#功耗仪-or-软件方式"><span class="nav-text">功耗仪 or 软件方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#功耗仪"><span class="nav-text">功耗仪</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#软件方式"><span class="nav-text">软件方式</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现过程"><span class="nav-text">实现过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API方式"><span class="nav-text">API方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#BatteryStatsImpl"><span class="nav-text">BatteryStatsImpl</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#PowerProfile"><span class="nav-text">PowerProfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#BatteryStatsHelper-中processAppusage方法"><span class="nav-text">BatteryStatsHelper 中processAppusage方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#尝试的过程"><span class="nav-text">尝试的过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-shell-dumpsys-batterystats"><span class="nav-text">adb shell dumpsys batterystats</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#实现方式"><span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#采集到的数据名词"><span class="nav-text">采集到的数据名词</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#功耗仪-or-软件方式"><span class="nav-text">功耗仪 or 软件方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#功耗仪"><span class="nav-text">功耗仪</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#软件方式"><span class="nav-text">软件方式</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件方式实现原理"><span class="nav-text">软件方式实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API方式"><span class="nav-text">API方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#BatteryStatsImpl"><span class="nav-text">BatteryStatsImpl</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#PowerProfile"><span class="nav-text">PowerProfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#BatteryStatsHelper-中processAppusage方法"><span class="nav-text">BatteryStatsHelper 中processAppusage方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#尝试的过程"><span class="nav-text">尝试的过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adb-shell-dumpsys-batterystats"><span class="nav-text">adb shell dumpsys batterystats</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#实现方式"><span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#采集到的数据名词"><span class="nav-text">采集到的数据名词</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
