@@ -1,0 +1,798 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="内存，LeakCanary," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+内存对移动设备来说是非常宝贵的资源，因为每个app可以使用的内存是有限的，从最开始的16M、32M到现在的128M，虽然随着硬件成本的降低，内存在增大，但是我们还是会经常碰到OOM。
+OOM其实只是一个表象，更深层次的原因是内存泄露。因为对内存的测试，是我们完善产品质量的一个重要环节。
+
+测试内容
+对内存的测试我们主要关注两个方面：内存泄露 和 内存抖动
+内存泄露的主要影响是上面提到的：容易">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android对内存的测试">
+<meta property="og:url" content="http://yoursite.com/2017/03/16/Android对内存的测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+内存对移动设备来说是非常宝贵的资源，因为每个app可以使用的内存是有限的，从最开始的16M、32M到现在的128M，虽然随着硬件成本的降低，内存在增大，但是我们还是会经常碰到OOM。
+OOM其实只是一个表象，更深层次的原因是内存泄露。因为对内存的测试，是我们完善产品质量的一个重要环节。
+
+测试内容
+对内存的测试我们主要关注两个方面：内存泄露 和 内存抖动
+内存泄露的主要影响是上面提到的：容易">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/内存抖动.PNG">
+<meta property="og:updated_time" content="2017-03-16T07:19:16.731Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android对内存的测试">
+<meta name="twitter:description" content="背景
+内存对移动设备来说是非常宝贵的资源，因为每个app可以使用的内存是有限的，从最开始的16M、32M到现在的128M，虽然随着硬件成本的降低，内存在增大，但是我们还是会经常碰到OOM。
+OOM其实只是一个表象，更深层次的原因是内存泄露。因为对内存的测试，是我们完善产品质量的一个重要环节。
+
+测试内容
+对内存的测试我们主要关注两个方面：内存泄露 和 内存抖动
+内存泄露的主要影响是上面提到的：容易">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/内存抖动.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/16/Android对内存的测试/"/>
+
+
+  <title> Android对内存的测试 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android对内存的测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-16T13:43:13+08:00" content="2017-03-16">
+              2017-03-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">Android性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/16/Android对内存的测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/16/Android对内存的测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>内存对移动设备来说是非常宝贵的资源，因为每个app可以使用的内存是有限的，从最开始的16M、32M到现在的128M，虽然随着硬件成本的降低，内存在增大，但是我们还是会经常碰到OOM。</li>
+<li>OOM其实只是一个表象，更深层次的原因是内存泄露。因为对内存的测试，是我们完善产品质量的一个重要环节。</li>
+</ul>
+<h2 id="测试内容"><a href="#测试内容" class="headerlink" title="测试内容"></a>测试内容</h2><ul>
+<li>对内存的测试我们主要关注两个方面：<strong>内存泄露</strong> 和 <strong>内存抖动</strong></li>
+<li>内存泄露的主要影响是上面提到的：容易造成OOM影响app产品体验，且间接的会造成频繁GC。</li>
+<li>内存抖动的原因是：频繁的GC（所以内存会短时间内增加或降低），造成的影响是:界面在使用时比较卡顿，因为GC会导致JVM暂停执行你的任务进行内存回收。</li>
+<li>产生内存抖动的代码层面的原因是：<blockquote>
+<ol>
+<li>在循环中创建对象，产生内存碎片。</li>
+<li>瞬间创建比较大的对象。</li>
+<li>内存泄露也是一方面原因。</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h2><h3 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h3><ul>
+<li>之前制定的文档中，准备采用纯手工的方式去测，但是实践了一段时间，发现手工测试工作量大且对于小量的内存泄露不太好发现。于是就尝试了用LeakCanary工具。</li>
+<li>LeakCanary确实比较强大，甚至可以发现系统的一些泄露，比如我在测试自己app的时候，调整了音量，然后LeakCanary报了一个mediasessionlegacyhelper的内存泄露，其实这个泄露是SDK自身的泄露，当使用它mediasessionlegacyhelper.getHelper(context),传入context后因为其内部是静态变量持有了传入的context，所以造成泄露。</li>
+<li>随后决定之后内存泄露用LeakCanary。</li>
+</ul>
+<h4 id="LeakCanary改良版"><a href="#LeakCanary改良版" class="headerlink" title="LeakCanary改良版"></a>LeakCanary改良版</h4><ul>
+<li><p>使用LeakCanary手动测试，它自带一个展示页面DisplayActivity，测试过程中发现的泄露都会展示在这里。但是如果我们想通过跑自动化的方式来收集内存泄露信息会碰到如下问题：</p>
+<blockquote>
+<ol>
+<li>跑monkey时会经常进到DisplayActivity中，影响测试。</li>
+<li>跑monkey时，如果进入到DisplayActivity中，monkey有可能会点击删除已经发现的泄露。</li>
+<li>如果有UI自动化的话，上面两个问题倒不存在。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>为了能跑自动化，我们要对LeakCanary改良下。主要是两方面的改动：</p>
+</li>
+<li><p>在app的自定义Application的onCreate方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">      RefWatcher refWatcher;</div><div class="line"><span class="comment">//        refWatcher = LeakCanary.install(this);   // 没有改良之前，是这么用的，直接install(this)</span></div><div class="line">       refWatcher = LeakCanary.install(<span class="keyword">this</span>, LeakUploadService.class, AndroidExcludedRefs.createAndroidDefaults().build());</div><div class="line">       refWatcher.watch(<span class="keyword">this</span>);</div><div class="line">       LeakCanaryInternals.setEnabled(<span class="keyword">this</span>, DisplayLeakActivity.class, <span class="keyword">false</span>);  <span class="comment">//这句代码的意思是不显示DisplayActivity，将false改成true就可以看见DisplayActivity。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>自定义一个Service用于处理采集到的泄露数据，我这里是直接保存到sdcard中，也可以上传到服务端数据库中。可以新建一个leakcanary包，将下面的service代码放到包中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> android.os.Environment;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.squareup.leakcanary.AnalysisResult;</div><div class="line"><span class="keyword">import</span> com.squareup.leakcanary.DisplayLeakService;</div><div class="line"><span class="keyword">import</span> com.squareup.leakcanary.HeapDump;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.BufferedWriter;</div><div class="line"><span class="keyword">import</span> java.io.File;</div><div class="line"><span class="keyword">import</span> java.io.FileWriter;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by zlw on 2016/12/7.</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeakUploadService</span> <span class="keyword">extends</span> <span class="title">DisplayLeakService</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String TAG = LeakUploadService.class.getSimpleName();</div><div class="line">    <span class="keyword">private</span> String LocalFileName = <span class="string">"LeakCanary.log"</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">afterDefaultHandling</span><span class="params">(HeapDump heapDump, AnalysisResult result, String leakInfo)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!result.leakFound || result.excludedLeak) <span class="keyword">return</span>;</div><div class="line">        <span class="comment">// 将LeakCanary信息写入本地</span></div><div class="line">        writeToFile(leakInfo);</div><div class="line"></div><div class="line">        Log.d(TAG, <span class="string">"leakInfo = "</span> + leakInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     *  将采集的泄露数据写入本地</div><div class="line">     * <span class="doctag">@param</span> leakInfo</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeToFile</span><span class="params">(String leakInfo)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span> (leakInfo == <span class="keyword">null</span> || <span class="string">""</span>.equals(leakInfo)) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">        String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();</div><div class="line">        File leakFolder = <span class="keyword">new</span> File(sdcardPath + <span class="string">"/leakcanary/"</span>);</div><div class="line">        File leakFile = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span> (!leakFolder.exists())&#123;</div><div class="line">            <span class="keyword">boolean</span> suc = leakFolder.mkdirs();</div><div class="line">            <span class="keyword">if</span> (!suc)&#123;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            leakFile = <span class="keyword">new</span> File(sdcardPath + <span class="string">"/leakcanary/"</span> + LocalFileName);</div><div class="line">            <span class="keyword">if</span> (!leakFile.exists())&#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    <span class="keyword">boolean</span> suc1= leakFile.createNewFile();</div><div class="line">                    <span class="keyword">if</span> (!suc1) <span class="keyword">return</span>;</div><div class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        BufferedWriter bw = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span> (leakFile == <span class="keyword">null</span>)&#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span>&#123;</div><div class="line">            bw = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> FileWriter(leakFile, <span class="keyword">true</span>));</div><div class="line">            bw.write(leakInfo);</div><div class="line"></div><div class="line">            bw.write(<span class="string">"================================================="</span>);</div><div class="line">            bw.newLine();</div><div class="line">            bw.flush();</div><div class="line">        &#125;<span class="keyword">catch</span> (Exception ex)&#123;</div><div class="line">            ex.printStackTrace();</div><div class="line"></div><div class="line">        &#125;<span class="keyword">finally</span> &#123;</div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                <span class="keyword">if</span> (bw != <span class="keyword">null</span>)&#123;</div><div class="line">                    bw.close();</div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125;<span class="keyword">catch</span> (IOException e)&#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>接下来需要在AndroidMainfest.xml中配置Service，并检查app有没有读写sdcard的权限</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!--leakcanary service begin--&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">service</span> <span class="attr">android:name</span>=<span class="string">".leakcanary.LeakUploadService"</span> <span class="attr">android:exported</span>=<span class="string">"false"</span>/&gt;</span></div><div class="line">   <span class="comment">&lt;!--leakcanary service end--&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>这样就大功告成了，上面唯一的不足是需要源码，并能将源码编译通过。我暂时没想到更好的解决办法。</p>
+</li>
+</ul>
+<h4 id="UI自动化"><a href="#UI自动化" class="headerlink" title="UI自动化"></a>UI自动化</h4><ul>
+<li>如果已经有现成的UI自动化脚本最好，直接拿来跑就完了，比如我们有appium脚本。</li>
+<li>如果没有UI自动化脚本，只能使用monkey了，我这里提供一个monkey，仅空参考(我主要是屏蔽了点击物理按键)：<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell monkey -p com.XXX.XXXX --pct-touch 30 --pct-motion 20 --pct-appswitch 50 --pct-rotation 0 --pct-syskeys 0 --pct-nav 0 <span class="_">-s</span> 12358 --throttle 400 --ignore-crashes --ignore-timeouts -v 9000</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>还有一个问题，就是monkey容易点通知栏，有可能会将网络关掉，这个有大牛已经解决了，详情见<a href="https://github.com/Orange-OpenSource/simiasque" target="_blank" rel="external">simiasque</a>。这是一个apk，我们可以提前装到手机上。</li>
+<li>simiasque 打开状态可以屏蔽状态栏，这样monkey就点不到通知栏了。另外它还提供了命令行打开和关闭模式，不过前提是得打开app。结合之前的monkey命令，我们可以写个批处理：<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">adb shell am broadcast <span class="_">-a</span> org.thisisafactory.simiasque.SET_OVERLAY --ez <span class="built_in">enable</span> <span class="literal">true</span></div><div class="line"></div><div class="line">adb shell monkey -p com.xxx.xxxxx --pct-touch 30 --pct-motion 20 --pct-appswitch 50 --pct-rotation 0 --pct-syskeys 0 --pct-nav 0 <span class="_">-s</span> 12358 --throttle 400 --ignore-crashes --ignore-timeouts -v 9000</div><div class="line"></div><div class="line">adb shell am broadcast <span class="_">-a</span> org.thisisafactory.simiasque.SET_OVERLAY --ez <span class="built_in">enable</span> <span class="literal">false</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h4><ul>
+<li>测试完成后，可以去/sdcard/leakcanary/目录下看是否生成LeakCanary.log， 如果没有生成说明没有内存泄露。</li>
+<li><p>如果有内存泄露，我们将LeakCanary.log 用adb 命令pull到本地：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb pull /sdcard/leakcanary/LeakCanary.log</div></pre></td></tr></table></figure>
+</li>
+<li><p>建议用nodepad++或者Sublime Text等文本工具打开，格式支持更好一些。</p>
+</li>
+<li><p>我们举个例子，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">In com.XXX.XXXXXX:<span class="number">3.1</span>.0.4653:<span class="number">3104653</span>.</div><div class="line">* com.XXXX.XXXXX.application.XXXXX has leaked:</div><div class="line">* GC ROOT <span class="keyword">static</span> com.raizlabs.android.dbflow.config.FlowManager.config</div><div class="line">* references com.raizlabs.android.dbflow.config.FlowConfig.context</div><div class="line">* leaks com.XXXX.XXXXX.application.XXXXX instance</div><div class="line"></div><div class="line">* Retaining: <span class="number">288</span> B.</div><div class="line">* Reference Key: a3f8a717-<span class="number">8</span>de8-<span class="number">4149</span>-<span class="number">8431</span>-ce6c6e59e373</div><div class="line">* Device: XDJA ACTOMA ACTOMA ACE XDJA_SCM</div><div class="line">* Android Version: <span class="number">5.0</span>.2 API: <span class="number">21</span> LeakCanary: <span class="number">1.4</span>-beta2 <span class="number">3799172</span></div><div class="line">* Durations: watch=<span class="number">6673</span>ms, gc=<span class="number">166</span>ms, heap dump=<span class="number">1168</span>ms, analysis=<span class="number">425892</span>ms</div><div class="line"></div><div class="line">* Details:</div><div class="line">* Class com.raizlabs.android.dbflow.config.FlowManager</div><div class="line">|   <span class="keyword">static</span> DEFAULT_DATABASE_HOLDER_NAME = java.lang.String@<span class="number">316030112</span> (<span class="number">0x12d63ca0</span>)</div><div class="line">|   <span class="keyword">static</span> config = com.raizlabs.android.dbflow.config.FlowConfig@<span class="number">316030048</span> (<span class="number">0x12d63c60</span>)</div><div class="line">|   <span class="keyword">static</span> DEFAULT_DATABASE_HOLDER_CLASSNAME = java.lang.String@<span class="number">316030432</span> (<span class="number">0x12d63de0</span>)</div><div class="line">|   <span class="keyword">static</span> $staticOverhead = <span class="keyword">byte</span>[<span class="number">48</span>]@<span class="number">314895937</span> (<span class="number">0x12c4ee41</span>)</div><div class="line">|   <span class="keyword">static</span> globalDatabaseHolder = com.raizlabs.android.dbflow.config.FlowManager$GlobalDatabaseHolder@<span class="number">316030208</span> (<span class="number">0x12d63d00</span>)</div><div class="line">|   <span class="keyword">static</span> DEFAULT_DATABASE_HOLDER_PACKAGE_NAME = java.lang.String@<span class="number">316030272</span> (<span class="number">0x12d63d40</span>)</div><div class="line">|   <span class="keyword">static</span> loadedModules = java.util.HashSet@<span class="number">316098192</span> (<span class="number">0x12d74690</span>)</div><div class="line">* Instance of com.raizlabs.android.dbflow.config.FlowConfig</div><div class="line">|   context = com.XXXX.XXXXX.application.XXXXXXX@<span class="number">314752224</span> (<span class="number">0x12c2bce0</span>)</div><div class="line">|   databaseConfigMap = java.util.HashMap@<span class="number">316020144</span> (<span class="number">0x12d615b0</span>)</div><div class="line">|   databaseHolders = java.util.Collections$UnmodifiableSet@<span class="number">316098144</span> (<span class="number">0x12d74660</span>)</div><div class="line">|   openDatabasesOnInit = <span class="keyword">false</span></div><div class="line">* Instance of com.XXXX.XXXXXX.application.XXXXXXX</div><div class="line">|   <span class="keyword">static</span> STOP_DEB_LOCKING = <span class="keyword">false</span></div><div class="line">|   <span class="keyword">static</span> $staticOverhead = <span class="keyword">byte</span>[<span class="number">16</span>]@<span class="number">315848705</span> (<span class="number">0x12d37801</span>)</div><div class="line">|   <span class="keyword">static</span> SCREEN_BROADCAST = java.lang.String@<span class="number">315978240</span> (<span class="number">0x12d57200</span>)</div><div class="line">|   appComponent = com.xdja.HDSafeEMailClient.di.components.DaggerAppComponent@<span class="number">316306176</span> (<span class="number">0x12da7300</span>)</div><div class="line">|   isPauseActivity = java.lang.String@<span class="number">318262688</span> (<span class="number">0x12f84da0</span>)</div><div class="line">|   mScreenReceiver = com.XXXX.XXXXXX.application.XXXXXXXX$ScreenBroadcastReceiver@<span class="number">314600064</span> (<span class="number">0x12c06a80</span>)</div><div class="line">|   onResumeTime = <span class="number">1489630302358</span></div><div class="line">|   screenLockTime = <span class="number">0</span></div><div class="line">|   isBackGrounded = <span class="keyword">false</span></div><div class="line">|   isScreenLocked = <span class="keyword">false</span></div><div class="line">|   isSetPattern = <span class="keyword">false</span></div><div class="line">|   applicationComponent = com.XXXX.frame.di.components.DaggerApplicationComponent@<span class="number">314881856</span> (<span class="number">0x12c4b740</span>)</div><div class="line">|   loggable = <span class="keyword">true</span></div><div class="line">|   applicationLifeCycles = <span class="keyword">null</span></div><div class="line">|   components = java.util.HashMap@<span class="number">315022016</span> (<span class="number">0x12c6dac0</span>)</div><div class="line">|   mActivityLifecycleCallbacks = java.util.ArrayList@<span class="number">315978304</span> (<span class="number">0x12d57240</span>)</div><div class="line">|   mAssistCallbacks = <span class="keyword">null</span></div><div class="line">|   mComponentCallbacks = java.util.ArrayList@<span class="number">315978272</span> (<span class="number">0x12d57220</span>)</div><div class="line">|   mLoadedApk = android.app.LoadedApk@<span class="number">314737664</span> (<span class="number">0x12c28400</span>)</div><div class="line">|   mBase = android.app.ContextImpl@<span class="number">315114752</span> (<span class="number">0x12c84500</span>)</div><div class="line">* Excluded Refs:</div><div class="line">| Field: android.view.Choreographer$FrameDisplayEventReceiver.mMessageQueue (always)</div><div class="line">| Thread:FinalizerWatchdogDaemon (always)</div><div class="line">| Thread:main (always)</div><div class="line">| Thread:LeakCanary-Heap-Dump (always)</div><div class="line">| Class:java.lang.ref.WeakReference (always)</div><div class="line">| Class:java.lang.ref.SoftReference (always)</div><div class="line">| Class:java.lang.ref.PhantomReference (always)</div><div class="line">| Class:java.lang.ref.Finalizer (always)</div><div class="line">| Class:java.lang.ref.FinalizerReference (always)</div><div class="line">| Root Class:android.os.Binder (always)</div></pre></td></tr></table></figure>
+</li>
+<li><p>如上所示，我们分以下几步分析问题：</p>
+<blockquote>
+<ol>
+<li>通过 com.XXXX.XXXXX.application.XXXXX has leaked:  我们知道com.XXXX.XXXXX.application.XXXXX发生了内存泄露。</li>
+<li>接下来我们看Retaining: 288 B    知道大致泄露了288B。有时候泄露比较小时，比如本例中的288B，可以适当放宽处理。</li>
+<li>再来就是分析泄露原因，LeakCanary这一点做的很好，我们直接看Details就好了：Details内容最上面的Class是GC Roots，本例就是：com.raizlabs.android.dbflow.config.FlowConfig@316030048 (0x12d63c60)。所以我们应该从下往上找，一般下面的类是跟我们关系比较大的类。</li>
+<li>本例我们可以得出 com.XXXX.XXXXXX.application.XXXXXXX  以 context传入 com.raizlabs.android.dbflow.config.FlowConfig， 然后com.raizlabs.android.dbflow.config.FlowConfig又以static config的形式存在于com.raizlabs.android.dbflow.config.FlowManager，这样就引起了内存泄露。</li>
+<li>非常好分析吧，LeakCanary比MAT工具分析起来要容易一些。</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h4 id="手动测试"><a href="#手动测试" class="headerlink" title="手动测试"></a>手动测试</h4><ul>
+<li>当然你可能担心自动化覆盖不全你的用例，你也可以手动去操作。</li>
+<li>获取数据和分析数据的方式和上面都是一样的。</li>
+</ul>
+<h3 id="内存抖动"><a href="#内存抖动" class="headerlink" title="内存抖动"></a>内存抖动</h3><ul>
+<li>内存抖动的跟踪，有两种方式：AndroidStudio monitor和自己写脚本分析。</li>
+</ul>
+<h4 id="AndroidStudio-monitor"><a href="#AndroidStudio-monitor" class="headerlink" title="AndroidStudio monitor"></a>AndroidStudio monitor</h4><ul>
+<li>这是我比较推荐的方式，因为图形的方式，观察抖动更直接。如下图所示：<br><img src="/upload/image/zlw/内存抖动.PNG" alt="内存抖动"></li>
+<li>另外如果有抖动发生，可以直接抓取一个Memory Allocation来查看内存分配情况。</li>
+<li>建议测内存泄露时，可以同时检测内存抖动。</li>
+</ul>
+<h4 id="自己写脚本"><a href="#自己写脚本" class="headerlink" title="自己写脚本"></a>自己写脚本</h4><ul>
+<li>可以自己写脚本收集抖动数据，这需要一个判断标准，我目标的标准是：10s内抖动4次。</li>
+<li>这种方式用于我们跑自动化，没有人参与的情况。</li>
+<li>我们需要记录发生抖动的页面或者截图，方便日后场景重现分析问题。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>内存对性能测试来说是非常重要的，因此需要花更多的时间去测试和验证。</li>
+<li>对于测试过程中发现的问题，最好找到根本原因，这样可以提高问题解决的效率。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/内存，LeakCanary/" rel="tag">#内存，LeakCanary</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/08/多模块构建/" rel="next" title="多模块构建（gradle系列五）">
+                <i class="fa fa-chevron-left"></i> 多模块构建（gradle系列五）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/16/Android对内存的测试/"
+           data-title="Android对内存的测试" data-url="http://yoursite.com/2017/03/16/Android对内存的测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试内容"><span class="nav-text">测试内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试方法"><span class="nav-text">测试方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存泄露"><span class="nav-text">内存泄露</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LeakCanary改良版"><span class="nav-text">LeakCanary改良版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UI自动化"><span class="nav-text">UI自动化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-text">其他</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结果分析"><span class="nav-text">结果分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动测试"><span class="nav-text">手动测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存抖动"><span class="nav-text">内存抖动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AndroidStudio-monitor"><span class="nav-text">AndroidStudio monitor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自己写脚本"><span class="nav-text">自己写脚本</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
