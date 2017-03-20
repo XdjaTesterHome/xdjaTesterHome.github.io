@@ -1,0 +1,762 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="单元测试，功能测试，测试覆盖率," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+为了确保app或者library库的质量，有一个完整的测试非常重要。很长一段时间，Android开发工具都缺乏针对完整性测试的支持，但是最近，google为之做了大量的工作，其让开发者做测试变得更加容易了，一些旧的框架更新了版本，新的框架也被加入进来。我们现在不仅可以在Android studio中运行这些测试，甚至可以用gradle通过命令行直接执行。
+接下来，主要说明三部分内容：
+
+单元">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gradle之测试（gradle 系列六）">
+<meta property="og:url" content="http://yoursite.com/2017/03/16/gradle之测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+为了确保app或者library库的质量，有一个完整的测试非常重要。很长一段时间，Android开发工具都缺乏针对完整性测试的支持，但是最近，google为之做了大量的工作，其让开发者做测试变得更加容易了，一些旧的框架更新了版本，新的框架也被加入进来。我们现在不仅可以在Android studio中运行这些测试，甚至可以用gradle通过命令行直接执行。
+接下来，主要说明三部分内容：
+
+单元">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/JUnit_report.png">
+<meta property="og:updated_time" content="2017-03-16T11:47:34.430Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gradle之测试（gradle 系列六）">
+<meta name="twitter:description" content="背景
+为了确保app或者library库的质量，有一个完整的测试非常重要。很长一段时间，Android开发工具都缺乏针对完整性测试的支持，但是最近，google为之做了大量的工作，其让开发者做测试变得更加容易了，一些旧的框架更新了版本，新的框架也被加入进来。我们现在不仅可以在Android studio中运行这些测试，甚至可以用gradle通过命令行直接执行。
+接下来，主要说明三部分内容：
+
+单元">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/JUnit_report.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/16/gradle之测试/"/>
+
+
+  <title> gradle之测试（gradle 系列六） | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                gradle之测试（gradle 系列六）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-16T19:03:54+08:00" content="2017-03-16">
+              2017-03-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/16/gradle之测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/16/gradle之测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>为了确保app或者library库的质量，有一个完整的测试非常重要。很长一段时间，Android开发工具都缺乏针对完整性测试的支持，但是最近，google为之做了大量的工作，其让开发者做测试变得更加容易了，一些旧的框架更新了版本，新的框架也被加入进来。我们现在不仅可以在Android studio中运行这些测试，甚至可以用gradle通过命令行直接执行。</li>
+<li>接下来，主要说明三部分内容：<blockquote>
+<ol>
+<li>单元测试</li>
+<li>功能测试</li>
+<li>测试覆盖率</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><ul>
+<li>AndroidStudio和gradle android插件默认都支持单元测试，使用之前，需要做一些配置。</li>
+<li>好的单元测试不仅仅能够确保app的质量，同时还能让新代码的开发更加容易。</li>
+</ul>
+<h3 id="JUnit"><a href="#JUnit" class="headerlink" title="JUnit"></a>JUnit</h3><ul>
+<li>JUnit是非常常用的一个框架，但是它只能测试代码的逻辑，对于Android SDK 相关的代码却没办法执行，运行会报错。</li>
+<li><p>开始编写junit测试之前，需要新建一个目录（一般叫test），它会和main目录在同一层级，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">app</div><div class="line">└─── src</div><div class="line">     ├─── main</div><div class="line">          ├─── java</div><div class="line">          │    └─── com.example.app</div><div class="line">          └─── res</div><div class="line">     └─── test</div><div class="line">          └─── java</div><div class="line">               └─── com.example.app</div></pre></td></tr></table></figure>
+</li>
+<li><p>这样，你就可以在test目录下创建JUnit测试代码了。同时，你需要在build.gradle中添加JUnit依赖：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">       testCompile <span class="string">'junit:junit:4.12'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>这里testCompile,表示junit包只会在测试的时候导入，其他情况不会导入jar包。如果你有其他的构建版本，你可以这么做：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">       testPaidCompile <span class="string">'junit:junit:4.12'</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>上面都配置好之后，我们就可以开始写测试代码了，下面是个简单的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.junit.Test;</div><div class="line">   <span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.assertEquals;</div><div class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogicTest</span> </span>&#123;</div><div class="line">       <span class="meta">@Test</span></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addingNegativeNumberShouldSubtract</span><span class="params">()</span> </span>&#123;</div><div class="line">           Logic logic = <span class="keyword">new</span> Logic();</div><div class="line">           assertEquals(<span class="string">"6 + -2 must be 4"</span>, <span class="number">4</span>, logic.add(<span class="number">6</span>, -<span class="number">2</span>));</div><div class="line">           assertEquals(<span class="string">"2 + -5 must be -3"</span>, -<span class="number">3</span>, logic.add(<span class="number">2</span>, -<span class="number">5</span>));</div><div class="line">       &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过下面的命令运行上面的测试代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ gradlew <span class="built_in">test</span></div><div class="line"></div><div class="line">如果想在特定版本执行，可以这么做：</div><div class="line">$ gradlew <span class="built_in">test</span>Debug</div><div class="line"></div><div class="line">如果单个用例失败导致整个测试失败，我们可以通过下面的命令，将整个用例都跑一遍：</div><div class="line">$ gradlew <span class="built_in">test</span> --continue</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行完之后，可以在app/build/reports/tests/debug/目录下面找到一个html测试报告。这份测试报告描述了测试的大致情况：几个用例执行成功，耗时多少等等，如下图所示：<br><img src="/upload/image/zlw/JUnit_report.png" alt="单元测试报告"></p>
+</li>
+</ul>
+<h3 id="Robolectric"><a href="#Robolectric" class="headerlink" title="Robolectric"></a>Robolectric</h3><ul>
+<li>JUnit只能测试和Android 无关的代码，那么如果想测试Android相关的代码，那么Robolectric就是利器，它可以使用Android SDK和资源文件，它还是跑在JVM上，测试相对来说比其他UI自动化要迅速。</li>
+<li><p>在使用Robolectric之前，需要添加依赖，注意同时还需要添加JUnit包：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'org.robolectric'</span></div><div class="line">   dependencies &#123;</div><div class="line">       <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></div><div class="line">       compile 'com.android.support:appcompat-v7:22.2.0'</div><div class="line">       testCompile 'junit:junit:4.12'</div><div class="line">       testCompile'org.robolectric:robolectric:3.0'</div><div class="line">       testCompile'org.robolectric:shadows-support:3.0'</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Robolectric测试类也需要写在test文件夹下，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 看上去写法有点复杂</span></div><div class="line"><span class="meta">@RunWith</span>(RobolectricTestRunner.class)</div><div class="line"><span class="meta">@Config</span>(manifest = <span class="string">"app/src/main/AndroidManifest.xml"</span>, sdk = <span class="number">18</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivityTest</span> </span>&#123;</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickingButtonShouldChangeText</span><span class="params">()</span> </span>&#123;</div><div class="line">        AppCompatActivity activity = Robolectric.buildActivity</div><div class="line">          (MainActivity.class).create().get();</div><div class="line">        Button button = (Button)</div><div class="line">          activity.findViewById(R.id.button);</div><div class="line">        TextView textView = (TextView)</div><div class="line">          activity.findViewById(R.id.label);</div><div class="line">        button.performClick();</div><div class="line">        assertThat(textView.getText().toString(), equalTo</div><div class="line">          (activity.getString(R.string.hello_robolectric)));</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="功能测试"><a href="#功能测试" class="headerlink" title="功能测试"></a>功能测试</h2><ul>
+<li>用于测试一个app的多个模块能否正常工作，比如：点击某个按钮之后，是否能正确打开某个页面。</li>
+<li>这里介绍的是Google自己的框架：Espresso。AndroidStudio最新版本已经支持Espresso脚本录制。</li>
+</ul>
+<h3 id="Espresso"><a href="#Espresso" class="headerlink" title="Espresso"></a>Espresso</h3><ul>
+<li>Google创建Espresso的目的在于简化开发人员编写测试用例。</li>
+<li>需要定义一个runner来运行测试用例，放到AndroidTest目录下（和上面提到的test目录、main目录同一层级），Google提供了AndroidJUnitRunner测试runner，它能在手机上运行JUnit测试，测试runner可以安装apk、执行测试、生成报告。</li>
+<li><p>在build.gradle中需要如下配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">       testInstrumentationRunner</div><div class="line">         <span class="string">"android.support.test.runner.AndroidJUnitRunner"</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   dependencies &#123;</div><div class="line">      <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></div><div class="line">      compile 'com.android.support:appcompat-v7:22.2.0'</div><div class="line">      androidTestCompile 'com.android.support.test:runner:0.3'</div><div class="line">      androidTestCompile 'com.android.support.test:rules:0.3'</div><div class="line">      androidTestCompile</div><div class="line">        'com.android.support.test.espresso:espresso-core:2.2'</div><div class="line">      androidTestCompile</div><div class="line">        'com.android.support.test.espresso:espresso-contrib:2.2'</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>直接运行可能会报错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">     Error: duplicate files during packaging of APK app-androidTest.apk</div><div class="line">     Path in archive: LICENSE.txt</div><div class="line">     Origin <span class="number">1</span>: ...\hamcrest-library-<span class="number">1.1</span>.jar</div><div class="line">     Origin <span class="number">2</span>: ...\junit-dep-<span class="number">4.10</span>.jar</div><div class="line"></div><div class="line">     <span class="comment">//解决方案是</span></div><div class="line">     android &#123;</div><div class="line">     packagingOptions &#123;</div><div class="line">     exclude <span class="string">'LICENSE.txt'</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>下面是个简单的测试用例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RunWith</span>(AndroidJUnit4.class)</div><div class="line">   <span class="meta">@SmallTest</span></div><div class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestingEspressoMainActivityTest</span> </span>&#123;</div><div class="line">       <span class="meta">@Rule</span></div><div class="line">       <span class="keyword">public</span> ActivityTestRule&lt;MainActivity&gt; mActivityRule = <span class="keyword">new</span></div><div class="line">         ActivityTestRule&lt;&gt;(MainActivity.class);</div><div class="line">       <span class="meta">@Test</span></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testHelloWorldIsShown</span><span class="params">()</span> </span>&#123;</div><div class="line">           onView(withText(<span class="string">"Hello world!"</span>)).check</div><div class="line">             (matches(isDisplayed()));</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="测试覆盖率"><a href="#测试覆盖率" class="headerlink" title="测试覆盖率"></a>测试覆盖率</h2><ul>
+<li>当代码中有单元测试之后，我们就需要对测试代码对源码覆盖率有个了解，这样方便我们调整和优化我们的单元测试代码。</li>
+<li>这里介绍Jacoco，在另一篇文章中其实已经涉及到了<a href="https://xdjatesterhome.github.io/2017/03/02/代码覆盖工具jacoco的介绍和使用/" target="_blank" rel="external">Jacoco</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/单元测试，功能测试，测试覆盖率/" rel="tag">#单元测试，功能测试，测试覆盖率</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/16/Android对内存的测试/" rel="next" title="Android对内存的测试">
+                <i class="fa fa-chevron-left"></i> Android对内存的测试
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/16/理解Groovy/" rel="prev" title="理解Groovy（gradle系列七）">
+                理解Groovy（gradle系列七） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/16/gradle之测试/"
+           data-title="gradle之测试（gradle 系列六）" data-url="http://yoursite.com/2017/03/16/gradle之测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单元测试"><span class="nav-text">单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JUnit"><span class="nav-text">JUnit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Robolectric"><span class="nav-text">Robolectric</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能测试"><span class="nav-text">功能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Espresso"><span class="nav-text">Espresso</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试覆盖率"><span class="nav-text">测试覆盖率</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
