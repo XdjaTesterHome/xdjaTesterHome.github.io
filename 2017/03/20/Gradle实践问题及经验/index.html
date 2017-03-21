@@ -1,0 +1,761 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="gradle经验," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="productFlavors
+项目中一般都会用到ProductFlavors，实现比如不同的场景，包名不一样或者配置信息不一样等待。
+举个例子，假如，我们的app有手机版（com.xx.xxx）和 pad版(com.xx.xxx.hd)两个版本，它们共用一份代码，那么在build.gradle中配置如下：
+123456productFlavors &amp;#123;   Hd&amp;#123;      ap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle实践问题及经验">
+<meta property="og:url" content="http://yoursite.com/2017/03/20/Gradle实践问题及经验/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="productFlavors
+项目中一般都会用到ProductFlavors，实现比如不同的场景，包名不一样或者配置信息不一样等待。
+举个例子，假如，我们的app有手机版（com.xx.xxx）和 pad版(com.xx.xxx.hd)两个版本，它们共用一份代码，那么在build.gradle中配置如下：
+123456productFlavors &amp;#123;   Hd&amp;#123;      ap">
+<meta property="og:updated_time" content="2017-03-21T01:58:34.778Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle实践问题及经验">
+<meta name="twitter:description" content="productFlavors
+项目中一般都会用到ProductFlavors，实现比如不同的场景，包名不一样或者配置信息不一样等待。
+举个例子，假如，我们的app有手机版（com.xx.xxx）和 pad版(com.xx.xxx.hd)两个版本，它们共用一份代码，那么在build.gradle中配置如下：
+123456productFlavors &amp;#123;   Hd&amp;#123;      ap">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/20/Gradle实践问题及经验/"/>
+
+
+  <title> Gradle实践问题及经验 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Gradle实践问题及经验
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-20T19:58:27+08:00" content="2017-03-20">
+              2017-03-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/20/Gradle实践问题及经验/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/20/Gradle实践问题及经验/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="productFlavors"><a href="#productFlavors" class="headerlink" title="productFlavors"></a>productFlavors</h2><ul>
+<li>项目中一般都会用到ProductFlavors，实现比如不同的场景，包名不一样或者配置信息不一样等待。</li>
+<li><p>举个例子，假如，我们的app有手机版（com.xx.xxx）和 pad版(com.xx.xxx.hd)两个版本，它们共用一份代码，那么在build.gradle中配置如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">productFlavors &#123;</div><div class="line">   Hd&#123;</div><div class="line">      applicationId <span class="string">"com.xx.xxx.hd"</span></div><div class="line">   &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//我们可以通过gradle assembleHd命令来生成hd适配包。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>再举个例子（美团的例子），假设有个需求，wandoujia市场默认禁止自动更新功能，可以这么写：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    defaultConfig &#123;</div><div class="line">        buildConfigField <span class="string">"boolean"</span>, <span class="string">"AUTO_UPDATES"</span>, <span class="string">"true"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    productFlavors &#123;</div><div class="line">        wandoujia &#123;</div><div class="line">            buildConfigField <span class="string">"boolean"</span>, <span class="string">"AUTO_UPDATES"</span>, <span class="string">"false"</span></div><div class="line">        &#125;        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 运行gradle assembleWandoujia命令生成  AUTO_UPDATES = false的包，然后代码中可以通过判断AUTO_UPDATES的值确定是否可以自动升级。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Gradle会在generateSources阶段为flavors生成一个BuildConfig.java文件，BuildConfig类默认提供了一些常量字段，比如，应用的版本名（VERSION_NAME）、应用的包名（PACKAGE_NAME）等。上面的是自定义的一些字段。很强大吧。</p>
+</li>
+</ul>
+<h2 id="buildTypes"><a href="#buildTypes" class="headerlink" title="buildTypes"></a>buildTypes</h2><ul>
+<li><p>应用场景是：构建App的内测版和正式版，让他们能够安装到同一个手机上。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">android&#123;</div><div class="line">  buildTypes&#123;</div><div class="line">    release&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    debug&#123;</div><div class="line">      applicationIdSuffix <span class="string">'.debug'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>不过需要考虑到自定义view在布局文件中的包名、其他用到包名的地方也要做修改。</p>
+</li>
+</ul>
+<h2 id="依赖更新"><a href="#依赖更新" class="headerlink" title="依赖更新"></a>依赖更新</h2><ul>
+<li>手动设置 changing 标记为true，项目依赖的远程包如果有更新，会有提醒或者自动更新。gradle会每24小时检查更新，通过更改resolutionStrategy可以修改检查周期。<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">configurations.all &#123;</div><div class="line">    <span class="comment">// check for updates every build</span></div><div class="line">    resolutionStrategy.cacheChangingModulesFor <span class="number">0</span>, <span class="string">'seconds'</span></div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">    compile <span class="string">group:</span> <span class="string">"group"</span>, <span class="string">name:</span> <span class="string">"projectA"</span>, <span class="string">version:</span> <span class="string">"1.1-SNAPSHOT"</span>, <span class="string">changing:</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="上传aar到Maven仓库"><a href="#上传aar到Maven仓库" class="headerlink" title="上传aar到Maven仓库"></a>上传aar到Maven仓库</h2><ul>
+<li><p>在工程的build.gradle中添加以下脚本：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'maven'</span></div><div class="line">uploadArchives &#123;</div><div class="line">    repositories &#123;</div><div class="line">        mavenDeployer &#123;</div><div class="line">            pom.groupId = GROUP_ID</div><div class="line">            pom.artifactId = ARTIFACT_ID</div><div class="line">            pom.version = VERSION</div><div class="line">            repository(<span class="string">url:</span> RELEASE_REPOSITORY_URL) &#123;</div><div class="line">                authentication(<span class="string">userName:</span> USERNAME, <span class="string">password:</span> PASSWORD)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在build.gradle同目录下添加gradle.properties文件，配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GROUP_ID=dianping.android.nova.thirdparty</div><div class="line">ARTIFACT_ID=zxing</div><div class="line">VERSION=1.0</div><div class="line">RELEASE_REPOSITORY_URL=http://mvn.dp.com/nova</div><div class="line">USERNAME=hello</div><div class="line">PASSWORD=hello</div></pre></td></tr></table></figure>
+</li>
+<li><p>最后执行 gradle :Zxing:uploadArchives</p>
+</li>
+</ul>
+<h2 id="取消任务"><a href="#取消任务" class="headerlink" title="取消任务"></a>取消任务</h2><ul>
+<li><p>项目构建过程中，有些任务不需要，可以直接关掉，在build.gradle中加入如下脚本：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">tasks.whenTaskAdded &#123; task -&gt;</div><div class="line">    <span class="keyword">if</span> (task.name.contains(<span class="string">'AndroidTest'</span>)) &#123;</div><div class="line">        task.enabled = <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>tasks 会获取当前project中所有的task，enabled属性控制任务开关，whenTaskAdded后面的闭包会在gradle配置阶段完成。</p>
+</li>
+</ul>
+<h2 id="加入任务"><a href="#加入任务" class="headerlink" title="加入任务"></a>加入任务</h2><ul>
+<li><p>上面提到取消任务，那么也可以添加任务，比如，想在执行dex打包之前，加入一个hello任务，可以这么写：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">afterEvaluate &#123;</div><div class="line">    android.applicationVariants.each &#123; variant -&gt;</div><div class="line">        <span class="keyword">def</span> dx = tasks.findByName(<span class="string">"dex$&#123;variant.name.capitalize()&#125;"</span>)</div><div class="line">        <span class="keyword">def</span> hello = <span class="string">"hello$&#123;variant.name.capitalize()&#125;"</span></div><div class="line">        task(hello) &lt;&lt; &#123;</div><div class="line">            println <span class="string">"hello"</span></div><div class="line">        &#125;</div><div class="line">        tasks.findByName(hello).dependsOn dx.taskDependencies.getDependencies(dx)</div><div class="line">        dx.dependsOn tasks.findByName(hello)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>afterEvaluate可以理解在配置阶段结束时，会走到这一步。variant = productFlavors  + buildTyps。</p>
+</li>
+<li>dx.taskDependencies.getDependencies(dx)会获取dx任务的所有依赖，让hello任务以来dx任务的所有依赖，再让dx依赖hello任务，这样就可以加入某个任务到构建流程了。</li>
+</ul>
+<h2 id="任务监听"><a href="#任务监听" class="headerlink" title="任务监听"></a>任务监听</h2><ul>
+<li>通过hook方式，我们可以监听一个task执行过程以及执行时间，如下所示：<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimingsListener</span> <span class="keyword">implements</span> <span class="title">TaskExecutionListener</span>, <span class="title">BuildListener</span> &#123;</span></div><div class="line">    <span class="keyword">private</span> Clock clock</div><div class="line">    <span class="keyword">private</span> timings = []</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> beforeExecute(Task task) &#123;</div><div class="line">        clock = <span class="keyword">new</span> org.gradle.util.Clock()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> afterExecute(Task task, TaskState taskState) &#123;</div><div class="line">        <span class="keyword">def</span> ms = clock.timeInMs</div><div class="line">        timings.add([ms, task.path])</div><div class="line">        task.project.logger.warn <span class="string">"$&#123;task.path&#125; took $&#123;ms&#125;ms"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildFinished(BuildResult result) &#123;</div><div class="line">        println <span class="string">"Task timings:"</span></div><div class="line">        <span class="keyword">for</span> (timing <span class="keyword">in</span> timings) &#123;</div><div class="line">            <span class="keyword">if</span> (timing[<span class="number">0</span>] &gt;= <span class="number">50</span>) &#123;</div><div class="line">                printf <span class="string">"%7sms  %s\n"</span>, timing</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildStarted(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsEvaluated(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsLoaded(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> settingsEvaluated(Settings settings) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">gradle.addListener <span class="keyword">new</span> TimingsListener()</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="buildscript方法"><a href="#buildscript方法" class="headerlink" title="buildscript方法"></a>buildscript方法</h2><ul>
+<li><p>Android项目中，跟工程默认的build.gradle如下：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Top-level build file where you can add configuration options common to all sub-projects/modules.</span></div><div class="line"></div><div class="line"><span class="keyword">buildscript</span> &#123;</div><div class="line">    <span class="keyword">repositories</span> &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">dependencies</span> &#123;</div><div class="line">        <span class="keyword">classpath</span> <span class="string">'com.android.tools.build:gradle:1.2.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">allprojects</span> &#123;</div><div class="line">    <span class="keyword">repositories</span> &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>buildscript方法的作用是配置脚本的依赖，而我们平常用的compile是配置project的依赖，repositories的意思是需要包的时候来我这里拿。</p>
+</li>
+<li>这里的com.android.tools.build:gradle:1.2.3是从C:\Program Files\Android\Android Studio\gradle\m2repository  下面取的，因此如果这里没有其他依赖（除了Android 插件相关），去掉jcenter也是可以的。</li>
+</ul>
+<h2 id="引入脚本"><a href="#引入脚本" class="headerlink" title="引入脚本"></a>引入脚本</h2><ul>
+<li>脚本写多了之后，都放到build.gradle中会显得很乱，可以将相关的一些脚本抽离除去，放到一个新的文件中，比如other.gradle,然后在build.gradle中只需要apply from ‘other.gradle’即可。</li>
+<li>但是需要注意，根工程中配置的buildscript会传递到所有工程，但只会传到build.gradle脚本中，所以你需要在other.gradle中重新配置buildscript,并且other.gradle中的repositories不再包含m2repository目录，自己配置jcenter()又会导致依赖重新下载到~/.gradle/caches目录。如果不想额外下载，也可以在other.gradle中这么搞：<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven &#123;</div><div class="line">            url rootProject.buildscript.repositories[<span class="number">0</span>].getUrl()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:1.2.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="获取AndroidManifest文件"><a href="#获取AndroidManifest文件" class="headerlink" title="获取AndroidManifest文件"></a>获取AndroidManifest文件</h2><ul>
+<li>radle中的applicationid用来区分应用，manifest中packageName用来指定R文件包名，并且各个productFlavor 的manifest中的packageName应该一致。applicationid只是gradle脚本中的定义，其实最后生成的apk中的manifest文件的packageName还是会被applicationid替换掉。</li>
+<li>那获取R文件的包名怎么搞？要获取AndroidManifest中package属性，并且这个manifest要是起始的文件，因为最终文件中的package属性会被applicationid冲掉，由于各个manifest中的package属性一样，并且非主manifest可以没有package属性，所以只有获取主manifest的package属性才是最准确的。<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">def</span> manifestFile = android.sourceSets.main.manifest.srcFile</div><div class="line"><span class="keyword">def</span> packageName = <span class="keyword">new</span> XmlParser().parse(manifestFile).attribute(<span class="string">'package'</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="无用资源"><a href="#无用资源" class="headerlink" title="无用资源"></a>无用资源</h2><ul>
+<li>无用的资源就不要打包进APK了<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Resource Shrinking</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gradle经验/" rel="tag">#gradle经验</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/20/gradle构建过程-Android/" rel="next" title="gradle构建过程(Android)（gradle 系列八）">
+                <i class="fa fa-chevron-left"></i> gradle构建过程(Android)（gradle 系列八）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/20/Gradle实践问题及经验/"
+           data-title="Gradle实践问题及经验" data-url="http://yoursite.com/2017/03/20/Gradle实践问题及经验/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#productFlavors"><span class="nav-text">productFlavors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buildTypes"><span class="nav-text">buildTypes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖更新"><span class="nav-text">依赖更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传aar到Maven仓库"><span class="nav-text">上传aar到Maven仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消任务"><span class="nav-text">取消任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入任务"><span class="nav-text">加入任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务监听"><span class="nav-text">任务监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buildscript方法"><span class="nav-text">buildscript方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入脚本"><span class="nav-text">引入脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取AndroidManifest文件"><span class="nav-text">获取AndroidManifest文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无用资源"><span class="nav-text">无用资源</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -88,9 +88,10 @@
 这篇文章主要讲Gradle大概的工作流程和实现原理，并以部分源码分析佐证，其中包括project中配置数据什么时候获取，各个task的创建时机，如何自定义控制编译过程等。
 接着分析编译过程中class到dex这一步，以及当初遇到的问题。
 本文是参考打通Android Gradle编译过程的任督二脉
+这篇文章写的有点乱，后续再做整理。
 
 主要工作流程初始化阶段
-读取根工程中的setting.gradle中的include信息，确">
+读取根工程中的setting.g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="gradle构建过程(Android)（gradle 系列八）">
 <meta property="og:url" content="http://yoursite.com/2017/03/20/gradle构建过程-Android/index.html">
@@ -99,22 +100,24 @@
 这篇文章主要讲Gradle大概的工作流程和实现原理，并以部分源码分析佐证，其中包括project中配置数据什么时候获取，各个task的创建时机，如何自定义控制编译过程等。
 接着分析编译过程中class到dex这一步，以及当初遇到的问题。
 本文是参考打通Android Gradle编译过程的任督二脉
+这篇文章写的有点乱，后续再做整理。
 
 主要工作流程初始化阶段
-读取根工程中的setting.gradle中的include信息，确">
+读取根工程中的setting.g">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/gradle_task.jpg">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/gradle_img.png">
 <meta property="og:image" content="http://yoursite.com/upload/image/zlw/build_apk.png">
-<meta property="og:updated_time" content="2017-03-20T11:37:51.998Z">
+<meta property="og:updated_time" content="2017-03-21T01:37:11.891Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gradle构建过程(Android)（gradle 系列八）">
 <meta name="twitter:description" content="背景
 这篇文章主要讲Gradle大概的工作流程和实现原理，并以部分源码分析佐证，其中包括project中配置数据什么时候获取，各个task的创建时机，如何自定义控制编译过程等。
 接着分析编译过程中class到dex这一步，以及当初遇到的问题。
 本文是参考打通Android Gradle编译过程的任督二脉
+这篇文章写的有点乱，后续再做整理。
 
 主要工作流程初始化阶段
-读取根工程中的setting.gradle中的include信息，确">
+读取根工程中的setting.g">
 <meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/gradle_task.jpg">
 
 
@@ -366,6 +369,7 @@
 <li>这篇文章主要讲Gradle大概的工作流程和实现原理，并以部分源码分析佐证，其中包括project中配置数据什么时候获取，各个task的创建时机，如何自定义控制编译过程等。</li>
 <li>接着分析编译过程中class到dex这一步，以及当初遇到的问题。</li>
 <li>本文是参考<a href="http://chuansong.me/n/425965451447" target="_blank" rel="external">打通Android Gradle编译过程的任督二脉</a></li>
+<li>这篇文章写的有点乱，后续再做整理。</li>
 </ul>
 <h2 id="主要工作流程"><a href="#主要工作流程" class="headerlink" title="主要工作流程"></a>主要工作流程</h2><h3 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h3><ul>
 <li>读取根工程中的setting.gradle中的include信息，确定有多少工程加入构建并创建project实例，每个工程中的build.gradle对应一个project实例。</li>
@@ -382,8 +386,6 @@
 </ul>
 <h3 id="hook方式"><a href="#hook方式" class="headerlink" title="hook方式"></a>hook方式</h3><ul>
 <li>从上图中可以看出我们可以通过hook的方式来做一些操作，gradle里面有两个监听器接口：BuildListener 和 TaskExecutionListener</li>
-<li>通过hook方式，我们可以监听一个task执行过程以及执行时间，如下所示：<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimingsListener</span> <span class="keyword">implements</span> <span class="title">TaskExecutionListener</span>, <span class="title">BuildListener</span> &#123;</span></div><div class="line">    <span class="keyword">private</span> Clock clock</div><div class="line">    <span class="keyword">private</span> timings = []</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> beforeExecute(Task task) &#123;</div><div class="line">        clock = <span class="keyword">new</span> org.gradle.util.Clock()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> afterExecute(Task task, TaskState taskState) &#123;</div><div class="line">        <span class="keyword">def</span> ms = clock.timeInMs</div><div class="line">        timings.add([ms, task.path])</div><div class="line">        task.project.logger.warn <span class="string">"$&#123;task.path&#125; took $&#123;ms&#125;ms"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildFinished(BuildResult result) &#123;</div><div class="line">        println <span class="string">"Task timings:"</span></div><div class="line">        <span class="keyword">for</span> (timing <span class="keyword">in</span> timings) &#123;</div><div class="line">            <span class="keyword">if</span> (timing[<span class="number">0</span>] &gt;= <span class="number">50</span>) &#123;</div><div class="line">                printf <span class="string">"%7sms  %s\n"</span>, timing</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildStarted(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsEvaluated(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsLoaded(Gradle gradle) &#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> settingsEvaluated(Settings settings) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">gradle.addListener <span class="keyword">new</span> TimingsListener()</div></pre></td></tr></table></figure>
-</li>
 </ul>
 <h4 id="BuildListener"><a href="#BuildListener" class="headerlink" title="BuildListener"></a>BuildListener</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">buildStarted</span><span class="params">(Gradle gradle)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">settingsEvaluated</span><span class="params">(Settings settings)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">projectsLoaded</span><span class="params">(Gradle gradle)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">projectsEvaluated</span><span class="params">(Gradle gradle)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">buildFinished</span><span class="params">(BuildResult result)</span></span>;</div></pre></td></tr></table></figure>
 <h4 id="TaskExecutionListener"><a href="#TaskExecutionListener" class="headerlink" title="TaskExecutionListener"></a>TaskExecutionListener</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">beforeExecute</span><span class="params">(Task task)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">afterExecute</span><span class="params">(Task task, TaskState state)</span></span>;</div></pre></td></tr></table></figure>
@@ -471,6 +473,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/20/Gradle实践问题及经验/" rel="prev" title="Gradle实践问题及经验">
+                Gradle实践问题及经验 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -565,7 +571,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -582,7 +588,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
