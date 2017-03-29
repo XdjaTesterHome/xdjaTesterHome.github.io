@@ -1,0 +1,773 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android安全," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="背景
+apk的安全是应用的最后一道防线，当我们做好功能，成功发布之后，如果apk对安全考虑不周，会带来非常严重的后果。比如：通过发送不带extra的Intent，有可能使程序crash、再比如网络通信过程中使用了明文密码，可想而知后果会怎么样。
+因此对apk的安全测试，是我们必须要考虑的事情。下面就介绍下一些常见的思路。
+下面这张图是从TestHome上面盗来的，我觉得总结的很全面，涵盖了安全的很">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android安全测试">
+<meta property="og:url" content="http://yoursite.com/2017/03/28/Android安全测试/index.html">
+<meta property="og:site_name" content="信大捷安测试团队">
+<meta property="og:description" content="背景
+apk的安全是应用的最后一道防线，当我们做好功能，成功发布之后，如果apk对安全考虑不周，会带来非常严重的后果。比如：通过发送不带extra的Intent，有可能使程序crash、再比如网络通信过程中使用了明文密码，可想而知后果会怎么样。
+因此对apk的安全测试，是我们必须要考虑的事情。下面就介绍下一些常见的思路。
+下面这张图是从TestHome上面盗来的，我觉得总结的很全面，涵盖了安全的很">
+<meta property="og:image" content="http://yoursite.com/upload/image/zlw/安全图.jpg">
+<meta property="og:updated_time" content="2017-03-29T08:52:46.855Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android安全测试">
+<meta name="twitter:description" content="背景
+apk的安全是应用的最后一道防线，当我们做好功能，成功发布之后，如果apk对安全考虑不周，会带来非常严重的后果。比如：通过发送不带extra的Intent，有可能使程序crash、再比如网络通信过程中使用了明文密码，可想而知后果会怎么样。
+因此对apk的安全测试，是我们必须要考虑的事情。下面就介绍下一些常见的思路。
+下面这张图是从TestHome上面盗来的，我觉得总结的很全面，涵盖了安全的很">
+<meta name="twitter:image" content="http://yoursite.com/upload/image/zlw/安全图.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/28/Android安全测试/"/>
+
+
+  <title> Android安全测试 | 信大捷安测试团队 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">信大捷安测试团队</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">分享、交流、成长</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android安全测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-28T14:41:00+08:00" content="2017-03-28">
+              2017-03-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">Android性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/28/Android安全测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/28/Android安全测试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+    <span class="post-visit-count">
+      &nbsp; | &nbsp; 
+      <!--眼睛图标-->
+      <i class="fa fa-eye"></i>&nbsp;
+      <span id="detail_cnt">1</span>
+    </span>
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
+<li>apk的安全是应用的最后一道防线，当我们做好功能，成功发布之后，如果apk对安全考虑不周，会带来非常严重的后果。比如：通过发送不带extra的Intent，有可能使程序crash、再比如网络通信过程中使用了明文密码，可想而知后果会怎么样。</li>
+<li>因此对apk的安全测试，是我们必须要考虑的事情。下面就介绍下一些常见的思路。</li>
+<li>下面这张图是从TestHome上面盗来的，我觉得总结的很全面，涵盖了安全的很多方面。不过图中提到的乌云的连接都没法看了（乌云去年被关停了），可自行搜索查看。<br><img src="/upload/image/zlw/安全图.jpg" alt="Android安全"></li>
+</ul>
+<h2 id="Android组件安全性测试"><a href="#Android组件安全性测试" class="headerlink" title="Android组件安全性测试"></a>Android组件安全性测试</h2><ul>
+<li>上面有对Android各个组件的安全问题描述，大家可以对照看下各个组件可能会存在的攻击情况。</li>
+<li>对于Android组件安全性的评估我们采用drozer。具体命令及使用参考<a href="https://xdjatesterhome.github.io/2017/03/01/安全扫描工具drozer的使用/" target="_blank" rel="external">drozer使用</a></li>
+</ul>
+<h3 id="drozer测试的一般思路"><a href="#drozer测试的一般思路" class="headerlink" title="drozer测试的一般思路"></a>drozer测试的一般思路</h3><ul>
+<li>首先进入drozer模式，我就直接用命令来说明测试的思路。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">// 用于查看drozer所有的命令</div><div class="line">$ list    </div><div class="line"></div><div class="line">// 获取攻击面，即获取组件中哪些是可能被攻击的</div><div class="line">$ run app.package.attacksurface packageName</div><div class="line">比如，下面是我获取的一些内容</div><div class="line">Attack Surface:</div><div class="line">  1 activities exported</div><div class="line">  2 broadcast receivers exported</div><div class="line">  0 content providers exported</div><div class="line">  2 services exported</div><div class="line">    is debuggable</div><div class="line"></div><div class="line">// 接着就是查看各个攻击面的详细情况（一般是组件被导出 <span class="built_in">export</span> = <span class="literal">true</span>，且没有加访问权限控制）我这里就拿Activity举个例子，其他的参考上文提到的工具使用。</div><div class="line">// 这里注意app的启动Activity一定是<span class="built_in">export</span> = <span class="literal">true</span>的</div><div class="line">$ run app.activity.info <span class="_">-a</span> packageName</div><div class="line">$ run.app.activity.start -component packageName activity   可以启动对应有攻击可能的Activity，看是否会有异常。</div><div class="line"></div><div class="line">// 其他攻击面就顺着这个思路排查问题，ContentProvider需要注意的点比较多。</div></pre></td></tr></table></figure>
+<h3 id="需要注意的一些点"><a href="#需要注意的一些点" class="headerlink" title="需要注意的一些点"></a>需要注意的一些点</h3><ul>
+<li>有些组件虽然没有明确声明export = true，但是当添加了intent-filter 之后export默认就是true。</li>
+<li>在AndroidManifest.xml中自定义权限时，要注意android:protectionLevel的值：<blockquote>
+<ol>
+<li>normal：默认值，低风险权限，在安装的时候，系统会自动授予权限给 application。</li>
+<li>dangerous：高风险权限，如发短信，打电话，读写通讯录。使用此protectionLevel来标识用户可能关注的一些权限。Android将会在安装程序时，警示用户关于这些权限的需求，具体的行为可能依据Android版本或者所安装的移动设备而有所变化。</li>
+<li>signature： 签名权限，在其他 app 引用声明的权限的时候，需要保证两个 app 的签名一致。这样系统就会自动授予权限给第三方 app，而不提示给用户。</li>
+<li>signatureOrSystem：除了具有相同签名的APP可以访问外，Android系统中的程序有权限访问。</li>
+<li>大部分开放的Provider，是提供给本公司的其他应用使用的，一般的话一个公司打包签名APP的签名证书都应该是一致的，这种情况下，Provider的android:protectionLevel应为设为“signature”。</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h3 id="问题判定的标准"><a href="#问题判定的标准" class="headerlink" title="问题判定的标准"></a>问题判定的标准</h3><ul>
+<li>通过drozer获取了攻击面，就能够知道哪些组件是export的，对于没必要export = true的组件是存在问题的（自己拿不准可以跟开发讨论下）。</li>
+<li>对于需要export= true的组件，可以通过drozer发送启动组件或者模拟获取组件数据的请求，来查看app组件是否存在问题：是否会crash、是否可以拿到app数据库中的数据、是否可以监听到broadReceiver来获取action中的数据等等。</li>
+<li>也可结合代码查看是否有潜在的问题存在。</li>
+</ul>
+<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><ul>
+<li>最直接的办法是export = false</li>
+<li><p>对于需要export = true的，要做以下的处理：</p>
+<blockquote>
+<ol>
+<li>保证对intent.getAction、intent.getAction.getExtra 做判null处理，避免其他程序恶意攻击，导致应用crash。</li>
+<li>对service来说，当其他程序bindService时要做权限控制，即是当前应用的才返回service实例。避免敏感数据泄露，同时也要做好Service敏感数据的保护。</li>
+<li>对于BroadcastReceiver，要对广播的发送者和接受者做限制：可以通过自定义权限，在AndroidManifest.xml中声明receiver时配置权限。（注意安全的等级）</li>
+<li>对于ContentProvider我们可以参考<a href="https://jaq.alibaba.com/community/art/show?articleid=352" target="_blank" rel="external">阿里安全ContentProvider分析</a>，讲的很详细</li>
+</ol>
+</blockquote>
+</li>
+<li><p>总结来说通过export = false、加自定义权限等方式来解决组件的安全问题。</p>
+</li>
+</ul>
+<h2 id="Android-data-data-packageName目录"><a href="#Android-data-data-packageName目录" class="headerlink" title="Android /data/data/packageName目录"></a>Android /data/data/packageName目录</h2><ul>
+<li>这里提到的/data/data/packageName 目录存放的是app常用的数据，比如：数据库、SharedPreferences及其他缓存数据，主要是关注数据是否存在泄露敏感数据的风险。比如：密码、包含敏感信息的文本等。</li>
+<li>上面Android组件测试中提到的drozer测ContentProvider，也可以检测到一些通过ContentProvider访问数据库的问题。</li>
+</ul>
+<h3 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h3><ul>
+<li>其实非常简单，在root过的手机上，直接去/data/data/packageName/ 目录查找类似databases、shared_prefs等目录，然后用adb pull命令将db文件拉到本地。</li>
+<li><p>对于数据库db用SqliteManager（sqlite可视化工具）打开db，查看是否涉及隐私信息，我大致总结了如下：</p>
+<blockquote>
+<ol>
+<li>是否涉及账号信息，且密码是否用明文保存。</li>
+<li>是否涉及隐私内容信息，比如邮件正文等。</li>
+<li>其他可能泄露的点。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>对于shared_prefs及其他文本，可以直接用文本工具打开查看。</p>
+</li>
+</ul>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
+<li>对于隐私数据，可以进行加密。比如密码存储加密过后的。</li>
+<li>还可以直接将数据库加密。</li>
+</ul>
+<h2 id="第三方扫描工具"><a href="#第三方扫描工具" class="headerlink" title="第三方扫描工具"></a>第三方扫描工具</h2><ul>
+<li><p>现在有很多的扫描工具，我通过查资料，推荐几款用的较多的平台：</p>
+<blockquote>
+<ol>
+<li><a href="http://service.security.tencent.com/kingkong" target="_blank" rel="external">腾讯金刚</a></li>
+<li><a href="https://jaq.alibaba.com" target="_blank" rel="external">阿里聚安全</a>  （查看详情需要通过签名认证app，且查看全部高危漏洞需要付费）</li>
+<li><a href="http://yaq.qq.com/" target="_blank" rel="external">腾讯御安全</a>  (查看详情需要认证)</li>
+<li><a href="http://appscan.360.cn/" target="_blank" rel="external">360显微镜</a></li>
+<li><a href="http://www.ineice.com/" target="_blank" rel="external">爱内测</a>    （无法查看详情）</li>
+</ol>
+</blockquote>
+</li>
+<li><p>不过平台扫出来的有些漏洞需要手动的去辨别是否是问题。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android安全/" rel="tag">#android安全</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/21/Android的NFC技术介绍/" rel="next" title="Android的NFC技术介绍">
+                <i class="fa fa-chevron-left"></i> Android的NFC技术介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/28/Android安全测试/"
+           data-title="Android安全测试" data-url="http://yoursite.com/2017/03/28/Android安全测试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="xdjaTester" />
+          <p class="site-author-name" itemprop="name">xdjaTester</p>
+          <p class="site-description motion-element" itemprop="description">用于平时测试过程中记录和分享</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android组件安全性测试"><span class="nav-text">Android组件安全性测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#drozer测试的一般思路"><span class="nav-text">drozer测试的一般思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要注意的一些点"><span class="nav-text">需要注意的一些点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题判定的标准"><span class="nav-text">问题判定的标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题解决"><span class="nav-text">问题解决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-data-data-packageName目录"><span class="nav-text">Android /data/data/packageName目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试方法"><span class="nav-text">测试方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三方扫描工具"><span class="nav-text">第三方扫描工具</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xdjaTester</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+本站总访问量 <span id="busuanzi_value_site_pv"></span> &nbsp&nbsp&nbsp
+您是第<span id="busuanzi_value_site_uv"></span>个来到的小伙伴
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xdjatester"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
